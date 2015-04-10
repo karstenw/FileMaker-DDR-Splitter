@@ -37,12 +37,8 @@ def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
 
 def stringhash( s ):
     m = hashlib.sha1()
-    fsize = len(s)
-    start = "blob %i\0" % fsize
-    # activate to make the hash a git object hash
-    #m.update(start)
     m.update(s)
-    return m.hexdigest()
+    return m.hexdigest().upper()
 
 #
 # parsers
@@ -150,7 +146,7 @@ def get_layout_object(cur_db, laynode, exportfolder):
                                 f.write( data )
                                 f.close()
 
-def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups):
+def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups, idx):
 
     for scpt in scriptnode:
         if scpt.tag == "Script":
@@ -158,10 +154,12 @@ def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups):
             if groups and g_dogroupfolders:
                 path = os.path.join("Scripts", *groups)
 
+            sortid = str(idx).rjust(5,"0") + '-' + scpt.get("id", "0").rjust(7,"0")
             s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
             path = xmlexportfolder(exportfolder, cur_db, path,
                                    scpt.get("name", "NONAME"),
-                                   scpt.get("id", "0"))
+                                   sortid)
+            idx += 1
             f = open(path, "wb")
             f.write( s )
             f.close()
@@ -170,7 +168,7 @@ def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups):
             grp_attrib = scpt.attrib
             groupname = grp_attrib.get("name", "NONAME")
             groups.append( groupname )
-            get_scripts_and_groups(cur_db, scpt, exportfolder, groups)
+            get_scripts_and_groups(cur_db, scpt, exportfolder, groups, idx)
             groups.pop()
 
 def main():
@@ -306,7 +304,7 @@ def main():
 
             for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
                 groups = []
-                get_scripts_and_groups(cur_db, scpt_cat, exportfolder, groups)
+                get_scripts_and_groups(cur_db, scpt_cat, exportfolder, groups, 1)
 
             #
             # privileges
