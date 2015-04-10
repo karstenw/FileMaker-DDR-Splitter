@@ -1,8 +1,8 @@
 # FileMaker-DDR-Splitter
 
-Split a FileMaker Database Design Report into it's components.
+A Python script to split a FileMaker Database Design Report (DDR) into it's components.
 
-The script has been used on OSX with V10 & V11 DDRs. Windows, Linux and DDRV12/13 may or may not work.
+The script has been used on OSX with V10 & V11 DDRs. Windows and DDRs V12/13 may or may not work.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ python ddrsplit.py /PATH/TO/Summary.xml
 ```
 This will create a folder named "Exports" at the ```Summary.xml```level.
 
-Inside Exports for each database file this will create a folder with the database name.
+Inside Exports for each database file this will create a folder with the database name. More precise: tje xml filename without the extension.
 
 Inside the database folder (drumroll) there will be up to 6 subfolders, namely Assets, Basetables, Filereferences, Layouts, Relationships & Scripts.
 
