@@ -4,9 +4,15 @@ A Python script to split a FileMaker Database Design Report (DDR) into it's comp
 
 The script has been used on OSX with V10 & V11 DDRs. Windows and DDRs V12/13 may or may not work.
 
+It's very fast. The longest run I have measured was 86s for a 420MB / 40 file DDR, creating more than 5000 files. A 275MB one file DDR was split in 18s.
+
 ## Prerequisites
 
-Python 2.7 - Version 2.5 and 2.6 should work. Version 3.x probably not.
+Python 2.7 - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries used are standard.
+
+
+## Caveats
+
 
 
 
@@ -17,7 +23,7 @@ python ddrsplit.py /PATH/TO/Summary.xml
 ```
 This will create a folder named "Exports" at the ```Summary.xml```level.
 
-Inside Exports for each database file this will create a folder with the database name. More precise: tje xml filename without the extension.
+Inside Exports for each database file this will create a folder with the database name. More precise: the xml filename without the extension.
 
 Inside the database folder (drumroll) there will be up to 6 subfolders, namely Assets, Basetables, Filereferences, Layouts, Relationships & Scripts.
 
