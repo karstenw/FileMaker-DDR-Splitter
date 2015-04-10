@@ -33,4 +33,4 @@ Inside the database folder (drumroll) there will be up to 6 subfolders, namely A
 
 + Relationships - In work. Currently only one XML file for all relationships
 
-+ Scripts - for each basetable there will be it's xml from the DDR. The name pattern is 00000ID_NAME.xml.  Folders should be preserved.
++ Scripts - for each basetable there will be it's xml from the DDR. The name pattern is SORT-00000ID_NAME.xml.  Folders should be preserved.
