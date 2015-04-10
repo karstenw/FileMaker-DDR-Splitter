@@ -2,7 +2,12 @@
 
 Split a FileMaker Database Design Report into it's components.
 
-The Script has been used with V10 & V11 DDRs. V12 and V13 may or may not work.
+The script has been used on OSX with V10 & V11 DDRs. Windows, Linux and DDRV12/13 may or may not work.
+
+## Prerequisites
+
+Python 2.7 - Version 2.5 and 2.6 should work. Version 3.x probably not.
+
 
 
 ## Usage
