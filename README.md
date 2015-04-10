@@ -11,10 +11,6 @@ It's very fast. The longest run I have measured was 86s for a 420MB / 40 file DD
 Python 2.7 - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries used are standard.
 
 
-## Caveats
-
-None that I know of.
-
 
 ## Usage
 
