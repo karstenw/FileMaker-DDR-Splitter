@@ -53,7 +53,7 @@ def xmlexportfolder(basefolder, dbname, category, obname, obid="", ext=".xml"):
         os.makedirs( catfolder )
     
     if obid:
-        obid = str(obid).rjust(7,"0") + "_"
+        obid = str(obid).rjust(7,"0") + " "
     filename = obid + obname + ext
     filename = filename.replace('/', '_')
     filename = filename.replace(':', '_')
@@ -63,7 +63,7 @@ def xmlexportfolder(basefolder, dbname, category, obname, obid="", ext=".xml"):
     fullpath = makeunicode( fullpath, normalizer="NFD" )
     return fullpath.encode("utf-8")
 
-def get_layouts_and_groups(cur_db, laynode, groups, exportfolder):
+def get_layouts_and_groups(cur_db, laynode, groups, exportfolder, idx):
 
     for layout in laynode:
 
@@ -80,12 +80,15 @@ def get_layouts_and_groups(cur_db, laynode, groups, exportfolder):
         if groups and g_dogroupfolders:
             path = os.path.join("Layouts", *groups)
         s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+        sortid = str(idx).rjust(5,"0") + ' ' + layout_attr.get("id", "0").rjust(7,"0")
+
         path = xmlexportfolder(exportfolder, cur_db, path,
                                layout_attr.get("name", "NONAME"),
-                               layout_attr.get("id", "0"))
+                               sortid)
         f = open(path, "wb")
         f.write( s )
         f.close()
+        idx += 1
 
         for l in layout.getchildren():
             t = l.tag
@@ -154,7 +157,7 @@ def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups, idx):
             if groups and g_dogroupfolders:
                 path = os.path.join("Scripts", *groups)
 
-            sortid = str(idx).rjust(5,"0") + '-' + scpt.get("id", "0").rjust(7,"0")
+            sortid = str(idx).rjust(5,"0") + ' ' + scpt.get("id", "0").rjust(7,"0")
             s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
             path = xmlexportfolder(exportfolder, cur_db, path,
                                    scpt.get("name", "NONAME"),
@@ -259,7 +262,7 @@ def main():
             for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
                 print ( 'Layout Catalog "%s"' % cur_db ).encode( 'utf-8' )
                 groups = []
-                get_layouts_and_groups(cur_db, layout_catalog, groups, exportfolder)
+                get_layouts_and_groups(cur_db, layout_catalog, groups, exportfolder, 1)
 
             #
             # file reference catalog
