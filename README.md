@@ -25,12 +25,12 @@ Inside the database folder (drumroll) there will be up to 6 subfolders, namely A
 
 + Assets - contains images and other stuff found in layouts. The filename will be it's SHA-1 hexdigest. The file extension is either derived from it's type or .TYPE for unknown types.
 
-+ Basetables - for each basetable there will be it's xml from the DDR. The name pattern is 00000ID_NAME.xml
++ Basetables - for each basetable there will be it's xml from the DDR. The name pattern is ID_NAME.xml
 
-+ Filereferences - for each basetable there will be it's xml from the DDR. The name pattern is 00000ID_NAME.xml
++ Filereferences - for each basetable there will be it's xml from the DDR. The name pattern is ID_NAME.xml
 
-+ Layouts - for each basetable there will be it's xml from the DDR. The name pattern is 00000ID_NAME.xml.  Folders should be preserved.
++ Layouts - for each basetable there will be it's xml from the DDR. The name pattern is ID_NAME.xml.  Folders should be preserved.
 
 + Relationships - In work. Currently only one XML file for all relationships
 
-+ Scripts - for each basetable there will be it's xml from the DDR. The name pattern is SORT-00000ID_NAME.xml.  Folders should be preserved.
++ Scripts - for each basetable there will be it's xml from the DDR. The name pattern is SORT-ID_NAME.xml.  Folders should be preserved.
