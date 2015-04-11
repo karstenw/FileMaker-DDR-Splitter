@@ -310,6 +310,23 @@ def main():
                 get_scripts_and_groups(cur_db, scpt_cat, exportfolder, groups, 1)
 
             #
+            # custom function catalog
+            #
+            #
+            print ('Custom Functions for "%s"' % cur_db ).encode( 'utf-8' )
+
+            for cf_cat in basenode.getiterator ( "CustomFunctionCatalog" ):
+                groups = []
+                for cf in cf_cat.getchildren():
+                    cf_attrib = cf.attrib
+                    s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "CustomFunctions",
+                                           cf_attrib.get("name", "NONAME"),
+                                           cf_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
+            
             # privileges
             #
             #print ('TBD: Privileges for "%s"' % cur_db ).encode( 'utf-8' )
