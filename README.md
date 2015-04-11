@@ -20,17 +20,19 @@ This will create a folder named "Exports" at the ```Summary.xml```level.
 
 Inside Exports for each database file this will create a folder with the database name. More precise: the xml filename without the extension.
 
-Inside the database folder (drumroll) there will be up to 6 subfolders, namely **Assets, Basetables, Filereferences, Layouts, Relationships & Scripts.**
+Inside the database folder (drumroll) there will be up to 7 subfolders, namely **Assets, Basetables, CustomFunctions, Filereferences, Layouts, Relationships & Scripts.**
 
 + Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type or .TYPE for unknown types.
 
 + Basetables - for each basetable there will be it's xml from the DDR. The name pattern is **"ID NAME.xml"**
 
-+ Filereferences - for each basetable there will be it's xml from the DDR. The name pattern is **"ID NAME.xml"**
++ CustomFunctions - for each custom function there will be it's xml from the DDR. The name pattern is **"ID NAME.xml"**
 
-+ Layouts - for each basetable there will be it's xml from the DDR. The name pattern is **"SORT ID NAME.xml"**. SORT is a 5 digit number to preserve the layout order.
++ Filereferences - for each file reference there will be it's xml from the DDR. The name pattern is **"ID NAME.xml"**
+
++ Layouts - for each layout there will be it's xml from the DDR. The name pattern is **"SORT ID NAME.xml"**. SORT is a 5 digit number to preserve the layout order.
 
 + Relationships - In work. Currently only one XML file for all relationships
 
-+ Scripts - for each basetable there will be it's xml from the DDR. The name pattern is **"SORT-ID_NAME.xml"**.   SORT is a 5 digit number to preserve the script order.
++ Scripts - for each script there will be it's xml from the DDR. The name pattern is **"SORT-ID_NAME.xml"**.   SORT is a 5 digit number to preserve the script order.
 
