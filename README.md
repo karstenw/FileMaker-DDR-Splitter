@@ -22,7 +22,7 @@ Inside Exports for each database file this will create a folder with the databas
 
 Inside the database folder (drumroll) there will be up to 7 subfolders, namely **Assets, Basetables, CustomFunctions, Filereferences, Layouts, Relationships & Scripts.**
 
-+ Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type or .TYPE for unknown types.
++ Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type (JPEG -> .jpg) for known types or **".TYPE"** for unknown types.
 
 + Basetables - for each basetable there will be it's xml from the DDR. The name pattern is **"ID NAME.xml"**
 
