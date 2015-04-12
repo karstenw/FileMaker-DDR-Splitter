@@ -174,6 +174,44 @@ def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups, idx):
             get_scripts_and_groups(cur_db, scpt, exportfolder, groups, idx)
             groups.pop()
 
+def get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder):
+    for tablst in rg_cat:
+        if tablst.tag == u'TableList':
+            for tab in tablst:
+                if tab.tag == u'Table':
+                    to_attr = tab.attrib
+                    s = ElementTree.tostring(tab, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "Relationships/TableList",
+                                           tab.attrib.get("name", "NONAME"),
+                                           tab.attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
+
+        elif tablst.tag == u'RelationshipList':
+            for rel in tablst:
+                if rel.tag == u'Relationship':
+                    rel_cat = {}
+                    re_attr = rel.attrib
+                    relid = re_attr.get("id", "0")
+                    rel_cat['id'] = re_attr.get("id", "0")
+
+                    for rel_component in rel.getchildren():
+                        if rel_component.tag == "LeftTable":
+                            rel_cat['lefttable'] = rel_component.attrib.get("name", "NO-LEFTTABLENAME")
+                        elif rel_component.tag == "RightTable":
+                            rel_cat['righttable'] = rel_component.attrib.get("name", "NO-LEFTTABLENAME")
+                            
+                    s = ElementTree.tostring(rel, encoding="utf-8", method="xml")
+                    filename = rel_cat['lefttable'] + "---" + rel_cat['righttable']
+                    
+                    path = xmlexportfolder(exportfolder, cur_db, "Relationships/Relationship",
+                                           filename,
+                                           rel_cat['id'])
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
+
 def main():
     argumentfiles = sys.argv[1:]
     if not argumentfiles:
@@ -245,8 +283,8 @@ def main():
             #
             # base table catalog
             #
+            print ('\n\nBase Tables "%s"' % cur_db).encode( 'utf-8' )
             for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
-                print ('\n\nBase Tables "%s"' % cur_db).encode( 'utf-8' )
                 for base_table in base_table_catalog.getiterator( u'BaseTable' ):
                     s = ElementTree.tostring(base_table, encoding="utf-8", method="xml")
                     path = xmlexportfolder(exportfolder, cur_db, "Basetables",
@@ -259,21 +297,30 @@ def main():
             #
             # layout catalog
             #
+            print ( 'Layout Catalog "%s"' % cur_db ).encode( 'utf-8' )
             for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
-                print ( 'Layout Catalog "%s"' % cur_db ).encode( 'utf-8' )
                 groups = []
                 get_layouts_and_groups(cur_db, layout_catalog, groups, exportfolder, 1)
 
             #
             # file reference catalog
             #
+            print ( 'File References "%s"' % cur_db ).encode( 'utf-8' )
             for fr_cat in basenode.getiterator ( "FileReferenceCatalog" ):
-                print ( 'File References "%s"' % cur_db ).encode( 'utf-8' )
                 for fileref in fr_cat.getchildren():
                     fileref_attrib = fileref.attrib
+                    prefix = ""
+                    if fileref.tag == "OdbcDataSource":
+                        prefix = "ODBC-"
+                    elif fileref.tag == "FileReference":
+                        prefix = "FREF-"
+                    else:
+                        prefix = "UNKN-"
+                    name = prefix + fileref_attrib.get("name", "NONAME")
+                    
                     s = ElementTree.tostring(fileref, encoding="utf-8", method="xml")
                     path = xmlexportfolder(exportfolder, cur_db, "Filereferences",
-                                           fileref_attrib.get("name", "NONAME"),
+                                           name,
                                            fileref_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
@@ -282,23 +329,24 @@ def main():
             #
             # relationship graph
             #
+            print ( 'Relationship Graph "%s"' % cur_db ).encode( 'utf-8' )
             for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
-                print ( 'Relationship Graph "%s"' % cur_db ).encode( 'utf-8' )
-                for rel in rg_cat.getchildren():
-                    rel_attrib = rel.attrib
-                    s = ElementTree.tostring(rel, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "Relationships",
-                                           rel_attrib.get("name", "NONAME"),
-                                           rel_attrib.get("id", "0"))
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
+                get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder)
 
             #
             # account catalog
             #
-            #for acc_node in basenode.getiterator ( "AccountCatalog" ):
-            #    print ('Accounts for "%s"' % cur_db ).encode( 'utf-8' )
+            print ('Accounts for "%s"' % cur_db ).encode( 'utf-8' )
+            for acc_cat in basenode.getiterator ( "AccountCatalog" ):
+                for acc in acc_cat.getchildren():
+                    acc_attrib = acc.attrib
+                    s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "Accounts",
+                                           acc_attrib.get("name", "NONAME"),
+                                           acc_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
 
             #
             # script catalog
@@ -329,19 +377,78 @@ def main():
             
             # privileges
             #
-            #print ('TBD: Privileges for "%s"' % cur_db ).encode( 'utf-8' )
+            print ('Privileges for "%s"' % cur_db ).encode( 'utf-8' )
+            for pv_cat in basenode.getiterator( "PrivilegeCatalog" ):
+                for pv in pv_cat.getchildren():
+                    pv_attrib = pv.attrib
+                    s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "Privileges",
+                                           pv_attrib.get("name", "NONAME"),
+                                           pv_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
+                    
 
             #
             # extended privileges
             #
-            #print ('TBD: Extended Privileges for "%s"' % cur_db ).encode( 'utf-8' )
+            print ('Extended Privileges for "%s"' % cur_db ).encode( 'utf-8' )
+            for epv_cat in basenode.getiterator( "ExtendedPrivilegeCatalog" ):
+                for epv in epv_cat.getchildren():
+                    epv_attrib = epv.attrib
+                    s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "ExtendedPrivileges",
+                                           epv_attrib.get("name", "NONAME"),
+                                           epv_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
 
             #
-            # Custom Functions
+            # custom menus
             #
-            #print ('TBD: Custom Functions for "%s"' % cur_db ).encode( 'utf-8' )
+            print ('Custom Menus for "%s"' % cur_db ).encode( 'utf-8' )
+            for cm_cat in basenode.getiterator( "CustomMenuCatalog" ):
+                for cm in cm_cat.getchildren():
+                    cm_attrib = cm.attrib
+                    s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "CustomMenus",
+                                           cm_attrib.get("name", "NONAME"),
+                                           cm_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
 
+            #
+            # custom menu sets
+            #
+            print ('Custom Menu Sets for "%s"' % cur_db ).encode( 'utf-8' )
+            for cms_cat in basenode.getiterator( "CustomMenuSetCatalog" ):
+                for cms in cms_cat.getchildren():
+                    cms_attrib = cms.attrib
+                    s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "CustomMenuSets",
+                                           cms_attrib.get("name", "NONAME"),
+                                           cms_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
 
+            #
+            # value lists
+            #
+            print ('Value Lists for "%s"' % cur_db ).encode( 'utf-8' )
+            for vl_cat in basenode.getiterator( "ValueListCatalog" ):
+                for vl in vl_cat.getchildren():
+                    vl_attrib = vl.attrib
+                    s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
+                    path = xmlexportfolder(exportfolder, cur_db, "ValueLists",
+                                           vl_attrib.get("name", "NONAME"),
+                                           vl_attrib.get("id", "0"))
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
 
 if __name__ == '__main__':
     main()
