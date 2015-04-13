@@ -20,6 +20,7 @@ ElementTree = xml.etree.cElementTree
 import xml.parsers.expat
 
 
+import Config
 #
 # globals
 #
@@ -63,38 +64,48 @@ def xmlexportfolder(basefolder, dbname, category, obname, obid="", ext=".xml"):
     fullpath = makeunicode( fullpath, normalizer="NFD" )
     return fullpath.encode("utf-8")
 
-def get_layouts_and_groups(cur_db, laynode, groups, exportfolder, idx):
+def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
 
     for layout in laynode:
 
         layout_attr = layout.attrib
         layout_tag = layout.tag
         if layout_tag == "Group":
-            groupname = layout_attr.get("name", "NONAME")
-            groups.append( groupname )
-            get_layouts_and_groups(cur_db, layout, groups, exportfolder)
+            if 1:
+                grp_attrib = layout_attr
+                groupname = layout_attr.get("name", "NONAME")
+                groupid = layout_attr.get("id", "0")
+
+                groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
+                groups.append( groupname )
+            else:
+                groupname = layout_attr.get("name", "NONAME")
+                groups.append( groupname )
+            idx += 1
+            idx = get_layouts_and_groups(cfg, cur_db, layout, groups, exportfolder, idx)
             groups.pop()
+        else:
+            path = "Layouts"
         
-        path = "Layouts"
-        
-        if groups and g_dogroupfolders:
-            path = os.path.join("Layouts", *groups)
-        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
-        sortid = str(idx).rjust(5,"0") + ' ' + layout_attr.get("id", "0").rjust(7,"0")
+            if groups and g_dogroupfolders:
+                path = os.path.join("Layouts", *groups)
+            s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+            sortid = str(idx).rjust(5,"0") + ' ' + layout_attr.get("id", "0").rjust(7,"0")
 
-        path = xmlexportfolder(exportfolder, cur_db, path,
-                               layout_attr.get("name", "NONAME"),
-                               sortid)
-        f = open(path, "wb")
-        f.write( s )
-        f.close()
-        idx += 1
+            path = xmlexportfolder(exportfolder, cur_db, path,
+                                   layout_attr.get("name", "NONAME"),
+                                   sortid)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+            idx += 1
 
-        for l in layout.getchildren():
-            t = l.tag
-            if t == u'Object':
-                # get layout object
-                cur_obj = get_layout_object(cur_db, l, exportfolder)
+            for l in layout.getchildren():
+                t = l.tag
+                if t == u'Object':
+                    # get layout object
+                    cur_obj = get_layout_object(cur_db, l, exportfolder)
+    return idx
 
 def get_layout_object(cur_db, laynode, exportfolder):
     nodes = list(laynode)
@@ -149,7 +160,7 @@ def get_layout_object(cur_db, laynode, exportfolder):
                                 f.write( data )
                                 f.close()
 
-def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups, idx):
+def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, namecache, idx):
 
     for scpt in scriptnode:
         if scpt.tag == "Script":
@@ -170,9 +181,13 @@ def get_scripts_and_groups(cur_db, scriptnode, exportfolder, groups, idx):
         elif scpt.tag == "Group":
             grp_attrib = scpt.attrib
             groupname = grp_attrib.get("name", "NONAME")
+            groupid = grp_attrib.get("id", "0")
+            groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
             groups.append( groupname )
-            get_scripts_and_groups(cur_db, scpt, exportfolder, groups, idx)
+            idx += 1
+            idx = get_scripts_and_groups(cfg, cur_db, scpt, exportfolder, groups, namecache, idx)
             groups.pop()
+    return idx
 
 def get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder):
     for tablst in rg_cat:
@@ -212,77 +227,75 @@ def get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder):
                     f.write( s )
                     f.close()
 
-def main():
-    argumentfiles = sys.argv[1:]
-    if not argumentfiles:
-        print
-        print "USAGE:"
-        print "python ddrsplit.py /PATH/TO/Summary.xml"
-        print
-        exit(0)
-    
-    for af in argumentfiles:
-        xmlfile = os.path.abspath( os.path.expanduser(af) )
-        xml_folder, xmlfilename = os.path.split( xmlfile )
+def main(cfg):
 
-        ddr = ElementTree.parse( xmlfile )
-        summary = ddr.getroot()
+    xmlfile = cfg.summaryfile
+    xml_folder, xmlfilename = os.path.split( xmlfile )
 
-        files = summary.findall( "File" )
+    ddr = ElementTree.parse( xmlfile )
 
-        filelist = {}
-        for i in files:
-            xffile = dbfile = False
-            fmp6 = False
-            try:
-                xffile = i.attrib[ "link" ]
-            except KeyError, m:
-                print "XML Error: '%s'" % m
-                # xffile = i.attrib[ "XMLReportFile" ]
-                for item in i:
-                    if item.tag == "XMLReportFile":
-                        xffile = item.text
-                        fmp6 = True
-                    elif item.tag == "File":
-                        dbfile = item.text
-                        fmp6 = True
-                        
-            if not xffile:
-                print
-                print "ERROR: Could not find a XML file... NEXT!"
-                print
-                continue
+    summary = ddr.getroot()
 
-            # cleanup filename
-            while xffile.startswith( './/' ): xffile = xffile[ 3: ]
-            while xffile.startswith( './' ):  xffile = xffile[ 2: ]
+    files = summary.findall( "File" )
+    nooffiles = len( files )
 
-            xmlbasename, ext  = os.path.splitext( xffile )
-            filelist[ xffile ] = xmlbasename
-        pp(filelist)
+    filelist = {}
 
-        for cur_xml_file_name in filelist.keys():
-            next_xml_file_path = os.path.join( xml_folder, cur_xml_file_name )
-            line = '-' * 100
-            print "\n\n%s\n\nNEXT: %s" % (line, repr(cur_xml_file_name))
+    for i in files:
+        xffile = dbfile = False
+        fmp6 = False
+        try:
+            xffile = i.attrib[ "link" ]
+        except KeyError, m:
+            print "XML Error: '%s'" % m
+            # xffile = i.attrib[ "XMLReportFile" ]
+            for item in i:
+                if item.tag == "XMLReportFile":
+                    xffile = item.text
+                    fmp6 = True
+                elif item.tag == "File":
+                    dbfile = item.text
+                    fmp6 = True
+                    
+        if not xffile:
+            print
+            print "ERROR: Could not find a XML file... NEXT!"
+            print
+            continue
 
-            try:
-                basenode = ElementTree.parse( next_xml_file_path )
-            except  (xml.parsers.expat.ExpatError, SyntaxError), v:
-                # pdb.set_trace()
-                xml.parsers.expat.error()
-                print "EXCEPTION: '%s'" % v
-                print "Failed parsing '%s'" % next_xml_file_path
-                print
-                continue
+        # cleanup filename
+        while xffile.startswith( './/' ): xffile = xffile[ 3: ]
+        while xffile.startswith( './' ):  xffile = xffile[ 2: ]
 
-            cur_db = filelist[ cur_xml_file_name ]
+        xmlbasename, ext  = os.path.splitext( xffile )
+        filelist[ xffile ] = xmlbasename
+    # pp(filelist)
 
-            exportfolder = os.path.join( xml_folder, "Exports")
+    pdb.set_trace()
 
-            #
-            # base table catalog
-            #
+    for cur_xml_file_name in filelist.keys():
+        next_xml_file_path = os.path.join( xml_folder, cur_xml_file_name )
+        line = '-' * 100
+        print "\n\n%s\n\nNEXT: %s" % (line, repr(cur_xml_file_name))
+
+        try:
+            basenode = ElementTree.parse( next_xml_file_path )
+        except  (xml.parsers.expat.ExpatError, SyntaxError), v:
+            # pdb.set_trace()
+            xml.parsers.expat.error()
+            print "EXCEPTION: '%s'" % v
+            print "Failed parsing '%s'" % next_xml_file_path
+            print
+            continue
+
+        cur_db = filelist[ cur_xml_file_name ]
+
+        exportfolder = os.path.join( xml_folder, "Exports")
+
+        #
+        # base table catalog
+        #
+        if cfg.basetables:
             print ('\n\nBase Tables "%s"' % cur_db).encode( 'utf-8' )
             for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
                 for base_table in base_table_catalog.getiterator( u'BaseTable' ):
@@ -294,17 +307,19 @@ def main():
                     f.write( s )
                     f.close()
 
-            #
-            # layout catalog
-            #
+        #
+        # layout catalog
+        #
+        if cfg.layouts:
             print ( 'Layout Catalog "%s"' % cur_db ).encode( 'utf-8' )
             for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
                 groups = []
-                get_layouts_and_groups(cur_db, layout_catalog, groups, exportfolder, 1)
+                get_layouts_and_groups(cfg, cur_db, layout_catalog, groups, exportfolder, 1)
 
-            #
-            # file reference catalog
-            #
+        #
+        # file reference catalog
+        #
+        if cfg.filereferences:
             print ( 'File References "%s"' % cur_db ).encode( 'utf-8' )
             for fr_cat in basenode.getiterator ( "FileReferenceCatalog" ):
                 for fileref in fr_cat.getchildren():
@@ -317,7 +332,7 @@ def main():
                     else:
                         prefix = "UNKN-"
                     name = prefix + fileref_attrib.get("name", "NONAME")
-                    
+                
                     s = ElementTree.tostring(fileref, encoding="utf-8", method="xml")
                     path = xmlexportfolder(exportfolder, cur_db, "Filereferences",
                                            name,
@@ -326,16 +341,18 @@ def main():
                     f.write( s )
                     f.close()
 
-            #
-            # relationship graph
-            #
+        #
+        # relationship graph
+        #
+        if cfg.relationships:
             print ( 'Relationship Graph "%s"' % cur_db ).encode( 'utf-8' )
             for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
                 get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder)
 
-            #
-            # account catalog
-            #
+        #
+        # account catalog
+        #
+        if cfg.accounts:
             print ('Accounts for "%s"' % cur_db ).encode( 'utf-8' )
             for acc_cat in basenode.getiterator ( "AccountCatalog" ):
                 for acc in acc_cat.getchildren():
@@ -348,19 +365,22 @@ def main():
                     f.write( s )
                     f.close()
 
-            #
-            # script catalog
-            #
+        #
+        # script catalog
+        #
+        if cfg.scripts:
             print ('Scripts for "%s"' % cur_db ).encode( 'utf-8' )
 
             for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
                 groups = []
-                get_scripts_and_groups(cur_db, scpt_cat, exportfolder, groups, 1)
+                namecache = [{},{}]
+                get_scripts_and_groups(cfg, cur_db, scpt_cat, exportfolder, groups, namecache, 1)
 
-            #
-            # custom function catalog
-            #
-            #
+        #
+        # custom function catalog
+        #
+        #
+        if cfg.customfunctions:
             print ('Custom Functions for "%s"' % cur_db ).encode( 'utf-8' )
 
             for cf_cat in basenode.getiterator ( "CustomFunctionCatalog" ):
@@ -374,9 +394,10 @@ def main():
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
-            
-            # privileges
-            #
+        
+        # privileges
+        #
+        if cfg.privileges:
             print ('Privileges for "%s"' % cur_db ).encode( 'utf-8' )
             for pv_cat in basenode.getiterator( "PrivilegeCatalog" ):
                 for pv in pv_cat.getchildren():
@@ -388,11 +409,11 @@ def main():
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
-                    
 
-            #
-            # extended privileges
-            #
+        #
+        # extended privileges
+        #
+        if cfg.extendedprivileges:
             print ('Extended Privileges for "%s"' % cur_db ).encode( 'utf-8' )
             for epv_cat in basenode.getiterator( "ExtendedPrivilegeCatalog" ):
                 for epv in epv_cat.getchildren():
@@ -405,9 +426,10 @@ def main():
                     f.write( s )
                     f.close()
 
-            #
-            # custom menus
-            #
+        #
+        # custom menus
+        #
+        if cfg.custommenus:
             print ('Custom Menus for "%s"' % cur_db ).encode( 'utf-8' )
             for cm_cat in basenode.getiterator( "CustomMenuCatalog" ):
                 for cm in cm_cat.getchildren():
@@ -420,9 +442,10 @@ def main():
                     f.write( s )
                     f.close()
 
-            #
-            # custom menu sets
-            #
+        #
+        # custom menu sets
+        #
+        if cfg.custommenusets:
             print ('Custom Menu Sets for "%s"' % cur_db ).encode( 'utf-8' )
             for cms_cat in basenode.getiterator( "CustomMenuSetCatalog" ):
                 for cms in cms_cat.getchildren():
@@ -435,9 +458,10 @@ def main():
                     f.write( s )
                     f.close()
 
-            #
-            # value lists
-            #
+        #
+        # value lists
+        #
+        if cfg.valueLists:
             print ('Value Lists for "%s"' % cur_db ).encode( 'utf-8' )
             for vl_cat in basenode.getiterator( "ValueListCatalog" ):
                 for vl in vl_cat.getchildren():
@@ -451,4 +475,12 @@ def main():
                     f.close()
 
 if __name__ == '__main__':
-    main()
+    infiles = sys.argv[1:]
+    for f in files:
+        f = os.path.abspath( os.path.expanduser(f) )
+        folder, filename = os.path.split( f )
+
+        cfg = Config.Config()
+        cfg.summaryfile = f
+        cfg.exportfolder = os.path.join( folder, "Exports")
+        main( cfg )
