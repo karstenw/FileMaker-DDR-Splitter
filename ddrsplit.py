@@ -43,6 +43,7 @@ def stringhash( s ):
     return m.hexdigest().upper()
 
 def logfunction(s):
+    s = s + u"\n"
     sys.stdout.write(s.encode("utf-8"))
 
 #
