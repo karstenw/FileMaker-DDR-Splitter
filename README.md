@@ -10,12 +10,16 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 [Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries used are standard.
 
+or of you're on OSX (10.6 and above) you can download an app with many configuration options here: [(dropbox folder)](http://goo.gl/YwGc7K).
+
 
 ## Usage
 
 ```shell
 python ddrsplit.py /PATH/TO/Summary.xml
 ```
+
+
 This will create a folder named "Exports" at the ```Summary.xml```level.
 
 Inside Exports for each database file this will create a folder with the database name. More precise: the xml filename without the extension.
