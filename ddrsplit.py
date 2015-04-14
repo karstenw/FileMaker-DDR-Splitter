@@ -255,7 +255,9 @@ def main(cfg):
     nooffiles = len( files )
 
     filelist = {}
-    
+
+    starttime = time.time()
+
     log = logfunction
     if cfg.logfunction:
         log = cfg.logfunction
@@ -488,7 +490,8 @@ def main(cfg):
             return
 
     time.sleep(0.3)
-    log("\n\n####  FINISHED.  ####")
+    stoptime = time.time()
+    log("\nRuntime %.4f\n\n####  FINISHED.  ####\n\n" % ( round(stoptime - starttime, 4), ))
 
 if __name__ == '__main__':
 
