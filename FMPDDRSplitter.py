@@ -307,7 +307,10 @@ class FMPDDRSAppDelegate(NSObject):
         print s.encode("utf-8")
         # view
         app = NSApplication.sharedApplication()
-        win = app.keyWindow()
+        wins = app.windows()
+        if not wins:
+            return
+        win = wins[0]
         controller = win.windowController()
         
         myView = controller.tfStatusText

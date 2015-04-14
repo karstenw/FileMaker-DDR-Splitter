@@ -192,8 +192,12 @@ def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, nameca
         elif scpt.tag == "Group":
             grp_attrib = scpt.attrib
             groupname = grp_attrib.get("name", "NONAME")
+
             groupid = grp_attrib.get("id", "0")
-            groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
+
+            groupname = groupid.rjust(7,"0") + ' ' + groupname
+            if cfg.scriptOrder:
+                groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
             groups.append( groupname )
             idx += 1
             idx = get_scripts_and_groups(cfg, cur_db, scpt, exportfolder, groups, namecache, idx)
@@ -480,11 +484,11 @@ def main(cfg):
                     f.close()
         if gCancel:
             time.sleep(0.3)
-            log("Canelled.")
+            log("\n\n####  CANCELLED.  ####")
             return
 
     time.sleep(0.3)
-    log( "FINISHED." )
+    log("\n\n####  FINISHED.  ####")
 
 if __name__ == '__main__':
 
