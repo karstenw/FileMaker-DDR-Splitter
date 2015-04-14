@@ -24,7 +24,7 @@ This will create a folder named "Exports" at the ```Summary.xml```level.
 
 Inside Exports for each database file this will create a folder with the database name. More precise: the xml filename without the extension.
 
-Inside the database folder (drumroll) there will be up to 12 subfolders, namely **Accounts, Assets, Basetables, CustomFunctions, CustomMenus, CustomMenuSets, ExtendedPrivileges, Filereferences, Layouts, Relationships, Scripts and ValueLists.**
+Inside the database folder (drumroll) there will be up to 13 subfolders, namely **Accounts, Assets, Basetables, CustomFunctions, CustomMenus, CustomMenuSets, Privileges, ExtendedPrivileges, Filereferences, Layouts, Relationships, Scripts and ValueLists.**
 
 + Accounts - The name pattern is **"ID NAME.xml"**
 
@@ -49,4 +49,8 @@ Inside the database folder (drumroll) there will be up to 12 subfolders, namely 
 + Scripts - for each script there will be it's xml from the DDR. The name pattern is **"SORT-ID_NAME.xml"**.   SORT is a 5 digit number to preserve the script order.
 
 + ValueLists - The name pattern is **"ID NAME.xml"**
+
+## The application
+
+![Image](./images/screen1.png?raw=true)
 
