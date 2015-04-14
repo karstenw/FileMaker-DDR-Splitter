@@ -304,7 +304,7 @@ class FMPDDRSAppDelegate(NSObject):
         s = appendage + u"\n"
         if type(s) != unicode:
             s = unicode(appendage, "utf-8")
-        print s.encode("utf-8")
+        sys.stdout.write(s.encode("utf-8"))
         # view
         app = NSApplication.sharedApplication()
         wins = app.windows()
