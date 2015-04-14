@@ -10,7 +10,9 @@
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">851</string>
 		</object>
-		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs"/>
+		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
+			<integer value="368"/>
+		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
@@ -1267,7 +1269,7 @@
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="414427165">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="341372303">
@@ -1372,7 +1374,7 @@
 							<object class="NSButtonCell" key="NSCell" id="103000917">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents">Öffnen</string>
+								<string key="NSContents">Open</string>
 								<reference key="NSSupport" ref="172576666"/>
 								<reference key="NSControlView" ref="636542490"/>
 								<int key="NSButtonFlags">-2033434369</int>
@@ -1425,7 +1427,7 @@
 							<object class="NSButtonCell" key="NSCell" id="504325950">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents">Öffnen</string>
+								<string key="NSContents">Open</string>
 								<reference key="NSSupport" ref="172576666"/>
 								<reference key="NSControlView" ref="239138428"/>
 								<int key="NSButtonFlags">-2033434369</int>
@@ -1992,6 +1994,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									</array>
 									<string key="NSFrame">{{1, 1}, {660, 308}}</string>
 									<reference key="NSSuperview" ref="961478922"/>
+									<reference key="NSNextKeyView" ref="857702491"/>
 									<reference key="NSDocView" ref="857702491"/>
 									<reference key="NSBGColor" ref="825238714"/>
 									<object class="NSCursor" key="NSCursor">
@@ -2024,6 +2027,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrame">{{20, 20}, {677, 310}}</string>
 							<reference key="NSSuperview" ref="414427165"/>
+							<reference key="NSNextKeyView" ref="488250017"/>
 							<int key="NSsFlags">18</int>
 							<reference key="NSVScroller" ref="168197110"/>
 							<reference key="NSHScroller" ref="283580204"/>
@@ -2051,6 +2055,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{717, 618}</string>
+					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
