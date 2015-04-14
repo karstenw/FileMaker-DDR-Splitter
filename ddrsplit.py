@@ -4,7 +4,7 @@ import sys
 import os
 
 import unicodedata
-
+import time
 import binascii
 import base64
 import hashlib
@@ -21,10 +21,11 @@ import xml.parsers.expat
 
 
 import Config
+
 #
 # globals
 #
-g_dogroupfolders = True
+gCancel = False
 
 
 #
@@ -40,6 +41,9 @@ def stringhash( s ):
     m = hashlib.sha1()
     m.update(s)
     return m.hexdigest().upper()
+
+def logfunction(s):
+    sys.stdout.write(s.encode("utf-8"))
 
 #
 # parsers
@@ -71,26 +75,29 @@ def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
         layout_attr = layout.attrib
         layout_tag = layout.tag
         if layout_tag == "Group":
-            if 1:
-                grp_attrib = layout_attr
-                groupname = layout_attr.get("name", "NONAME")
-                groupid = layout_attr.get("id", "0")
 
+            grp_attrib = layout_attr
+            groupname = layout_attr.get("name", "NONAME")
+            groupid = layout_attr.get("id", "0")
+
+            groupname = groupid.rjust(7,"0") + ' ' + groupname
+            if cfg.layoutOrder:
                 groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
-                groups.append( groupname )
-            else:
-                groupname = layout_attr.get("name", "NONAME")
-                groups.append( groupname )
+            groups.append( groupname )
+
             idx += 1
             idx = get_layouts_and_groups(cfg, cur_db, layout, groups, exportfolder, idx)
             groups.pop()
         else:
             path = "Layouts"
         
-            if groups and g_dogroupfolders:
+            if groups and cfg.layoutGroups:
                 path = os.path.join("Layouts", *groups)
             s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
-            sortid = str(idx).rjust(5,"0") + ' ' + layout_attr.get("id", "0").rjust(7,"0")
+
+            sortid = layout_attr.get("id", "0").rjust(7,"0")
+            if cfg.layoutOrder:
+                sortid = str(idx).rjust(5,"0") + ' ' + layout_attr.get("id", "0").rjust(7,"0")
 
             path = xmlexportfolder(exportfolder, cur_db, path,
                                    layout_attr.get("name", "NONAME"),
@@ -100,10 +107,12 @@ def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
             f.close()
             idx += 1
 
+            if not cfg.assets:
+                continue
+
             for l in layout.getchildren():
                 t = l.tag
                 if t == u'Object':
-                    # get layout object
                     cur_obj = get_layout_object(cur_db, l, exportfolder)
     return idx
 
@@ -165,10 +174,12 @@ def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, nameca
     for scpt in scriptnode:
         if scpt.tag == "Script":
             path = "Scripts"
-            if groups and g_dogroupfolders:
+            if groups and cfg.scriptGroups:
                 path = os.path.join("Scripts", *groups)
 
-            sortid = str(idx).rjust(5,"0") + ' ' + scpt.get("id", "0").rjust(7,"0")
+            sortid = scpt.get("id", "0").rjust(7,"0")
+            if cfg.scriptOrder:
+                sortid = str(idx).rjust(5,"0") + ' ' + scpt.get("id", "0").rjust(7,"0")
             s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
             path = xmlexportfolder(exportfolder, cur_db, path,
                                    scpt.get("name", "NONAME"),
@@ -240,6 +251,10 @@ def main(cfg):
     nooffiles = len( files )
 
     filelist = {}
+    
+    log = logfunction
+    if cfg.logfunction:
+        log = cfg.logfunction
 
     for i in files:
         xffile = dbfile = False
@@ -247,8 +262,7 @@ def main(cfg):
         try:
             xffile = i.attrib[ "link" ]
         except KeyError, m:
-            print "XML Error: '%s'" % m
-            # xffile = i.attrib[ "XMLReportFile" ]
+            log( u"XML Error: '%s'" % m )
             for item in i:
                 if item.tag == "XMLReportFile":
                     xffile = item.text
@@ -258,9 +272,7 @@ def main(cfg):
                     fmp6 = True
                     
         if not xffile:
-            print
-            print "ERROR: Could not find a XML file... NEXT!"
-            print
+            log( u"\nERROR: Could not find a XML file... NEXT!\n" )
             continue
 
         # cleanup filename
@@ -269,34 +281,29 @@ def main(cfg):
 
         xmlbasename, ext  = os.path.splitext( xffile )
         filelist[ xffile ] = xmlbasename
-    # pp(filelist)
-
-    pdb.set_trace()
 
     for cur_xml_file_name in filelist.keys():
         next_xml_file_path = os.path.join( xml_folder, cur_xml_file_name )
         line = '-' * 100
-        print "\n\n%s\n\nNEXT: %s" % (line, repr(cur_xml_file_name))
+        log( u"\n\n%s\n\nXMLFILE: %s" % (line, cur_xml_file_name) )
 
         try:
             basenode = ElementTree.parse( next_xml_file_path )
         except  (xml.parsers.expat.ExpatError, SyntaxError), v:
-            # pdb.set_trace()
             xml.parsers.expat.error()
-            print "EXCEPTION: '%s'" % v
-            print "Failed parsing '%s'" % next_xml_file_path
-            print
+            log( u"EXCEPTION: '%s'" % v )
+            log( u"Failed parsing '%s'\n" % next_xml_file_path )
             continue
 
         cur_db = filelist[ cur_xml_file_name ]
 
-        exportfolder = os.path.join( xml_folder, "Exports")
+        exportfolder = cfg.exportfolder
 
         #
         # base table catalog
         #
         if cfg.basetables:
-            print ('\n\nBase Tables "%s"' % cur_db).encode( 'utf-8' )
+            log( u'\n\nBase Tables "%s"' % cur_db )
             for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
                 for base_table in base_table_catalog.getiterator( u'BaseTable' ):
                     s = ElementTree.tostring(base_table, encoding="utf-8", method="xml")
@@ -311,7 +318,7 @@ def main(cfg):
         # layout catalog
         #
         if cfg.layouts:
-            print ( 'Layout Catalog "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'Layout Catalog "%s"' % cur_db )
             for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
                 groups = []
                 get_layouts_and_groups(cfg, cur_db, layout_catalog, groups, exportfolder, 1)
@@ -320,7 +327,7 @@ def main(cfg):
         # file reference catalog
         #
         if cfg.filereferences:
-            print ( 'File References "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'File References "%s"' % cur_db )
             for fr_cat in basenode.getiterator ( "FileReferenceCatalog" ):
                 for fileref in fr_cat.getchildren():
                     fileref_attrib = fileref.attrib
@@ -345,7 +352,7 @@ def main(cfg):
         # relationship graph
         #
         if cfg.relationships:
-            print ( 'Relationship Graph "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'Relationship Graph "%s"' % cur_db )
             for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
                 get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder)
 
@@ -353,7 +360,7 @@ def main(cfg):
         # account catalog
         #
         if cfg.accounts:
-            print ('Accounts for "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'Accounts for "%s"' % cur_db )
             for acc_cat in basenode.getiterator ( "AccountCatalog" ):
                 for acc in acc_cat.getchildren():
                     acc_attrib = acc.attrib
@@ -369,8 +376,7 @@ def main(cfg):
         # script catalog
         #
         if cfg.scripts:
-            print ('Scripts for "%s"' % cur_db ).encode( 'utf-8' )
-
+            log( u'Scripts for "%s"' % cur_db )
             for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
                 groups = []
                 namecache = [{},{}]
@@ -381,8 +387,7 @@ def main(cfg):
         #
         #
         if cfg.customfunctions:
-            print ('Custom Functions for "%s"' % cur_db ).encode( 'utf-8' )
-
+            log( u'Custom Functions for "%s"' % cur_db )
             for cf_cat in basenode.getiterator ( "CustomFunctionCatalog" ):
                 groups = []
                 for cf in cf_cat.getchildren():
@@ -398,8 +403,8 @@ def main(cfg):
         # privileges
         #
         if cfg.privileges:
-            print ('Privileges for "%s"' % cur_db ).encode( 'utf-8' )
-            for pv_cat in basenode.getiterator( "PrivilegeCatalog" ):
+            log( u'Privileges for "%s"' % cur_db )
+            for pv_cat in basenode.getiterator( "PrivilegesCatalog" ):
                 for pv in pv_cat.getchildren():
                     pv_attrib = pv.attrib
                     s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
@@ -414,7 +419,7 @@ def main(cfg):
         # extended privileges
         #
         if cfg.extendedprivileges:
-            print ('Extended Privileges for "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'Extended Privileges for "%s"' % cur_db )
             for epv_cat in basenode.getiterator( "ExtendedPrivilegeCatalog" ):
                 for epv in epv_cat.getchildren():
                     epv_attrib = epv.attrib
@@ -430,7 +435,7 @@ def main(cfg):
         # custom menus
         #
         if cfg.custommenus:
-            print ('Custom Menus for "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'Custom Menus for "%s"' % cur_db )
             for cm_cat in basenode.getiterator( "CustomMenuCatalog" ):
                 for cm in cm_cat.getchildren():
                     cm_attrib = cm.attrib
@@ -446,7 +451,7 @@ def main(cfg):
         # custom menu sets
         #
         if cfg.custommenusets:
-            print ('Custom Menu Sets for "%s"' % cur_db ).encode( 'utf-8' )
+            log( u'Custom Menu Sets for "%s"' % cur_db )
             for cms_cat in basenode.getiterator( "CustomMenuSetCatalog" ):
                 for cms in cms_cat.getchildren():
                     cms_attrib = cms.attrib
@@ -462,7 +467,7 @@ def main(cfg):
         # value lists
         #
         if cfg.valueLists:
-            print ('Value Lists for "%s"' % cur_db ).encode( 'utf-8' )
+            log('Value Lists for "%s"' % cur_db )
             for vl_cat in basenode.getiterator( "ValueListCatalog" ):
                 for vl in vl_cat.getchildren():
                     vl_attrib = vl.attrib
@@ -473,14 +478,23 @@ def main(cfg):
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+        if gCancel:
+            time.sleep(0.3)
+            log("Canelled.")
+            return
+
+    time.sleep(0.3)
+    log( "FINISHED." )
 
 if __name__ == '__main__':
+
     infiles = sys.argv[1:]
-    for f in files:
+    for f in infiles:
         f = os.path.abspath( os.path.expanduser(f) )
         folder, filename = os.path.split( f )
 
         cfg = Config.Config()
         cfg.summaryfile = f
         cfg.exportfolder = os.path.join( folder, "Exports")
+        cfg.logfunction = logfunction
         main( cfg )

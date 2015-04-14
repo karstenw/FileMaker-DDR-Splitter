@@ -1,9 +1,14 @@
 
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
+
+import traceback
+
 import thread
 
+import time
 import re
 
 import pdb
@@ -12,21 +17,31 @@ kwdbg = False
 import pprint
 pp = pprint.pprint
 
+import thread
+
 import objc
 
 import Foundation
 NSObject = Foundation.NSObject
 NSUserDefaults = Foundation.NSUserDefaults
 NSMutableDictionary = Foundation.NSMutableDictionary
+NSMakeRange = Foundation.NSMakeRange
+NSAttributedString = Foundation.NSAttributedString
+NSAutoreleasePool = Foundation.NSAutoreleasePool
 
 import AppKit
 NSWindowController = AppKit.NSWindowController
+NSApplication = AppKit.NSApplication
 
 import PyObjCTools
 import PyObjCTools.AppHelper
 
 import Config
 import ddrsplit
+
+gIsRunning = False
+gLastUpdate = 0.0
+
 
 class FMPDDRSWindowController (NSWindowController):
 
@@ -55,22 +70,23 @@ class FMPDDRSWindowController (NSWindowController):
     tbSummaryFile = objc.IBOutlet()
     tbExportFolder = objc.IBOutlet()
 
+    tfStatusText = objc.IBOutlet()
+    rbAssets = objc.IBOutlet()
+
+    btOpenSummary = objc.IBOutlet()
+    btOpenExport = objc.IBOutlet()
+    btCancel = objc.IBOutlet()
+    btExport = objc.IBOutlet()
+
     summaryFile = None
     saveFolder = None
 
-
     def awakeFromNib(self):
-        # pdb.set_trace()
         defaults = NSUserDefaults.standardUserDefaults()
 
-        # self.optValueVisible.setState_( defaults.objectForKey_( u'optValueColumn') )
-
-        # self.cbAssets.setState_(defaults.boolForKey_( u"assets" ))
+        self.cbAssets.setState_(defaults.boolForKey_( u"assets" ))
 
         self.cbBaseTables.setState_(defaults.boolForKey_( u"basetables" ))
-
-        # self.cbAssets.setState_(defaults.boolForKey_( u"assets" ))
-        # self.rbAssets.setState_(objc.IBOutlet())
 
         self.cbAccounts.setState_(defaults.boolForKey_( u"accounts" ))
 
@@ -86,46 +102,40 @@ class FMPDDRSWindowController (NSWindowController):
 
         self.cbRelationships.setState_(defaults.boolForKey_( u"relationships" ))
 
-        self.cbValueLists.setState_(defaults.boolForKey_( u"valuelists" ))
+        self.cbValueLists.setState_(defaults.boolForKey_( u"valueLists" ))
 
         self.cbLayouts.setState_(defaults.boolForKey_( u"layouts" ))
-        self.cbLayoutFolders.setState_(defaults.boolForKey_( u"layoutgroups" ))
-        self.cbLayoutOrder.setState_(defaults.boolForKey_( u"layoutfolders" ))
-
+        self.cbLayoutFolders.setState_(defaults.boolForKey_( u"layoutGroups" ))
+        self.cbLayoutOrder.setState_(defaults.boolForKey_( u"layoutOrder" ))
 
         self.cbScripts.setState_(defaults.boolForKey_( u"scripts" ))
-        self.cbScriptFolders.setState_(defaults.boolForKey_( u"scriptgroups" ))
-        self.cbScriptOrder.setState_(defaults.boolForKey_( u"scriptorder" ))
+        self.cbScriptFolders.setState_(defaults.boolForKey_( u"scriptGroups" ))
+        self.cbScriptOrder.setState_(defaults.boolForKey_( u"scriptOrder" ))
 
         self.tbSummaryFile.setStringValue_(defaults.stringForKey_( u"summaryfile" ))
         self.tbExportFolder.setStringValue_(defaults.stringForKey_( u"exportfolder" ))
 
-
-
     @objc.IBAction
     def openSummary_(self, sender):
-        print "open summary file"
-        
         summary = getSummaryFileDialog()
         if summary and os.path.exists( summary ):
-            self.summaryFile = summary
-            print repr( summary ) 
-            self.tbSummaryFile.setStringValue_( unicode(summary) )
+            self.summaryFile = unicode(summary)
+            self.tbSummaryFile.setStringValue_( self.summaryFile )
 
     @objc.IBAction
     def openSaveFolder_(self, sender):
-        print "get save folder"
         folder = getFolderDialog()
         if folder and os.path.exists( folder ):
-            self.saveFolder = folder
-            print repr(folder)
-            self.tbExportFolder.setStringValue_( unicode(folder) )
+            self.saveFolder = unicode(folder)
+            self.tbExportFolder.setStringValue_( self.saveFolder )
+
+    @objc.IBAction
+    def doCancel_(self, sender):
+        ddrsplit.gCancel = True
 
     @objc.IBAction
     def doExport_(self, sender):
 
-        pdb.set_trace()
-        
         cfg = Config.Config()
         defaults = NSUserDefaults.standardUserDefaults()
 
@@ -188,76 +198,49 @@ class FMPDDRSWindowController (NSWindowController):
 
         cfg.exportfolder = self.tbExportFolder.stringValue()
         defaults.setObject_forKey_(cfg.exportfolder, u'exportfolder')
-
-        # pdb.set_trace()
-        cfg.pp()
-        ddrsplit.main(cfg)
         
-        
+        cfg.logfunction = callFromWorkerMsg_
 
-    def setstatus_show_(self, appendage, showit=False):
-        """
-        Update the status Textfield
+        if 1:
+            thread.start_new_thread(threadwrapper, (cfg, ) )
+        else:
+            threadwrapper(cfg)
 
-        Append appendage to the existing text.
-
-        Scroll to end if showit.
-        """
-
-        # need unicode
-        s = appendage
-        if type(s) != unicode:
-            s = unicode(appendage, "utf-8")
-
-        # self.logfile.msg( (s.encode("utf-8")).strip(" \t\r\n"), flush=False )
-
-        #if self.messageSupress:
-        #    return
-
-        # view
-        myView = self.status
-
-        # model
-        storage = myView.textStorage()
-
-        # where in the string
-        l = storage.length()
-        endRange = NSMakeRange(l, 0)
-
-        # merge it
-        try:
-            t = NSAttributedString.alloc().initWithString_(s)
-            storage.appendAttributedString_(t)
-        except Exception, v:
-            print
-            print "ERROR status inserting:", v
-            print
-
-        # scroll if needed
-        # 2010-02-23 Fast fix for crashes
-        # 2010-02-26 perhaps scrolling and appending should be different calls
-        if showit: #False: # s == u"" and showit:
-            try:
-                self.status.scrollRangeToVisible_(endRange)
-                self.status.setNeedsDisplay_(True)
-            except Exception, v:
-                print
-                print "ERROR status scrolling:", v
-                print
-
+    def setButtons(self):
+        if gIsRunning:
+            self.btOpenSummary.setEnabled_( False )
+            self.btOpenExport.setEnabled_( False )
+            self.btCancel.setEnabled_( True )
+            self.btExport.setEnabled_( False )
+        else:
+            self.btOpenSummary.setEnabled_( True )
+            self.btOpenExport.setEnabled_( True )
+            self.btCancel.setEnabled_( False )
+            self.btExport.setEnabled_( True )
+            
 
 class FMPDDRSAppDelegate(NSObject):
 
     def applicationDidFinishLaunching_(self, notification):
-        print "finished launching"
+        global gIsRunning
+        gIsRunning = False
+        app = NSApplication.sharedApplication()
+        app.activateIgnoringOtherApps_(True)
+        # ugly hack
+        wins = app.windows()
+        if not wins:
+            return
+        win = wins[0]
+        controller = win.windowController()
+        controller.setButtons()
 
     @objc.IBAction
     def terminate_(self, sender):
-        print "terminate_"
+        pass
 
     @objc.IBAction
     def orderFrontStandardAboutPanel_(self, sender):
-        print "orderFrontStandardAboutPanel_"
+        pass
 
     def initialize(self):
         # default settings for preferences
@@ -284,14 +267,111 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(u"",        u'exportfolder')
         NSUserDefaults.standardUserDefaults().registerDefaults_(userdefaults)
 
-
     def applicationShouldTerminate_(self, aNotification):
         """Store preferences before quitting."""
-
-        #defaults = NSUserDefaults.standardUserDefaults()
-        #defaults.setObject_forKey_(self.visitedURLs, u'lastURLsVisited')
-        #userdefaults.setObject_forKey_(True,       u'accounts')
+        userdefaults = NSUserDefaults.standardUserDefaults()
+        app = NSApplication.sharedApplication()
+        app.activateIgnoringOtherApps_(True)
+        win = app.keyWindow()
+        if not win:
+            return True
+        c = win.windowController()
+        if not c:
+            return True
+        userdefaults.setObject_forKey_(c.cbAccounts.state(),            u'accounts')
+        userdefaults.setObject_forKey_(c.cbAssets.state(),              u'assets')
+        userdefaults.setObject_forKey_(c.cbBaseTables.state(),          u'basetables')
+        userdefaults.setObject_forKey_(c.cbCustomFunctions.state(),     u'customfunctions')
+        userdefaults.setObject_forKey_(c.cbCustomMenus.state(),         u'custommenus')
+        userdefaults.setObject_forKey_(c.cbCustomMenuSets.state(),      u'custommenusets')
+        userdefaults.setObject_forKey_(c.cbPrivileges.state(),          u'privileges')
+        userdefaults.setObject_forKey_(c.cbExtendedPrivileges.state(),  u'extendedprivileges')
+        userdefaults.setObject_forKey_(c.cbFileReferences.state(),      u'filereferences')
+        userdefaults.setObject_forKey_(c.cbLayouts.state(),             u'layouts')
+        userdefaults.setObject_forKey_(c.cbLayoutFolders.state(),       u'layoutGroups')
+        userdefaults.setObject_forKey_(c.cbLayoutOrder.state(),         u'layoutOrder')
+        userdefaults.setObject_forKey_(c.cbRelationships.state(),       u'relationships')
+        userdefaults.setObject_forKey_(c.cbScripts.state(),             u'scripts')
+        userdefaults.setObject_forKey_(c.cbScriptFolders.state(),       u'scriptGroups')
+        userdefaults.setObject_forKey_(c.cbScripOrder.state(),          u'scriptOrder')
+        userdefaults.setObject_forKey_(c.cbValueLists.state(),          u'valueLists')
+        userdefaults.setObject_forKey_(c.tbSummaryFile.state(),         u'summaryfile')
+        userdefaults.setObject_forKey_(c.tbExportFolder.state(),        u'exportfolder')
         return True
+
+    def setstatus_show_(self, appendage, showit=False):
+        global gLastUpdate
+        s = appendage + u"\n"
+        if type(s) != unicode:
+            s = unicode(appendage, "utf-8")
+        print s.encode("utf-8")
+        # view
+        app = NSApplication.sharedApplication()
+        win = app.keyWindow()
+        controller = win.windowController()
+        
+        myView = controller.tfStatusText
+
+        # 
+        # model
+        storage = myView.textStorage()
+
+        # where in the string
+        l = storage.length()
+        endRange = NSMakeRange(l, 0)
+
+        # merge it
+        try:
+            t = NSAttributedString.alloc().initWithString_(s)
+            storage.appendAttributedString_(t)
+        except Exception, v:
+            print
+            print "ERROR status inserting:", v
+            print
+        
+        tm = time.time()
+        if showit and tm >= gLastUpdate + 0.3:
+            gLastUpdate = tm
+            try:
+                myView.scrollRangeToVisible_(endRange)
+                myView.setNeedsDisplay_(True)
+            except Exception, v:
+                print
+                print "ERROR status scrolling:", v
+                print
+
+
+def threadwrapper(cfg):
+    global gIsRunning
+    pool = NSAutoreleasePool.alloc().init()
+    if not pool:
+        return
+    if gIsRunning:
+        return
+    gIsRunning = True
+    ddrsplit.gCancel = False
+
+    # view
+    app = NSApplication.sharedApplication()
+    win = app.keyWindow()
+    controller = win.windowController()
+    controller.setButtons()
+
+    try:
+        ddrsplit.main(cfg)
+
+    except (Exception,), v:
+        tb = traceback.format_exc()
+        tb = unicode( tb )
+        v = unicode( repr(v) )
+        tb = tb + u"\n\n" + v
+        sys.stdout.write( tb )
+
+    finally:
+        gIsRunning = False
+        ddrsplit.gCancel = False
+        controller.setButtons()
+    del pool
 
 
 def getFolderDialog():
@@ -318,15 +398,15 @@ def getSummaryFileDialog():
     else:
         return False
 
-def callFromWorkerMsg( message, scrollit=False ):
-    PyObjCTools.AppHelper.callAfter( statwrap, message=message, dummy=scrollit)
+def callFromWorkerMsg_( message ):
+    PyObjCTools.AppHelper.callAfter( statwrap_, message=message)
 
 
-def statwrap(message, dummy=True):
+def statwrap_(message):
     appl = NSApplication.sharedApplication()
     delg = appl.delegate()
     try:
-        delg.setstatus_show_(message, dummy)
+        delg.setstatus_show_(message, 1)
     except Exception, v:
         print
         print "STATUS WRAPPER ERROR:", v
