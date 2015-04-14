@@ -52,5 +52,5 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 ## The application
 
-![Image](./images/screen1.png?raw=true)
+![Screenshot](./images/screen1.png?raw=true)
 
