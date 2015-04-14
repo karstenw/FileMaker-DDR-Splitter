@@ -293,10 +293,10 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(c.cbRelationships.state(),       u'relationships')
         userdefaults.setObject_forKey_(c.cbScripts.state(),             u'scripts')
         userdefaults.setObject_forKey_(c.cbScriptFolders.state(),       u'scriptGroups')
-        userdefaults.setObject_forKey_(c.cbScripOrder.state(),          u'scriptOrder')
+        userdefaults.setObject_forKey_(c.cbScriptOrder.state(),         u'scriptOrder')
         userdefaults.setObject_forKey_(c.cbValueLists.state(),          u'valueLists')
-        userdefaults.setObject_forKey_(c.tbSummaryFile.state(),         u'summaryfile')
-        userdefaults.setObject_forKey_(c.tbExportFolder.state(),        u'exportfolder')
+        userdefaults.setObject_forKey_(c.tbSummaryFile.stringValue(),   u'summaryfile')
+        userdefaults.setObject_forKey_(c.tbExportFolder.stringValue(),  u'exportfolder')
         return True
 
     def setstatus_show_(self, appendage, showit=False):
