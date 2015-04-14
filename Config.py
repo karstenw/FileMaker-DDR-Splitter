@@ -21,6 +21,7 @@ class Config(object):
         self.privileges = True
         self.extendedprivileges = True
         self.filereferences = True
+
         self.layouts = True
         self.layoutGroups = True
         self.layoutOrder = True
@@ -35,6 +36,8 @@ class Config(object):
         
         self.summaryfile = ""
         self.exportfolder = ""
+        
+        self.logfunction = None
 
     def pp(self):
         print "accounts", repr(self.accounts)
@@ -60,3 +63,4 @@ class Config(object):
 
         print "summaryfile", repr(self.summaryfile)
         print "exportfolder", repr(self.exportfolder)
+        print "logfunction", repr(self.logfunction)
