@@ -4,16 +4,23 @@ A Python script to split a FileMaker Database Design Report (DDR) into it's comp
 
 The script has been used on OSX with V10 & V11 DDRs. Windows and DDRs V12/13 may or may not work.
 
-It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB one file DDR was split in 19s.
+It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB single file DDR was split in 19s.
 
 ## Prerequisites
 
+###For the Python script
 [Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries used are standard.
 
-or of you're on OSX (10.6 and above) you can download an app with many configuration options here: [(dropbox folder)](http://goo.gl/YwGc7K).
+
+###For building the OSX app
+
+[PyObjC](https://pythonhosted.org/pyobjc/install.html)
+
+or just download it here (OSX 10.6 and above): [(dropbox folder)](http://goo.gl/YwGc7K).
 
 
 ## Usage
+
 
 ```shell
 python ddrsplit.py /PATH/TO/Summary.xml
