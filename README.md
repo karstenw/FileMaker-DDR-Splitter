@@ -16,7 +16,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 [PyObjC](https://pythonhosted.org/pyobjc/install.html)
 
-or just download it here (OSX 10.6 and above): [(dropbox folder)](http://goo.gl/YwGc7K).
+or just download the compiled app here (OSX 10.6 and above): [(dropbox folder)](http://goo.gl/YwGc7K).
 
 
 ## Usage
