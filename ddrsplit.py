@@ -76,14 +76,13 @@ def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
         layout_attr = layout.attrib
         layout_tag = layout.tag
         if layout_tag == "Group":
-
             grp_attrib = layout_attr
-            groupname = layout_attr.get("name", "NONAME")
             groupid = layout_attr.get("id", "0")
 
-            groupname = groupid.rjust(7,"0") + ' ' + groupname
+            groupname = groupid.rjust(7,"0") + ' ' + layout_attr.get("name", "NONAME")
             if cfg.layoutOrder:
-                groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
+                groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + layout_attr.get("name", "NONAME")
+
             groups.append( groupname )
 
             idx += 1
