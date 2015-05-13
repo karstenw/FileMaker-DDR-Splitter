@@ -191,14 +191,15 @@ def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, nameca
 
         elif scpt.tag == "Group":
             grp_attrib = scpt.attrib
-            groupname = grp_attrib.get("name", "NONAME")
-
             groupid = grp_attrib.get("id", "0")
 
-            groupname = groupid.rjust(7,"0") + ' ' + groupname
+            groupname = groupid.rjust(7,"0") + ' ' + grp_attrib.get("name", "NONAME")
             if cfg.scriptOrder:
-                groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + groupname
+                groupname = (str(idx).rjust(5,"0")
+                             + ' ' + groupid.rjust(7,"0")
+                             + ' ' + grp_attrib.get("name", "NONAME"))
             groups.append( groupname )
+
             idx += 1
             idx = get_scripts_and_groups(cfg, cur_db, scpt, exportfolder, groups, namecache, idx)
             groups.pop()
