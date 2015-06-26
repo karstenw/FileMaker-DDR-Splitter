@@ -321,6 +321,8 @@ def main(cfg):
                     f.write( s )
                     f.close()
 
+        # BaseDirectoryCatalog
+        
         #
         # layout catalog
         #
@@ -438,6 +440,8 @@ def main(cfg):
                     f.write( s )
                     f.close()
 
+        # AuthFileCatalog
+        
         #
         # custom menus
         #
@@ -485,6 +489,9 @@ def main(cfg):
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+
+        # ThemeCatalog
+
         if gCancel:
             time.sleep(0.3)
             log("\n\n####  CANCELLED.  ####")
