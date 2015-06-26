@@ -11,7 +11,7 @@ import py2app
 
 appname = "FileMaker DDR Splitter"
 appnameshort = "FMPSplit"
-version = "V0.3.3"
+version = "V0.3.4"
 
 copyright = u"Copyright 2015 Karsten Wolf"
 
