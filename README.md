@@ -6,13 +6,14 @@ The script has been used on OSX with V10 & V11 DDRs. Windows and DDRs V12/13 may
 
 It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB single file DDR was split in 19s.
 
+## Download
+[dropbox](http://goo.gl/YwGc7K) for OSX 10.6 and above.
+
+
 ## Prerequisites
 
 ###For the Python script
 [Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries used are standard.
-
-### Download
-[dropbox](http://goo.gl/YwGc7K) for OSX 10.6 and above.
 
 ###For building the OSX app
 
@@ -20,9 +21,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 [py2app](https://pythonhosted.org/py2app/) and it's [dependencies](https://pythonhosted.org/py2app/dependencies.html)
 
 
-
 ## Usage
-
 
 ```shell
 python ddrsplit.py /PATH/TO/Summary.xml
