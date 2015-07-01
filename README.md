@@ -18,6 +18,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 ###For building the OSX app
 
 [PyObjC](https://pythonhosted.org/pyobjc/install.html)
+
 [py2app](https://pythonhosted.org/py2app/) and it's [dependencies](https://pythonhosted.org/py2app/dependencies.html)
 
 
