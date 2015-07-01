@@ -12,7 +12,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 [Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries used are standard.
 
 ### Download
-[(dropbox folder)](http://goo.gl/YwGc7K) for OSX 10.6 and above.
+[dropbox](http://goo.gl/YwGc7K) for OSX 10.6 and above.
 
 ###For building the OSX app
 
