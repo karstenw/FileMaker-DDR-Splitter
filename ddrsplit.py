@@ -22,10 +22,14 @@ import xml.parsers.expat
 
 import Config
 
+import ReferenceCollector
+
+
 #
 # globals
 #
 gCancel = False
+gREF = ReferenceCollector.ReferenceCollector()
 
 
 #
@@ -79,14 +83,22 @@ def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
             grp_attrib = layout_attr
             groupid = layout_attr.get("id", "0")
 
-            groupname = groupid.rjust(7,"0") + ' ' + layout_attr.get("name", "NONAME")
+            groupname = (  groupid.rjust(7,"0")
+                         + ' '
+                         + layout_attr.get("name", "NONAME") )
+
             if cfg.layoutOrder:
-                groupname = str(idx).rjust(5,"0") + ' ' + groupid.rjust(7,"0") + ' ' + layout_attr.get("name", "NONAME")
+                groupname = (  str(idx).rjust(5,"0")
+                             + ' '
+                             + groupid.rjust(7,"0")
+                             + ' '
+                             + layout_attr.get("name", "NONAME")
 
             groups.append( groupname )
 
             idx += 1
-            idx = get_layouts_and_groups(cfg, cur_db, layout, groups, exportfolder, idx)
+            idx = get_layouts_and_groups(cfg, cur_db, layout,
+                                         groups, exportfolder, idx)
             groups.pop()
         else:
             path = "Layouts"
@@ -97,7 +109,9 @@ def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
 
             sortid = layout_attr.get("id", "0").rjust(7,"0")
             if cfg.layoutOrder:
-                sortid = str(idx).rjust(5,"0") + ' ' + layout_attr.get("id", "0").rjust(7,"0")
+                sortid = (str(idx).rjust(5,"0")
+                          + ' '
+                          + layout_attr.get("id", "0").rjust(7,"0") )
 
             path = xmlexportfolder(exportfolder, cur_db, path,
                                    layout_attr.get("name", "NONAME"),
@@ -118,8 +132,10 @@ def get_layouts_and_groups(cfg, cur_db, laynode, groups, exportfolder, idx):
 
 def get_layout_object(cur_db, laynode, exportfolder):
     nodes = list(laynode)
-    extensions = dict(zip( ("JPEG","PDF ", "PNGf", "PICT", "GIFf", "8BPS", "BMPf"),
-                           (".jpg",".pdf", ".png", ".pict", ".gif", ".psd", ".bmp")))
+    extensions = dict(zip( ("JPEG","PDF ", "PNGf", "PICT",
+                            "GIFf", "8BPS", "BMPf"),
+                           (".jpg",".pdf", ".png", ".pict",
+                            ".gif", ".psd", ".bmp")))
     exttypelist = extensions.keys()
     for node in nodes:
         cur_tag = node.tag
@@ -163,13 +179,19 @@ def get_layout_object(cur_db, laynode, exportfolder):
                                 continue
 
                             fn = stringhash( data )
-                            path = xmlexportfolder(exportfolder, cur_db, "Assets", fn, "", ext)
+                            path = xmlexportfolder(exportfolder,
+                                                   cur_db,
+                                                   "Assets",
+                                                   fn,
+                                                   "",
+                                                   ext)
                             if not os.path.exists( path ):
                                 f = open(path, "wb")
                                 f.write( data )
                                 f.close()
 
-def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, namecache, idx):
+def get_scripts_and_groups(cfg, cur_db, scriptnode,
+                           exportfolder, groups, namecache, idx):
 
     for scpt in scriptnode:
         if scpt.tag == "Script":
@@ -179,7 +201,9 @@ def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, nameca
 
             sortid = scpt.get("id", "0").rjust(7,"0")
             if cfg.scriptOrder:
-                sortid = str(idx).rjust(5,"0") + ' ' + scpt.get("id", "0").rjust(7,"0")
+                sortid = (str(idx).rjust(5,"0")
+                          + ' '
+                          + scpt.get("id", "0").rjust(7,"0") )
             s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
             path = xmlexportfolder(exportfolder, cur_db, path,
                                    scpt.get("name", "NONAME"),
@@ -193,7 +217,9 @@ def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, nameca
             grp_attrib = scpt.attrib
             groupid = grp_attrib.get("id", "0")
 
-            groupname = groupid.rjust(7,"0") + ' ' + grp_attrib.get("name", "NONAME")
+            groupname = (groupid.rjust(7,"0")
+                         + ' '
+                         + grp_attrib.get("name", "NONAME") )
             if cfg.scriptOrder:
                 groupname = (str(idx).rjust(5,"0")
                              + ' ' + groupid.rjust(7,"0")
@@ -201,7 +227,8 @@ def get_scripts_and_groups(cfg, cur_db, scriptnode, exportfolder, groups, nameca
             groups.append( groupname )
 
             idx += 1
-            idx = get_scripts_and_groups(cfg, cur_db, scpt, exportfolder, groups, namecache, idx)
+            idx = get_scripts_and_groups(cfg, cur_db, scpt, exportfolder,
+                                         groups, namecache, idx)
             groups.pop()
     return idx
 
@@ -212,7 +239,9 @@ def get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder):
                 if tab.tag == u'Table':
                     to_attr = tab.attrib
                     s = ElementTree.tostring(tab, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "Relationships/TableList",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "Relationships/TableList",
                                            tab.attrib.get("name", "NONAME"),
                                            tab.attrib.get("id", "0"))
                     f = open(path, "wb")
@@ -234,9 +263,13 @@ def get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder):
                             rel_cat['righttable'] = rel_component.attrib.get("name", "NO-LEFTTABLENAME")
                             
                     s = ElementTree.tostring(rel, encoding="utf-8", method="xml")
-                    filename = rel_cat['lefttable'] + "---" + rel_cat['righttable']
+                    filename = (rel_cat['lefttable']
+                                + "---"
+                                + rel_cat['righttable'])
                     
-                    path = xmlexportfolder(exportfolder, cur_db, "Relationships/Relationship",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "Relationships/Relationship",
                                            filename,
                                            rel_cat['id'])
                     f = open(path, "wb")
@@ -313,13 +346,17 @@ def main(cfg):
             log( u'\n\nBase Tables "%s"' % cur_db )
             for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
                 for base_table in base_table_catalog.getiterator( u'BaseTable' ):
-                    s = ElementTree.tostring(base_table, encoding="utf-8", method="xml")
+                    s = ElementTree.tostring(base_table,
+                                             encoding="utf-8",
+                                             method="xml")
                     path = xmlexportfolder(exportfolder, cur_db, "Basetables",
                                            base_table.get("name", "NONAME"),
                                            base_table.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         # BaseDirectoryCatalog
         
@@ -330,7 +367,14 @@ def main(cfg):
             log( u'Layout Catalog "%s"' % cur_db )
             for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
                 groups = []
-                get_layouts_and_groups(cfg, cur_db, layout_catalog, groups, exportfolder, 1)
+                get_layouts_and_groups(cfg,
+                                       cur_db,
+                                       layout_catalog,
+                                       groups,
+                                       exportfolder,
+                                       1)
+            # collect references to fields, CFs, value lists, merge fields,
+            # scripts, TOs, FileReferences
 
         #
         # file reference catalog
@@ -349,13 +393,19 @@ def main(cfg):
                         prefix = "UNKN-"
                     name = prefix + fileref_attrib.get("name", "NONAME")
                 
-                    s = ElementTree.tostring(fileref, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "Filereferences",
+                    s = ElementTree.tostring(fileref,
+                                             encoding="utf-8",
+                                             method="xml")
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "Filereferences",
                                            name,
                                            fileref_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists,
+            # merge fields, scripts, TOs, FileReferences
 
         #
         # relationship graph
@@ -364,6 +414,7 @@ def main(cfg):
             log( u'Relationship Graph "%s"' % cur_db )
             for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
                 get_relationshipgraph_catalog(cur_db, rg_cat, exportfolder)
+            # collect references to ???
 
         #
         # account catalog
@@ -380,6 +431,7 @@ def main(cfg):
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
         # script catalog
@@ -389,7 +441,15 @@ def main(cfg):
             for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
                 groups = []
                 namecache = [{},{}]
-                get_scripts_and_groups(cfg, cur_db, scpt_cat, exportfolder, groups, namecache, 1)
+                get_scripts_and_groups(cfg,
+                                       cur_db,
+                                       scpt_cat,
+                                       exportfolder,
+                                       groups,
+                                       namecache,
+                                       1)
+            # collect references to fields, CFs, value lists, scripts,
+            # TOs, FileReferences
 
         #
         # custom function catalog
@@ -402,12 +462,15 @@ def main(cfg):
                 for cf in cf_cat.getchildren():
                     cf_attrib = cf.attrib
                     s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "CustomFunctions",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "CustomFunctions",
                                            cf_attrib.get("name", "NONAME"),
                                            cf_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists,TOs, FileReferences
         
         # privileges
         #
@@ -417,12 +480,15 @@ def main(cfg):
                 for pv in pv_cat.getchildren():
                     pv_attrib = pv.attrib
                     s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "Privileges",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "Privileges",
                                            pv_attrib.get("name", "NONAME"),
                                            pv_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
         # extended privileges
@@ -433,12 +499,15 @@ def main(cfg):
                 for epv in epv_cat.getchildren():
                     epv_attrib = epv.attrib
                     s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "ExtendedPrivileges",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "ExtendedPrivileges",
                                            epv_attrib.get("name", "NONAME"),
                                            epv_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         # AuthFileCatalog
         
@@ -451,12 +520,15 @@ def main(cfg):
                 for cm in cm_cat.getchildren():
                     cm_attrib = cm.attrib
                     s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "CustomMenus",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "CustomMenus",
                                            cm_attrib.get("name", "NONAME"),
                                            cm_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
         # custom menu sets
@@ -467,12 +539,15 @@ def main(cfg):
                 for cms in cms_cat.getchildren():
                     cms_attrib = cms.attrib
                     s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "CustomMenuSets",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "CustomMenuSets",
                                            cms_attrib.get("name", "NONAME"),
                                            cms_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
         # value lists
@@ -483,12 +558,15 @@ def main(cfg):
                 for vl in vl_cat.getchildren():
                     vl_attrib = vl.attrib
                     s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
-                    path = xmlexportfolder(exportfolder, cur_db, "ValueLists",
+                    path = xmlexportfolder(exportfolder,
+                                           cur_db,
+                                           "ValueLists",
                                            vl_attrib.get("name", "NONAME"),
                                            vl_attrib.get("id", "0"))
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
+            # collect references to fields, CFs, value lists, TOs, FileReferences
 
         # ThemeCatalog
 
@@ -499,7 +577,9 @@ def main(cfg):
 
     time.sleep(0.3)
     stoptime = time.time()
-    log("\nRuntime %.4f\n\n####  FINISHED.  ####\n\n" % ( round(stoptime - starttime, 4), ))
+    
+    t = "\nRuntime %.4f\n\n####  FINISHED.  ####\n\n"
+    log(t % ( round(stoptime - starttime, 4), ))
 
 if __name__ == '__main__':
 
@@ -509,7 +589,30 @@ if __name__ == '__main__':
         folder, filename = os.path.split( f )
 
         cfg = Config.Config()
+
+        # if run from terminal, customize here
+        cfg.accounts = True
+        cfg.assets = True
+        cfg.basetables = True
+        cfg.customfunctions = True
+        cfg.custommenus = True
+        cfg.custommenusets = True
+        cfg.privileges = True
+        cfg.extendedprivileges = True
+        cfg.filereferences = True
+        cfg.layouts = True
+        cfg.layoutGroups = True
+        cfg.layoutOrder = True
+        cfg.relationships = True
+        cfg.scripts = True
+        cfg.scriptGroups = True
+        cfg.scriptOrder = True
+        cfg.valueLists = True
+
+        # do not customize these
         cfg.summaryfile = f
         cfg.exportfolder = os.path.join( folder, "Exports")
         cfg.logfunction = logfunction
+        
+        
         main( cfg )
