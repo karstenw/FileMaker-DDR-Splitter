@@ -63,6 +63,8 @@ class FMPDDRSWindowController (NSWindowController):
     cbLayoutFolders = objc.IBOutlet()
     cbLayoutOrder = objc.IBOutlet()
     
+    cbReferenceCollection = objc.IBOutlet()
+
     cbScripts = objc.IBOutlet()
     cbScriptFolders = objc.IBOutlet()
     cbScriptOrder = objc.IBOutlet()
@@ -107,6 +109,8 @@ class FMPDDRSWindowController (NSWindowController):
         self.cbLayouts.setState_(defaults.boolForKey_( u"layouts" ))
         self.cbLayoutFolders.setState_(defaults.boolForKey_( u"layoutGroups" ))
         self.cbLayoutOrder.setState_(defaults.boolForKey_( u"layoutOrder" ))
+
+        self.cbReferenceCollection.setState_(defaults.boolForKey_( u"referenceCollection" ))
 
         self.cbScripts.setState_(defaults.boolForKey_( u"scripts" ))
         self.cbScriptFolders.setState_(defaults.boolForKey_( u"scriptGroups" ))
@@ -176,9 +180,12 @@ class FMPDDRSWindowController (NSWindowController):
         cfg.layoutOrder = self.cbLayoutOrder.state()
         defaults.setObject_forKey_(cfg.layoutOrder, u'layoutOrder')
 
-
         cfg.relationships = self.cbRelationships.state()
         defaults.setObject_forKey_(cfg.relationships, u'relationships')
+
+        # cbReferenceCollection
+        cfg.referenceCollection = self.cbReferenceCollection.state()
+        defaults.setObject_forKey_(cfg.referenceCollection, u'referenceCollection')
 
         cfg.scripts = self.cbScripts.state()
         defaults.setObject_forKey_(cfg.scripts, u'scripts')
@@ -259,6 +266,7 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(True,       u'layoutGroups')
         userdefaults.setObject_forKey_(True,       u'layoutOrder')
         userdefaults.setObject_forKey_(True,       u'relationships')
+        userdefaults.setObject_forKey_(True,       u'referenceCollection')
         userdefaults.setObject_forKey_(True,       u'scripts')
         userdefaults.setObject_forKey_(True,       u'scriptGroups')
         userdefaults.setObject_forKey_(True,       u'scriptOrder')
@@ -291,6 +299,7 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(c.cbLayoutFolders.state(),       u'layoutGroups')
         userdefaults.setObject_forKey_(c.cbLayoutOrder.state(),         u'layoutOrder')
         userdefaults.setObject_forKey_(c.cbRelationships.state(),       u'relationships')
+        userdefaults.setObject_forKey_(c.cbReferenceCollection.state(), u'referenceCollection')
         userdefaults.setObject_forKey_(c.cbScripts.state(),             u'scripts')
         userdefaults.setObject_forKey_(c.cbScriptFolders.state(),       u'scriptGroups')
         userdefaults.setObject_forKey_(c.cbScriptOrder.state(),         u'scriptOrder')
