@@ -199,7 +199,6 @@ class FMPDDRSWindowController (NSWindowController):
         cfg.valueLists = self.cbValueLists.state()
         defaults.setObject_forKey_(cfg.valueLists, u'valueLists')
 
-        
         cfg.summaryfile = self.tbSummaryFile.stringValue()
         defaults.setObject_forKey_(cfg.summaryfile, u'summaryfile')
 
