@@ -11,7 +11,7 @@
 			<string key="NS.object.0">851</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="367"/>
+			<integer value="368"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1666,7 +1666,7 @@
 							<object class="NSButtonCell" key="NSCell" id="170700995">
 								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
-								<string key="NSContents">Collect object references</string>
+								<string key="NSContents">Cross References</string>
 								<reference key="NSSupport" ref="172576666"/>
 								<reference key="NSControlView" ref="806916303"/>
 								<int key="NSButtonFlags">1211912703</int>
@@ -1816,11 +1816,12 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{264, 385}, {326, 19}}</string>
 							<reference key="NSSuperview" ref="414427165"/>
+							<bool key="NSEnabled">YES</bool>
 							<int key="NSNumRows">1</int>
 							<int key="NSNumCols">3</int>
 							<array class="NSMutableArray" key="NSCells">
 								<object class="NSButtonCell" id="748132109">
-									<int key="NSCellFlags">-1543373312</int>
+									<int key="NSCellFlags">-2080244224</int>
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">per Solution</string>
 									<reference key="NSSupport" ref="172576666"/>
@@ -1837,7 +1838,7 @@
 									<int key="NSPeriodicInterval">25</int>
 								</object>
 								<object class="NSButtonCell" id="889509941">
-									<int key="NSCellFlags">-1543373312</int>
+									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">per File</string>
 									<reference key="NSSupport" ref="172576666"/>
@@ -1849,7 +1850,7 @@
 									<int key="NSPeriodicInterval">75</int>
 								</object>
 								<object class="NSButtonCell" id="730514199">
-									<int key="NSCellFlags">604110336</int>
+									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">per Layout</string>
 									<reference key="NSSupport" ref="172576666"/>
@@ -1866,7 +1867,7 @@
 							<int key="NSMatrixFlags">1151868928</int>
 							<string key="NSCellClass">NSActionCell</string>
 							<object class="NSButtonCell" key="NSProtoCell" id="460689308">
-								<int key="NSCellFlags">604110336</int>
+								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Radio</string>
 								<reference key="NSSupport" ref="172576666"/>
@@ -1956,7 +1957,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextView" id="857702491">
 											<reference key="NSNextResponder" ref="488250017"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{660, 0}</string>
+											<string key="NSFrame">{{0, -14}, {660, 14}}</string>
 											<reference key="NSSuperview" ref="488250017"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="655613018">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -2017,6 +2018,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									</array>
 									<string key="NSFrame">{{1, 1}, {660, 283}}</string>
 									<reference key="NSSuperview" ref="961478922"/>
+									<reference key="NSNextKeyView" ref="857702491"/>
 									<reference key="NSDocView" ref="857702491"/>
 									<reference key="NSBGColor" ref="825238714"/>
 									<object class="NSCursor" key="NSCursor">
@@ -2049,6 +2051,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</array>
 							<string key="NSFrame">{{20, 20}, {677, 285}}</string>
 							<reference key="NSSuperview" ref="414427165"/>
+							<reference key="NSNextKeyView" ref="488250017"/>
 							<int key="NSsFlags">18</int>
 							<reference key="NSVScroller" ref="168197110"/>
 							<reference key="NSHScroller" ref="283580204"/>
