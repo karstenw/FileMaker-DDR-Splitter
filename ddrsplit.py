@@ -104,12 +104,30 @@ def get_script_step(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node, cur_obje
             fref_name = subnode.attrib.get("name", "NO FILEREFERENCE NAME")
 
         elif subnode.tag == "DisplayCalculation":
-            pass
+            get_displaycalculation(cfg, cur_fmpxml, cur_db, cur_fmpbasename, subnode)
         elif subnode.tag == "Calculation":
             step_calc_text = subnode.text
 
     external = fref_id and fref_name
 
+
+def get_displaycalculation(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node):
+    clc_text = clc_noref = clc_fnctref = clc_fieldref = clc_cf = ""
+
+    # pdb.set_trace()
+
+    for node in cur_node.iter():
+        dpc_tag = node.tag
+        dpc_typ = node.attrib.get( "type", "")
+        if dpc_typ == "NoRef":
+            clc_noref = node.text
+        elif dpc_typ == "FunctionRef":
+            pass
+        elif dpc_typ == "FieldRef":
+            # <Field id="1" name="F1" table="to_Test1" />
+            pass
+        elif dpc_typ == "CustomFunctionRef":
+            pass
 
 def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                            groups, exportfolder, idx):
@@ -171,28 +189,44 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
             for l in layout.getchildren():
                 t = l.tag
                 if t == u'Object':
-                    get_layout_object(cur_fmpxml, cur_db, cur_fmpbasename, l,
-                                      cur_object, exportfolder)
+                    get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
+                                      l, cur_object, exportfolder)
     return idx
 
 
-def get_layout_object(cur_fmpxml, cur_db, cur_fmpbasename, laynode, cur_object, exportfolder):
+def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
+                      cur_object, exportfolder):
     nodes = list(laynode)
     extensions = dict(zip( ("JPEG","PDF ", "PNGf", "PICT",
                             "GIFf", "8BPS", "BMPf"),
                            (".jpg",".pdf", ".png", ".pict",
                             ".gif", ".psd", ".bmp")))
     exttypelist = extensions.keys()
+    
+    cur_tableOccurrenceName = cur_tableOccurrenceID = ""
+
     for node in nodes:
         cur_tag = node.tag
-        
+
         if cur_tag == u'Object':
             # get layout object
-            get_layout_object(cur_fmpxml, cur_db, cur_fmpbasename, node, cur_object, exportfolder)
+            get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, node,
+                              cur_object, exportfolder)
 
         elif cur_tag == u'ObjectStyle':
             continue
-
+        
+        elif cur_tag == u'Table':
+            # <Table id="13631489" name="to_Bildarchiv" />
+            cur_tableOccurrenceID = node.get("id", -1)
+            cur_tableOccurrenceName = node.get("name",
+                                        "NO TABLE OCCURRENCE NAME FOR LAYOUT")
+            cur_objectID = gREF.addObject( cur_object )
+            gREF.addFilemakerAttribute( cur_objectID, "tableOccurrenceID",
+                                                       cur_tableOccurrenceID)
+            gREF.addFilemakerAttribute( cur_objectID, "tableOccurrenceName",
+                                                       cur_tableOccurrenceName)
+        
         elif cur_tag == u'GraphicObj':
             for grobnode in node:
                 if grobnode.tag == "Stream":
@@ -245,7 +279,8 @@ def get_layout_object(cur_fmpxml, cur_db, cur_fmpbasename, laynode, cur_object, 
         # cur_object is ref1
         elif cur_tag == u'GroupButtonObj':
             # recurse
-            get_layout_object(cur_fmpxml, cur_db, cur_fmpbasename, node, cur_object, exportfolder)
+            get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
+                              node, cur_object, exportfolder)
 
         elif cur_tag == u'FieldObj':
             # check for scripstep and field parameters
@@ -266,10 +301,12 @@ def get_layout_object(cur_fmpxml, cur_db, cur_fmpbasename, laynode, cur_object, 
                     gREF.addReference(cur_object, fld_obj)
 
         elif cur_tag == u'Step':
-            get_script_step(cfg, cur_fmpxml, cur_db, cur_fmpbasename, node, cur_object)
+            get_script_step(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
+                            node, cur_object)
 
         elif cur_tag == u'TextObj':
-            get_text_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, node, cur_object)
+            get_text_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
+                            node, cur_object)
 
 
 def get_scripts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, scriptnode,
