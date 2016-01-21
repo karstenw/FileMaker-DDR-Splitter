@@ -37,6 +37,7 @@ class Config(object):
         self.summaryfile = ""
         self.exportfolder = ""
         
+        self.ignoreFilenameIDs = False
         self.logfunction = None
 
     def pp(self):
@@ -63,4 +64,5 @@ class Config(object):
 
         print "summaryfile", repr(self.summaryfile)
         print "exportfolder", repr(self.exportfolder)
+        print "ignoreFilenameIDs", repr(self.ignoreFilenameIDs)
         print "logfunction", repr(self.logfunction)

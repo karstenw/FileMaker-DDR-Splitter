@@ -74,6 +74,7 @@ class FMPDDRSWindowController (NSWindowController):
 
     tfStatusText = objc.IBOutlet()
     rbAssets = objc.IBOutlet()
+    cbIgnoreFilenameIDs = objc.IBOutlet()
 
     btOpenSummary = objc.IBOutlet()
     btOpenExport = objc.IBOutlet()
@@ -102,6 +103,8 @@ class FMPDDRSWindowController (NSWindowController):
 
         self.cbFileReferences.setState_(defaults.boolForKey_( u"filereferences" ))
 
+        self.cbIgnoreFilenameIDs.setState_(defaults.boolForKey_( u"ignoreFilenameIDs" ))
+
         self.cbRelationships.setState_(defaults.boolForKey_( u"relationships" ))
 
         self.cbValueLists.setState_(defaults.boolForKey_( u"valueLists" ))
@@ -113,6 +116,7 @@ class FMPDDRSWindowController (NSWindowController):
         self.cbReferenceCollection.setState_(defaults.boolForKey_( u"referenceCollection" ))
 
         self.cbScripts.setState_(defaults.boolForKey_( u"scripts" ))
+
         self.cbScriptFolders.setState_(defaults.boolForKey_( u"scriptGroups" ))
         self.cbScriptOrder.setState_(defaults.boolForKey_( u"scriptOrder" ))
 
@@ -139,7 +143,7 @@ class FMPDDRSWindowController (NSWindowController):
 
     @objc.IBAction
     def doExport_(self, sender):
-
+        # pdb.set_trace()
         cfg = Config.Config()
         defaults = NSUserDefaults.standardUserDefaults()
 
@@ -187,8 +191,12 @@ class FMPDDRSWindowController (NSWindowController):
         cfg.referenceCollection = self.cbReferenceCollection.state()
         defaults.setObject_forKey_(cfg.referenceCollection, u'referenceCollection')
 
+
         cfg.scripts = self.cbScripts.state()
         defaults.setObject_forKey_(cfg.scripts, u'scripts')
+
+        cfg.ignoreFilenameIDs = self.cbIgnoreFilenameIDs.state()
+        defaults.setObject_forKey_(cfg.ignoreFilenameIDs, u'ignoreFilenameIDs')
 
         cfg.scriptGroups = self.cbScriptFolders.state()
         defaults.setObject_forKey_(cfg.scriptGroups, u'scriptGroups')
@@ -261,6 +269,7 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(True,       u'privileges')
         userdefaults.setObject_forKey_(True,       u'extendedprivileges')
         userdefaults.setObject_forKey_(True,       u'filereferences')
+        userdefaults.setObject_forKey_(False,      u'ignoreFilenameIDs')
         userdefaults.setObject_forKey_(True,       u'layouts')
         userdefaults.setObject_forKey_(True,       u'layoutGroups')
         userdefaults.setObject_forKey_(True,       u'layoutOrder')
@@ -294,6 +303,7 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(c.cbPrivileges.state(),          u'privileges')
         userdefaults.setObject_forKey_(c.cbExtendedPrivileges.state(),  u'extendedprivileges')
         userdefaults.setObject_forKey_(c.cbFileReferences.state(),      u'filereferences')
+        userdefaults.setObject_forKey_(c.cbIgnoreFilenameIDs.state(),   u'ignoreFilenameIDs')
         userdefaults.setObject_forKey_(c.cbLayouts.state(),             u'layouts')
         userdefaults.setObject_forKey_(c.cbLayoutFolders.state(),       u'layoutGroups')
         userdefaults.setObject_forKey_(c.cbLayoutOrder.state(),         u'layoutOrder')

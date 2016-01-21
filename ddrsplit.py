@@ -143,6 +143,7 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
             grp_attrib = layout_attr
             groupid = layout_attr.get("id", "0")
 
+            # get layout folder name
             groupname = (  groupid.rjust(7,"0")
                          + ' '
                          + layout_name )
@@ -153,6 +154,9 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                              + groupid.rjust(7,"0")
                              + ' '
                              + layout_name )
+
+            if cfg.ignoreFilenameIDs:
+                groupname = layout_name
 
             groups.append( groupname )
 
@@ -173,11 +177,14 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                           + ' '
                           + layout_attr.get("id", "0").rjust(7,"0") )
 
+            objectID = sortid
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
             path = xmlexportfolder(exportfolder,
                                    cur_fmpbasename,
                                    path,
                                    layout_name,
-                                   sortid)
+                                   objectID)
             f = open(path, "wb")
             f.write( s )
             f.close()
@@ -268,6 +275,7 @@ def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                                                    fn,
                                                    "",
                                                    ext)
+                            # write Asset file
                             if not os.path.exists( path ):
                                 f = open(path, "wb")
                                 f.write( data )
@@ -324,9 +332,13 @@ def get_scripts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, scriptnode,
                           + ' '
                           + scpt.get("id", "0").rjust(7,"0") )
             s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
+
+            objectID = sortid
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
             path = xmlexportfolder(exportfolder, cur_fmpbasename, path,
                                    scpt.get("name", "NONAME"),
-                                   sortid)
+                                   objectID)
             idx += 1
             f = open(path, "wb")
             f.write( s )
@@ -336,13 +348,18 @@ def get_scripts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, scriptnode,
             grp_attrib = scpt.attrib
             groupid = grp_attrib.get("id", "0")
 
+            # script folder name (if any)
             groupname = (groupid.rjust(7,"0")
                          + ' '
-                         + grp_attrib.get("name", "NONAME") )
+                         + grp_attrib.get("name", "No folder name") )
+
             if cfg.scriptOrder:
                 groupname = (str(idx).rjust(5,"0")
                              + ' ' + groupid.rjust(7,"0")
-                             + ' ' + grp_attrib.get("name", "NONAME"))
+                             + ' ' + grp_attrib.get("name", "No folder name"))
+
+            if cfg.ignoreFilenameIDs:
+                groupname = grp_attrib.get("name", "No folder name")
             groups.append( groupname )
 
             idx += 1
@@ -351,7 +368,7 @@ def get_scripts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, scriptnode,
             groups.pop()
     return idx
 
-def get_relationshipgraph_catalog(cur_fmpxml, cur_db, cur_fmpbasename,
+def get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
                                   rg_cat, exportfolder):
     for tablst in rg_cat:
         if tablst.tag == u'TableList':
@@ -365,11 +382,15 @@ def get_relationshipgraph_catalog(cur_fmpxml, cur_db, cur_fmpbasename,
                     to_bt = tab.attrib.get("baseTable", "NO BASETABLE FOR TABLE OCCURRENCE")
                     
                     s = ElementTree.tostring(tab, encoding="utf-8", method="xml")
+
+                    objectID = to_id
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "Relationships/TableList",
                                            to_name,
-                                           to_id)
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -422,11 +443,14 @@ def get_relationshipgraph_catalog(cur_fmpxml, cur_db, cur_fmpbasename,
                                 + "---"
                                 + rel_cat['righttable'])
                     
+                    objectID = rel_cat['id']
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "Relationships/Relationship",
                                            filename,
-                                           rel_cat['id'])
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -540,11 +564,15 @@ def main(cfg):
                     s = ElementTree.tostring(fileref,
                                              encoding="utf-8",
                                              method="xml")
+
+                    objectID = fileref_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "Filereferences",
                                            name,
-                                           fileref_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -558,8 +586,8 @@ def main(cfg):
         if cfg.relationships:
             log( u'Relationship Graph "%s"' % cur_fmpxml )
             for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
-                get_relationshipgraph_catalog(cur_fmpxml, cur_db, cur_fmpbasename,
-                                              rg_cat, exportfolder)
+                get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db,
+                                              cur_fmpbasename, rg_cat, exportfolder)
             # collect references from FRF to FRF
 
 
@@ -575,11 +603,16 @@ def main(cfg):
                     s = ElementTree.tostring(base_table,
                                              encoding="utf-8",
                                              method="xml")
+
+
+                    objectID = bt_id
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "Basetables",
                                            bt_name,
-                                           bt_id)
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -655,11 +688,15 @@ def main(cfg):
                 for acc in acc_cat.getchildren():
                     acc_attrib = acc.attrib
                     s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
+
+                    objectID = acc_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "Accounts",
                                            acc_attrib.get("name", "NONAME"),
-                                           acc_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -696,11 +733,15 @@ def main(cfg):
                 for cf in cf_cat.getchildren():
                     cf_attrib = cf.attrib
                     s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
+
+                    objectID = cf_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "CustomFunctions",
                                            cf_attrib.get("name", "NONAME"),
-                                           cf_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -714,11 +755,15 @@ def main(cfg):
                 for pv in pv_cat.getchildren():
                     pv_attrib = pv.attrib
                     s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
+
+                    objectID = pv_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "Privileges",
                                            pv_attrib.get("name", "NONAME"),
-                                           pv_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -733,11 +778,15 @@ def main(cfg):
                 for epv in epv_cat.getchildren():
                     epv_attrib = epv.attrib
                     s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
+
+                    objectID = epv_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "ExtendedPrivileges",
                                            epv_attrib.get("name", "NONAME"),
-                                           epv_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -754,11 +803,15 @@ def main(cfg):
                 for cm in cm_cat.getchildren():
                     cm_attrib = cm.attrib
                     s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
+
+                    objectID = cm_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "CustomMenus",
                                            cm_attrib.get("name", "NONAME"),
-                                           cm_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -773,11 +826,15 @@ def main(cfg):
                 for cms in cms_cat.getchildren():
                     cms_attrib = cms.attrib
                     s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
+
+                    objectID = cms_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "CustomMenuSets",
                                            cms_attrib.get("name", "NONAME"),
-                                           cms_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -792,11 +849,15 @@ def main(cfg):
                 for vl in vl_cat.getchildren():
                     vl_attrib = vl.attrib
                     s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
+
+                    objectID = vl_attrib.get("id", "0")
+                    if cfg.ignoreFilenameIDs:
+                        objectID = ""
                     path = xmlexportfolder(exportfolder,
                                            cur_fmpbasename,
                                            "ValueLists",
                                            vl_attrib.get("name", "NONAME"),
-                                           vl_attrib.get("id", "0"))
+                                           objectID)
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -817,6 +878,7 @@ def main(cfg):
     # 
     
     # objects
+
     path = xmlexportfolder(exportfolder,
                            "",
                            "References",
@@ -916,6 +978,8 @@ if __name__ == '__main__':
 
         cfg.scriptGroups = False
         cfg.scriptOrder = False
+
+        cfg.ignoreFilenameIDs = False
 
         # do not customize these
         cfg.summaryfile = f
