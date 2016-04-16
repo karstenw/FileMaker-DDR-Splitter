@@ -240,6 +240,7 @@ class FMPDDRSAppDelegate(NSObject):
         gIsRunning = False
         app = NSApplication.sharedApplication()
         app.activateIgnoringOtherApps_(True)
+
         # ugly hack
         wins = app.windows()
         if not wins:
