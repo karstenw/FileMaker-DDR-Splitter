@@ -39,6 +39,7 @@ setup(
     options={
         'py2app':{
             'iconfile': "Icon.icns",
+            # 'excludes':[],
         },
     },
 )
