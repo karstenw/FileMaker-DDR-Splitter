@@ -39,6 +39,10 @@ class Config(object):
         
         self.ignoreFilenameIDs = False
         self.logfunction = None
+        
+        self.OPMLExport = False
+        self.OPMLSplit = False
+        self.OPMLDetails = False
 
     def pp(self):
         print "accounts", repr(self.accounts)
