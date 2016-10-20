@@ -1838,12 +1838,11 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{264, 447}, {308, 20}}</string>
 							<reference key="NSSuperview" ref="414427165"/>
-							<bool key="NSEnabled">YES</bool>
 							<int key="NSNumRows">1</int>
 							<int key="NSNumCols">3</int>
 							<array class="NSMutableArray" key="NSCells">
 								<object class="NSButtonCell" id="748132109">
-									<int key="NSCellFlags">-2080244224</int>
+									<int key="NSCellFlags">-1543373312</int>
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">per Solution</string>
 									<reference key="NSSupport" ref="172576666"/>
@@ -1860,7 +1859,7 @@
 									<int key="NSPeriodicInterval">25</int>
 								</object>
 								<object class="NSButtonCell" id="889509941">
-									<int key="NSCellFlags">67239424</int>
+									<int key="NSCellFlags">604110336</int>
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">per File</string>
 									<reference key="NSSupport" ref="172576666"/>
@@ -1872,7 +1871,7 @@
 									<int key="NSPeriodicInterval">75</int>
 								</object>
 								<object class="NSButtonCell" id="730514199">
-									<int key="NSCellFlags">67239424</int>
+									<int key="NSCellFlags">604110336</int>
 									<int key="NSCellFlags2">0</int>
 									<string key="NSContents">per Layout</string>
 									<reference key="NSSupport" ref="172576666"/>
@@ -1889,7 +1888,7 @@
 							<int key="NSMatrixFlags">1151868928</int>
 							<string key="NSCellClass">NSActionCell</string>
 							<object class="NSButtonCell" key="NSProtoCell" id="460689308">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">604110336</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Radio</string>
 								<reference key="NSSupport" ref="172576666"/>
@@ -1979,7 +1978,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextView" id="857702491">
 											<reference key="NSNextResponder" ref="488250017"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{660, 40}</string>
+											<string key="NSFrame">{{0, 26}, {660, 14}}</string>
 											<reference key="NSSuperview" ref="488250017"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="655613018">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -2106,7 +2105,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference key="NSSuperview" ref="414427165"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="720423617">
-								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags">-1543373312</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">OPML Export</string>
 								<reference key="NSSupport" ref="172576666"/>
@@ -2128,7 +2127,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference key="NSSuperview" ref="414427165"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1033954038">
-								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags">-1543373312</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">OPML Split Files</string>
 								<reference key="NSSupport" ref="172576666"/>
@@ -2150,7 +2149,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference key="NSSuperview" ref="414427165"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="511395888">
-								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags">-1543373312</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">OPML Details</string>
 								<reference key="NSSupport" ref="172576666"/>
