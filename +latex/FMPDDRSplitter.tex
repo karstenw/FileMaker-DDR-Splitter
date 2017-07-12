@@ -1,0 +1,41 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper, total={18cm, 27cm}]{geometry}
+\usepackage{listings}
+\usepackage[scaled]{beramono}
+\renewcommand{\familydefault}{\ttdefault}
+
+\lstset{
+  language=Python,
+  showstringspaces=false,
+  showlines=false,
+  emptylines=1,
+  formfeed=\newpage,
+  tabsize=4,
+  commentstyle=\textit, %%\itshape,
+  numbers=left,
+  stepnumber=5,
+  numbersep=5pt,
+  firstnumber=1,
+  basicstyle=\ttfamily,
+  morekeywords={models, lambda, forms}
+}
+
+\newcommand{\code}[2]{
+  %%\hrulefill
+  \subsection*{#1}
+  \lstset{name=#1}
+  %%  title=#1}
+  \lstinputlisting{#2}
+  \vspace{2em}
+}
+
+\begin{document}
+
+\code{nodebox/Config.py}{../Config.py}
+\code{nodebox/ddrsplit.py}{../ddrsplit.py}
+\code{nodebox/FMPDDRSplitter.py}{../FMPDDRSplitter.py}
+\code{nodebox/ReferenceCollector.py}{../ReferenceCollector.py}
+\code{nodebox/setup.py}{../setup.py}
+
+\end{document}
