@@ -549,13 +549,12 @@ def main(cfg):
         # relationships need to be analyzed first for the baseTable -> TO graph
         # for that to happen, filereferences must go before that
 
+        print
+        print
+        
         #
         # FileReferenceCatalog
         #
-        
-        print
-        print
-        
         # todo check if refs && cfg.filereferences
         if 1: #cfg.filereferences:
             log( u'File References "%s"' % cur_fmpxml )

@@ -38,7 +38,7 @@
 <v t="karstenw.20170712103639.12"><vh>get_relationshipgraph_catalog</vh></v>
 <v t="karstenw.20170712103639.13"><vh>main</vh></v>
 </v>
-<v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
+<v t="karstenw.20170712103700.1" a="E"><vh>@clean FMPDDRSplitter.py</vh>
 <v t="karstenw.20170712103714.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712103714.2"><vh>class FMPDDRSWindowController</vh>
 <v t="karstenw.20170712103714.3"><vh>awakeFromNib</vh></v>
@@ -589,13 +589,12 @@ gREF = ReferenceCollector.ReferenceCollector()
         # relationships need to be analyzed first for the baseTable -&gt; TO graph
         # for that to happen, filereferences must go before that
 
+        print
+        print
+        
         #
         # FileReferenceCatalog
         #
-        
-        print
-        print
-        
         # todo check if refs &amp;&amp; cfg.filereferences
         if 1: #cfg.filereferences:
             log( u'File References "%s"' % cur_fmpxml )
@@ -1519,6 +1518,11 @@ def orderFrontStandardAboutPanel_(self, sender):
     cbFileReferences = objc.IBOutlet()
     cbRelationships = objc.IBOutlet()
     cbValueLists = objc.IBOutlet()
+
+    cbAuthFiles = objc.IBOutlet()
+    cbExternalDatasources = objc.IBOutlet()
+    cbThemeCatalog = objc.IBOutlet()
+    cbBaseDirectories = objc.IBOutlet()
 
     cbLayouts = objc.IBOutlet()
     cbLayoutFolders = objc.IBOutlet()

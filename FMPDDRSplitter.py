@@ -59,6 +59,11 @@ class FMPDDRSWindowController (NSWindowController):
     cbRelationships = objc.IBOutlet()
     cbValueLists = objc.IBOutlet()
 
+    cbAuthFiles = objc.IBOutlet()
+    cbExternalDatasources = objc.IBOutlet()
+    cbThemeCatalog = objc.IBOutlet()
+    cbBaseDirectories = objc.IBOutlet()
+
     cbLayouts = objc.IBOutlet()
     cbLayoutFolders = objc.IBOutlet()
     cbLayoutOrder = objc.IBOutlet()
