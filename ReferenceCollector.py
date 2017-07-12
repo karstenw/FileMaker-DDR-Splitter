@@ -10,7 +10,8 @@ class ReferenceCollector(object):
     """A 2-pass data collector.
     
     1. pass
-        collect all references by value (file, type, name, [to], [id], [scriptline]) -> (file, type, name, scriptline)
+        collect all references by value (file, type, name, [to], [id], [scriptline])
+            -> (file, type, name, scriptline)
         
     2. pass
         convert all types to ID

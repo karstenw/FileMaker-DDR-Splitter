@@ -26,6 +26,11 @@ class Config(object):
         self.layoutGroups = True
         self.layoutOrder = True
 
+        self.authfile = True
+        self.externaldatasources = True
+        self.themecatalog = True
+        self.basedirectory = True
+
         self.relationships = True
 
         self.scripts = True

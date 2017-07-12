@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 import sys
 import os
 
@@ -128,6 +129,26 @@ def get_displaycalculation(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node):
             pass
         elif dpc_typ == "CustomFunctionRef":
             pass
+
+def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfile,
+                        groups, exportfolder, idx):
+    pass
+
+
+def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasource,
+                            groups, exportfolder, idx):
+    pass
+
+
+def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,
+                            groups, exportfolder, idx):
+    pass
+
+
+def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,
+                            groups, exportfolder, idx):
+    pass
+
 
 def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                            groups, exportfolder, idx):
@@ -400,7 +421,8 @@ def get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
                         if node.tag == "FileReference":
                             external = True
                             eto_id = node.get("id", -1)
-                            eto_name = node.get("name", "NO EXTERNAL FILEREF NAME FOR TABLE OCCURRENCE")
+                            eto_name = node.get("name",
+                                        "NO EXTERNAL FILEREF NAME FOR TABLE OCCURRENCE")
                     
                     toObject = (cur_fmpxml, "TableOccurrence", to_name)
                     if external:
@@ -482,7 +504,8 @@ def main(cfg):
             xml_fmppath = xmlfile.get("path", "")
 
             if not xml_xmllink:
-                log( u"\nERROR: Could not find XML file '%s'\nContinue.\n" %  xml_xmllink)
+                s = u"\nERROR: Could not find XML file '%s'\nContinue.\n"
+                log( s %  xml_xmllink)
                 continue
 
             # xml_xmllink
@@ -525,8 +548,9 @@ def main(cfg):
 
         # relationships need to be analyzed first for the baseTable -> TO graph
         # for that to happen, filereferences must go before that
+
         #
-        # file reference catalog
+        # FileReferenceCatalog
         #
         
         print
@@ -550,8 +574,10 @@ def main(cfg):
                         frf_id = fileref.attrib.get("id", -1)
                         frf_link = fileref.attrib.get("link", "NO DDR.XML FILE")
                         frf_name = fileref.attrib.get("name", "NO FILEREF NAME")
-                        frf_pathList = fileref.attrib.get("pathList", "NO FILEREF PATHLIST")
-                        gREF.addFileReference(cur_xml_file_name, frf_link, frf_name, frf_id, frf_pathList)
+                        frf_pathList = fileref.attrib.get("pathList",
+                                                                "NO FILEREF PATHLIST")
+                        gREF.addFileReference(cur_xml_file_name, frf_link, frf_name,
+                                                                frf_id, frf_pathList)
                         
                         frf_object = (cur_xml_file_name, 'FileReference', frf_name)
                         gREF.addObject(frf_object)
@@ -658,10 +684,9 @@ def main(cfg):
 
             # collect references to fields, CFs, value lists, TOs, FileReferences
 
-        # BaseDirectoryCatalog
         
         #
-        # layout catalog
+        # LayoutCatalog
         #
         if cfg.layouts:
             log( u'Layout Catalog "%s"' % cur_fmpxml )
@@ -747,7 +772,8 @@ def main(cfg):
                     f.close()
             # collect references to fields, CFs, value lists,TOs, FileReferences
         
-        # privileges
+        #
+        # PrivilegesCatalog
         #
         if cfg.privileges:
             log( u'Privileges for "%s"' % cur_fmpxml )
@@ -770,7 +796,7 @@ def main(cfg):
             # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
-        # extended privileges
+        # ExtendedPrivilegeCatalog
         #
         if cfg.extendedprivileges:
             log( u'Extended Privileges for "%s"' % cur_fmpxml )
@@ -792,10 +818,74 @@ def main(cfg):
                     f.close()
             # collect references to fields, CFs, value lists, TOs, FileReferences
 
+        #
         # AuthFileCatalog
+        #
+        if cfg.authfile:
+            log( u'AuthFile Catalog "%s"' % cur_fmpxml )
+            for authfile_catalog in basenode.getiterator ( "AuthFileCatalog" ):
+                groups = []
+                get_authfilecatalog(cfg,
+                                       cur_fmpxml,
+                                       cur_db,
+                                       cur_fmpbasename,
+                                       authfile_catalog,
+                                       groups,
+                                       exportfolder,
+                                       1)
+
+
+        #
+        # ExternalDataSourcesCatalog
+        #
+        if cfg.externaldatasources:
+            log( u'ExternalDataSources Catalog "%s"' % cur_fmpxml )
+            for externaldatasource in basenode.getiterator ( "ExternalDataSourcesCatalog" ):
+                groups = []
+                get_externaldatasources(cfg,
+                                       cur_fmpxml,
+                                       cur_db,
+                                       cur_fmpbasename,
+                                       externaldatasource,
+                                       groups,
+                                       exportfolder,
+                                       1)
+
+        #
+        # ThemeCatalog
+        #
+        if cfg.themecatalog:
+            log( u'Theme Catalog "%s"' % cur_fmpxml )
+            for theme in basenode.getiterator ( "ThemeCatalog" ):
+                groups = []
+                get_themecatalog(cfg,
+                                   cur_fmpxml,
+                                   cur_db,
+                                   cur_fmpbasename,
+                                   theme,
+                                   groups,
+                                   exportfolder,
+                                   1)
+
+        #
+        # BaseDirectoryCatalog
+        #
+        if cfg.basedirectory:
+            log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
+            for basedir in basenode.getiterator ( "BaseDirectoryCatalog" ):
+                groups = []
+                get_basedirectories(cfg,
+                                   cur_fmpxml,
+                                   cur_db,
+                                   cur_fmpbasename,
+                                   basedir,
+                                   groups,
+                                   exportfolder,
+                                   1)
+
         
         #
-        # custom menus
+        # CustomMenuCatalog
         #
         if cfg.custommenus:
             log( u'Custom Menus for "%s"' % cur_fmpxml )
@@ -818,7 +908,7 @@ def main(cfg):
             # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
-        # custom menu sets
+        # CustomMenuSetCatalog
         #
         if cfg.custommenusets:
             log( u'Custom Menu Sets for "%s"' % cur_fmpxml )
@@ -841,7 +931,7 @@ def main(cfg):
             # collect references to fields, CFs, value lists, TOs, FileReferences
 
         #
-        # value lists
+        # ValueListCatalog
         #
         if cfg.valueLists:
             log('Value Lists for "%s"' % cur_fmpxml )
@@ -862,8 +952,6 @@ def main(cfg):
                     f.write( s )
                     f.close()
             # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        # ThemeCatalog
 
         if gCancel:
             time.sleep(0.3)
@@ -949,6 +1037,7 @@ def main(cfg):
     print "FileReferences"
     pp( gREF.fileReferences )
     print
+
 
 if __name__ == '__main__':
 
