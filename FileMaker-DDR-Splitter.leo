@@ -17,7 +17,7 @@
 <v t="karstenw.20170712103612.4"><vh>pp</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103629.1"><vh>@clean ddrsplit.py</vh>
+<v t="karstenw.20170712103629.1" a="E"><vh>@clean ddrsplit.py</vh>
 <v t="karstenw.20170712103639.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712103639.2"><vh>makeunicode</vh></v>
 <v t="karstenw.20170712103639.3"><vh>stringhash</vh></v>
@@ -26,12 +26,10 @@
 <v t="karstenw.20170712103639.6"><vh>get_text_object</vh></v>
 <v t="karstenw.20170712103639.7"><vh>get_script_step</vh></v>
 <v t="karstenw.20170712103639.8"><vh>get_displaycalculation</vh></v>
-<v t="karstenw.20170712104749.1"><vh>NEW</vh>
 <v t="karstenw.20170712104705.1"><vh>get_authfilecatalog</vh></v>
 <v t="karstenw.20170712104920.1"><vh>get_externaldatasources</vh></v>
 <v t="karstenw.20170712110354.1"><vh>get_themecatalog</vh></v>
 <v t="karstenw.20170712110929.1"><vh>get_basedirectories</vh></v>
-</v>
 <v t="karstenw.20170712103639.9"><vh>get_layouts_and_groups</vh></v>
 <v t="karstenw.20170712103639.10"><vh>get_layout_object</vh></v>
 <v t="karstenw.20170712103639.11"><vh>get_scripts_and_groups</vh></v>
@@ -48,7 +46,7 @@
 <v t="karstenw.20170712103714.7"><vh>doExport_</vh></v>
 <v t="karstenw.20170712103714.8"><vh>setButtons</vh></v>
 </v>
-<v t="karstenw.20170712103714.9" a="E"><vh>class FMPDDRSAppDelegate</vh>
+<v t="karstenw.20170712103714.9"><vh>class FMPDDRSAppDelegate</vh>
 <v t="karstenw.20170712103714.10"><vh>applicationDidFinishLaunching_</vh></v>
 <v t="karstenw.20170712103714.11"><vh>terminate_</vh></v>
 <v t="karstenw.20170712103714.12"><vh>orderFrontStandardAboutPanel_</vh></v>
@@ -73,7 +71,7 @@
 <v t="karstenw.20170712103729.8"><vh>addFilemakerAttribute</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103747.1" a="E"><vh>@clean setup.py</vh>
+<v t="karstenw.20170712103747.1"><vh>@clean setup.py</vh>
 <v t="karstenw.20170712103756.1"><vh>Declarations</vh></v>
 </v>
 <v t="karstenw.20170712103824.1"><vh>@clean README.md</vh>
@@ -911,7 +909,7 @@ gREF = ReferenceCollector.ReferenceCollector()
         #
         if cfg.basedirectory:
             log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
-            for basedir in basenode.getiterator ( "BaseDirectoryCatalog" ):
+            for basedir in basenode.getiterator ( "BaseDirectoryList" ):
                 groups = []
                 get_basedirectories(cfg,
                                    cur_fmpxml,
@@ -2022,7 +2020,7 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
         path = "AuthFiles"
     
-        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+        s = ElementTree.tostring(authfile, encoding="utf-8", method="xml")
 
         sortid = authfile_attr.get("id", "0").rjust(7,"0")
 
@@ -2042,11 +2040,8 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 
 </t>
-<t tx="karstenw.20170712104749.1"></t>
 <t tx="karstenw.20170712104920.1">def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasources,
                             groups, exportfolder, idx):
-
-
 
     for externaldatasource in externaldatasources:
         externaldatasource_attr = externaldatasource.attrib
@@ -2057,7 +2052,7 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
         path = "ExternalDataSources"
     
-        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+        s = ElementTree.tostring(externaldatasource, encoding="utf-8", method="xml")
 
         sortid = externaldatasource_attr.get("id", "0").rjust(7,"0")
 
@@ -2079,15 +2074,73 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 
 </t>
-<t tx="karstenw.20170712110354.1">def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,
+<t tx="karstenw.20170712110354.1">def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, themes,
                             groups, exportfolder, idx):
-    pass
+
+    for theme in themes:
+        theme_attr = theme.attrib
+        theme_tag = theme.tag
+        theme_name = theme_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'ThemeCatalog', theme_name)
+
+        path = "ThemeCatalog"
+    
+        s = ElementTree.tostring(theme, encoding="utf-8", method="xml")
+
+        sortid = theme_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               theme_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
+
+
 
 
 </t>
-<t tx="karstenw.20170712110929.1">def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,
+<t tx="karstenw.20170712110929.1">def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, basedirectories,
                             groups, exportfolder, idx):
-    pass
+
+    for basedirectory in basedirectories:
+        basedirectory_attr = basedirectory.attrib
+        basedirectory_tag = basedirectory.tag
+        basedirectory_name = basedirectory_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'BaseDirectoryCatalog', basedirectory_name)
+
+        path = "BaseDirectoryCatalog"
+    
+        s = ElementTree.tostring(basedirectory, encoding="utf-8", method="xml")
+
+        sortid = basedirectory_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               basedirectory_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
+
+
+
+
 
 
 </t>

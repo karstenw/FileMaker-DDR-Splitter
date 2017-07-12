@@ -142,7 +142,7 @@ def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfiles,
 
         path = "AuthFiles"
     
-        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+        s = ElementTree.tostring(authfile, encoding="utf-8", method="xml")
 
         sortid = authfile_attr.get("id", "0").rjust(7,"0")
 
@@ -164,8 +164,6 @@ def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfiles,
 def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasources,
                             groups, exportfolder, idx):
 
-
-
     for externaldatasource in externaldatasources:
         externaldatasource_attr = externaldatasource.attrib
         externaldatasource_tag = externaldatasource.tag
@@ -175,7 +173,7 @@ def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externalda
 
         path = "ExternalDataSources"
     
-        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+        s = ElementTree.tostring(externaldatasource, encoding="utf-8", method="xml")
 
         sortid = externaldatasource_attr.get("id", "0").rjust(7,"0")
 
@@ -196,14 +194,72 @@ def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externalda
 
 
 
-def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,
+def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, themes,
                             groups, exportfolder, idx):
-    pass
+
+    for theme in themes:
+        theme_attr = theme.attrib
+        theme_tag = theme.tag
+        theme_name = theme_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'ThemeCatalog', theme_name)
+
+        path = "ThemeCatalog"
+    
+        s = ElementTree.tostring(theme, encoding="utf-8", method="xml")
+
+        sortid = theme_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               theme_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
 
 
-def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,
+
+
+def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, basedirectories,
                             groups, exportfolder, idx):
-    pass
+
+    for basedirectory in basedirectories:
+        basedirectory_attr = basedirectory.attrib
+        basedirectory_tag = basedirectory.tag
+        basedirectory_name = basedirectory_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'BaseDirectoryCatalog', basedirectory_name)
+
+        path = "BaseDirectoryCatalog"
+    
+        s = ElementTree.tostring(basedirectory, encoding="utf-8", method="xml")
+
+        sortid = basedirectory_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               basedirectory_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
+
+
+
+
 
 
 def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
@@ -927,7 +983,7 @@ def main(cfg):
         #
         if cfg.basedirectory:
             log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
-            for basedir in basenode.getiterator ( "BaseDirectoryCatalog" ):
+            for basedir in basenode.getiterator ( "BaseDirectoryList" ):
                 groups = []
                 get_basedirectories(cfg,
                                    cur_fmpxml,
