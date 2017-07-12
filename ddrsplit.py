@@ -130,14 +130,70 @@ def get_displaycalculation(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node):
         elif dpc_typ == "CustomFunctionRef":
             pass
 
-def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfile,
+def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfiles,
                         groups, exportfolder, idx):
-    pass
+
+    for authfile in authfiles:
+        authfile_attr = authfile.attrib
+        authfile_tag = authfile.tag
+        authfile_name = authfile_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'AuthFile', authfile_name)
+
+        path = "AuthFiles"
+    
+        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+
+        sortid = authfile_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               authfile_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
 
 
-def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasource,
+def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasources,
                             groups, exportfolder, idx):
-    pass
+
+
+
+    for externaldatasource in externaldatasources:
+        externaldatasource_attr = externaldatasource.attrib
+        externaldatasource_tag = externaldatasource.tag
+        externaldatasource_name = externaldatasource_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'ExternalDataSource', externaldatasource_name)
+
+        path = "ExternalDataSources"
+    
+        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+
+        sortid = externaldatasource_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               externaldatasource_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
+
+
 
 
 def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, theme,

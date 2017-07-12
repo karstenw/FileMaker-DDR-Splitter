@@ -114,6 +114,11 @@ class FMPDDRSWindowController (NSWindowController):
 
         self.cbValueLists.setState_(defaults.boolForKey_( u"valueLists" ))
 
+        self.cbAuthFiles.setState_(defaults.boolForKey_( u"authfiles" ))
+        self.cbExternalDatasources.setState_(defaults.boolForKey_( u"externaldatasources" ))
+        self.cbThemeCatalog.setState_(defaults.boolForKey_( u"themes" ))
+        self.cbBaseDirectories.setState_(defaults.boolForKey_( u"basedirectories" ))
+
         self.cbLayouts.setState_(defaults.boolForKey_( u"layouts" ))
         self.cbLayoutFolders.setState_(defaults.boolForKey_( u"layoutGroups" ))
         self.cbLayoutOrder.setState_(defaults.boolForKey_( u"layoutOrder" ))
@@ -211,6 +216,18 @@ class FMPDDRSWindowController (NSWindowController):
         
         cfg.valueLists = self.cbValueLists.state()
         defaults.setObject_forKey_(cfg.valueLists, u'valueLists')
+
+        cfg.authfile = self.cbAuthFiles.state()
+        defaults.setObject_forKey_(cfg.authfile, u'authfiles')
+
+        cfg.externaldatasources = self.cbExternalDatasources.state()
+        defaults.setObject_forKey_(cfg.externaldatasources, u'externaldatasources')
+
+        cfg.themecatalog = self.cbThemeCatalog.state()
+        defaults.setObject_forKey_(cfg.themecatalog, u'themes')
+
+        cfg.basedirectory = self.cbBaseDirectories.state()
+        defaults.setObject_forKey_(cfg.basedirectory, u'basedirectories')
 
         cfg.summaryfile = self.tbSummaryFile.stringValue()
         defaults.setObject_forKey_(cfg.summaryfile, u'summaryfile')
@@ -319,6 +336,12 @@ class FMPDDRSAppDelegate(NSObject):
         userdefaults.setObject_forKey_(c.cbScriptFolders.state(),       u'scriptGroups')
         userdefaults.setObject_forKey_(c.cbScriptOrder.state(),         u'scriptOrder')
         userdefaults.setObject_forKey_(c.cbValueLists.state(),          u'valueLists')
+
+        userdefaults.setObject_forKey_(c.cbAuthFiles.state(),           u'authfiles')
+        userdefaults.setObject_forKey_(c.cbExternalDatasources.state(), u'externaldatasources')
+        userdefaults.setObject_forKey_(c.cbThemeCatalog.state(),        u'themes')
+        userdefaults.setObject_forKey_(c.cbBaseDirectories.state(),     u'basedirectories')
+
         userdefaults.setObject_forKey_(c.tbSummaryFile.stringValue(),   u'summaryfile')
         userdefaults.setObject_forKey_(c.tbExportFolder.stringValue(),  u'exportfolder')
         return True

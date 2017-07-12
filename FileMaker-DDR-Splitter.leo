@@ -10,14 +10,14 @@
 <find_panel_settings/>
 <vnodes>
 <v t="karstenw.20170712103516.2" a="E"><vh>Application</vh>
-<v t="karstenw.20170712103544.1" a="E"><vh>@clean Config.py</vh>
+<v t="karstenw.20170712103544.1"><vh>@clean Config.py</vh>
 <v t="karstenw.20170712103612.1"><vh>Declarations</vh></v>
-<v t="karstenw.20170712103612.2" a="E"><vh>class Config</vh>
+<v t="karstenw.20170712103612.2"><vh>class Config</vh>
 <v t="karstenw.20170712103612.3"><vh>__init__</vh></v>
 <v t="karstenw.20170712103612.4"><vh>pp</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103629.1" a="E"><vh>@clean ddrsplit.py</vh>
+<v t="karstenw.20170712103629.1"><vh>@clean ddrsplit.py</vh>
 <v t="karstenw.20170712103639.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712103639.2"><vh>makeunicode</vh></v>
 <v t="karstenw.20170712103639.3"><vh>stringhash</vh></v>
@@ -26,7 +26,7 @@
 <v t="karstenw.20170712103639.6"><vh>get_text_object</vh></v>
 <v t="karstenw.20170712103639.7"><vh>get_script_step</vh></v>
 <v t="karstenw.20170712103639.8"><vh>get_displaycalculation</vh></v>
-<v t="karstenw.20170712104749.1" a="E"><vh>NEW</vh>
+<v t="karstenw.20170712104749.1"><vh>NEW</vh>
 <v t="karstenw.20170712104705.1"><vh>get_authfilecatalog</vh></v>
 <v t="karstenw.20170712104920.1"><vh>get_externaldatasources</vh></v>
 <v t="karstenw.20170712110354.1"><vh>get_themecatalog</vh></v>
@@ -38,7 +38,7 @@
 <v t="karstenw.20170712103639.12"><vh>get_relationshipgraph_catalog</vh></v>
 <v t="karstenw.20170712103639.13"><vh>main</vh></v>
 </v>
-<v t="karstenw.20170712103700.1" a="E"><vh>@clean FMPDDRSplitter.py</vh>
+<v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
 <v t="karstenw.20170712103714.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712103714.2"><vh>class FMPDDRSWindowController</vh>
 <v t="karstenw.20170712103714.3"><vh>awakeFromNib</vh></v>
@@ -48,7 +48,7 @@
 <v t="karstenw.20170712103714.7"><vh>doExport_</vh></v>
 <v t="karstenw.20170712103714.8"><vh>setButtons</vh></v>
 </v>
-<v t="karstenw.20170712103714.9"><vh>class FMPDDRSAppDelegate</vh>
+<v t="karstenw.20170712103714.9" a="E"><vh>class FMPDDRSAppDelegate</vh>
 <v t="karstenw.20170712103714.10"><vh>applicationDidFinishLaunching_</vh></v>
 <v t="karstenw.20170712103714.11"><vh>terminate_</vh></v>
 <v t="karstenw.20170712103714.12"><vh>orderFrontStandardAboutPanel_</vh></v>
@@ -73,13 +73,13 @@
 <v t="karstenw.20170712103729.8"><vh>addFilemakerAttribute</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103747.1"><vh>@clean setup.py</vh>
+<v t="karstenw.20170712103747.1" a="E"><vh>@clean setup.py</vh>
 <v t="karstenw.20170712103756.1"><vh>Declarations</vh></v>
 </v>
 <v t="karstenw.20170712103824.1"><vh>@clean README.md</vh>
-<v t="karstenw.20170712103836.1" a="E"><vh>FileMaker-DDR-Splitter</vh>
+<v t="karstenw.20170712103836.1"><vh>FileMaker-DDR-Splitter</vh>
 <v t="karstenw.20170712103836.2"><vh>Download an OSX app for OSX 10.6 and above.</vh></v>
-<v t="karstenw.20170712103836.3" a="E"><vh>Prerequisites</vh>
+<v t="karstenw.20170712103836.3"><vh>Prerequisites</vh>
 <v t="karstenw.20170712103836.4"><vh>For the Python script</vh></v>
 <v t="karstenw.20170712103836.5"><vh>For building the OSX app the following additional libraries are needed:</vh></v>
 </v>
@@ -1387,6 +1387,12 @@ def orderFrontStandardAboutPanel_(self, sender):
     userdefaults.setObject_forKey_(c.cbScriptFolders.state(),       u'scriptGroups')
     userdefaults.setObject_forKey_(c.cbScriptOrder.state(),         u'scriptOrder')
     userdefaults.setObject_forKey_(c.cbValueLists.state(),          u'valueLists')
+
+    userdefaults.setObject_forKey_(c.cbAuthFiles.state(),           u'authfiles')
+    userdefaults.setObject_forKey_(c.cbExternalDatasources.state(), u'externaldatasources')
+    userdefaults.setObject_forKey_(c.cbThemeCatalog.state(),        u'themes')
+    userdefaults.setObject_forKey_(c.cbBaseDirectories.state(),     u'basedirectories')
+
     userdefaults.setObject_forKey_(c.tbSummaryFile.stringValue(),   u'summaryfile')
     userdefaults.setObject_forKey_(c.tbExportFolder.stringValue(),  u'exportfolder')
     return True
@@ -1588,6 +1594,11 @@ def orderFrontStandardAboutPanel_(self, sender):
 
     self.cbValueLists.setState_(defaults.boolForKey_( u"valueLists" ))
 
+    self.cbAuthFiles.setState_(defaults.boolForKey_( u"authfiles" ))
+    self.cbExternalDatasources.setState_(defaults.boolForKey_( u"externaldatasources" ))
+    self.cbThemeCatalog.setState_(defaults.boolForKey_( u"themes" ))
+    self.cbBaseDirectories.setState_(defaults.boolForKey_( u"basedirectories" ))
+
     self.cbLayouts.setState_(defaults.boolForKey_( u"layouts" ))
     self.cbLayoutFolders.setState_(defaults.boolForKey_( u"layoutGroups" ))
     self.cbLayoutOrder.setState_(defaults.boolForKey_( u"layoutOrder" ))
@@ -1689,6 +1700,18 @@ def doExport_(self, sender):
     
     cfg.valueLists = self.cbValueLists.state()
     defaults.setObject_forKey_(cfg.valueLists, u'valueLists')
+
+    cfg.authfile = self.cbAuthFiles.state()
+    defaults.setObject_forKey_(cfg.authfile, u'authfiles')
+
+    cfg.externaldatasources = self.cbExternalDatasources.state()
+    defaults.setObject_forKey_(cfg.externaldatasources, u'externaldatasources')
+
+    cfg.themecatalog = self.cbThemeCatalog.state()
+    defaults.setObject_forKey_(cfg.themecatalog, u'themes')
+
+    cfg.basedirectory = self.cbBaseDirectories.state()
+    defaults.setObject_forKey_(cfg.basedirectory, u'basedirectories')
 
     cfg.summaryfile = self.tbSummaryFile.stringValue()
     defaults.setObject_forKey_(cfg.summaryfile, u'summaryfile')
@@ -1901,7 +1924,7 @@ setup(
             'NSAppleScriptEnabled': False,
             'NSHumanReadableCopyright': copyright}}],
 
-    data_files=["English.lproj/MainMenu.nib",
+    data_files=["English.lproj/MainMenu.xib",
                 "Icon.icns"],
     options={
         'py2app':{
@@ -1912,28 +1935,30 @@ setup(
 )
 </t>
 <t tx="karstenw.20170712103824.1">@others
-Note: This node's body text is ignored when writing this file.
-
-The @others directive is not required.
 @language md
 @tabwidth -4
 </t>
-<t tx="karstenw.20170712103836.1">
+<t tx="karstenw.20170712103836.1"># FileMaker-DDR-Splitter
+
 A Python script to split a FileMaker Database Design Report (DDR) into it's components.
 
 The script has been used on OSX with V10 &amp; V11 DDRs. Windows and DDRs V12-14 may or may not work.
 
 It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB single file DDR was split in 19s.
 
+## Download an OSX app for OSX 10.6 and above.
 </t>
 <t tx="karstenw.20170712103836.2">[dropbox](http://goo.gl/YwGc7K)
 
 
+## Prerequisites
 </t>
 <t tx="karstenw.20170712103836.3">
+###For the Python script
 </t>
 <t tx="karstenw.20170712103836.4">[Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries needed are included with Python.
 
+###For building the OSX app the following additional libraries are needed:
 </t>
 <t tx="karstenw.20170712103836.5">
 [PyObjC](https://pythonhosted.org/pyobjc/install.html)
@@ -1941,6 +1966,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 [py2app](https://pythonhosted.org/py2app/) and it's [dependencies](https://pythonhosted.org/py2app/dependencies.html)
 
 
+## Usage
 </t>
 <t tx="karstenw.20170712103836.6">
 ```shell
@@ -1978,21 +2004,78 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 + ValueLists - The name pattern is **"ID NAME.xml"**
 
+## The application
 </t>
 <t tx="karstenw.20170712103836.7">
 ![Screenshot](./images/screen1.png?raw=true)
 
 </t>
-<t tx="karstenw.20170712104705.1">def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfile,
+<t tx="karstenw.20170712104705.1">def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfiles,
                         groups, exportfolder, idx):
-    pass
+
+    for authfile in authfiles:
+        authfile_attr = authfile.attrib
+        authfile_tag = authfile.tag
+        authfile_name = authfile_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'AuthFile', authfile_name)
+
+        path = "AuthFiles"
+    
+        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+
+        sortid = authfile_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               authfile_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
 
 
 </t>
 <t tx="karstenw.20170712104749.1"></t>
-<t tx="karstenw.20170712104920.1">def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasource,
+<t tx="karstenw.20170712104920.1">def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externaldatasources,
                             groups, exportfolder, idx):
-    pass
+
+
+
+    for externaldatasource in externaldatasources:
+        externaldatasource_attr = externaldatasource.attrib
+        externaldatasource_tag = externaldatasource.tag
+        externaldatasource_name = externaldatasource_attr.get("name", "NONAME")
+
+        cur_object = (cur_fmpxml, 'ExternalDataSource', externaldatasource_name)
+
+        path = "ExternalDataSources"
+    
+        s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+
+        sortid = externaldatasource_attr.get("id", "0").rjust(7,"0")
+
+        objectID = sortid
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               path,
+                               externaldatasource_name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+        idx += 1
+    return idx
+
+
 
 
 </t>
