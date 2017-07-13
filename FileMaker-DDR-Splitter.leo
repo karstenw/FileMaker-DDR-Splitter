@@ -19,10 +19,14 @@
 </v>
 <v t="karstenw.20170712103629.1" a="E"><vh>@clean ddrsplit.py</vh>
 <v t="karstenw.20170712103639.1"><vh>Declarations</vh></v>
+<v t="karstenw.20170712183501.1"><vh>Globals</vh></v>
+<v t="karstenw.20170712183521.1"><vh>## TOOLS ##</vh>
 <v t="karstenw.20170712103639.2"><vh>makeunicode</vh></v>
 <v t="karstenw.20170712103639.3"><vh>stringhash</vh></v>
 <v t="karstenw.20170712103639.4"><vh>logfunction</vh></v>
 <v t="karstenw.20170712103639.5"><vh>xmlexportfolder</vh></v>
+</v>
+<v t="karstenw.20170712183543.1"><vh>## EXTRACTORS ##</vh>
 <v t="karstenw.20170712103639.6"><vh>get_text_object</vh></v>
 <v t="karstenw.20170712103639.7"><vh>get_script_step</vh></v>
 <v t="karstenw.20170712103639.8"><vh>get_displaycalculation</vh></v>
@@ -34,6 +38,7 @@
 <v t="karstenw.20170712103639.10"><vh>get_layout_object</vh></v>
 <v t="karstenw.20170712103639.11"><vh>get_scripts_and_groups</vh></v>
 <v t="karstenw.20170712103639.12"><vh>get_relationshipgraph_catalog</vh></v>
+</v>
 <v t="karstenw.20170712103639.13"><vh>main</vh></v>
 </v>
 <v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
@@ -170,6 +175,11 @@ import os
 
     print "valueLists", repr(self.valueLists)
 
+    print "authfile", repr(self.authfile)
+    print "externaldatasources", repr(self.externaldatasources)
+    print "themecatalog", repr(self.themecatalog)
+    print "basedirectory", repr(self.basedirectory)
+
     print "summaryfile", repr(self.summaryfile)
     print "exportfolder", repr(self.exportfolder)
     print "ignoreFilenameIDs", repr(self.ignoreFilenameIDs)
@@ -240,22 +250,10 @@ ElementTree = xml.etree.cElementTree
 
 import xml.parsers.expat
 
-
 import Config
 
 import ReferenceCollector
 
-
-#
-# globals
-#
-gCancel = False
-gREF = ReferenceCollector.ReferenceCollector()
-
-
-#
-# tools
-#
 </t>
 <t tx="karstenw.20170712103639.10">def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                       cur_object, exportfolder):
@@ -1160,8 +1158,6 @@ gREF = ReferenceCollector.ReferenceCollector()
 </t>
 <t tx="karstenw.20170712103639.8">def get_displaycalculation(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node):
     clc_text = clc_noref = clc_fnctref = clc_fieldref = clc_cf = ""
-
-    # pdb.set_trace()
 
     for node in cur_node.iter():
         dpc_tag = node.tag
@@ -2144,5 +2140,18 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 
 </t>
+<t tx="karstenw.20170712183501.1">#
+# globals
+#
+gCancel = False
+gREF = ReferenceCollector.ReferenceCollector()
+
+
+</t>
+<t tx="karstenw.20170712183521.1">#
+# tools
+#
+</t>
+<t tx="karstenw.20170712183543.1"></t>
 </tnodes>
 </leo_file>

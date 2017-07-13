@@ -20,11 +20,9 @@ ElementTree = xml.etree.cElementTree
 
 import xml.parsers.expat
 
-
 import Config
 
 import ReferenceCollector
-
 
 #
 # globals
@@ -114,8 +112,6 @@ def get_script_step(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node, cur_obje
 
 def get_displaycalculation(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node):
     clc_text = clc_noref = clc_fnctref = clc_fieldref = clc_cf = ""
-
-    # pdb.set_trace()
 
     for node in cur_node.iter():
         dpc_tag = node.tag

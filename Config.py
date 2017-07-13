@@ -71,6 +71,11 @@ class Config(object):
 
         print "valueLists", repr(self.valueLists)
 
+        print "authfile", repr(self.authfile)
+        print "externaldatasources", repr(self.externaldatasources)
+        print "themecatalog", repr(self.themecatalog)
+        print "basedirectory", repr(self.basedirectory)
+
         print "summaryfile", repr(self.summaryfile)
         print "exportfolder", repr(self.exportfolder)
         print "ignoreFilenameIDs", repr(self.ignoreFilenameIDs)
