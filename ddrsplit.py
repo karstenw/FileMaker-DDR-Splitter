@@ -200,7 +200,7 @@ def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, themes,
 
         cur_object = (cur_fmpxml, 'ThemeCatalog', theme_name)
 
-        path = "ThemeCatalog"
+        path = "Themes"
     
         s = ElementTree.tostring(theme, encoding="utf-8", method="xml")
 
