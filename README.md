@@ -6,9 +6,9 @@ The script has been used on OSX with V10, V11 & V15 DDRs. Windows and DDRs V12-1
 
 It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB single file DDR was split in 19s.
 
-###Why would I like to do that?###
+### Why would I like to do that?
 
-####Because it's the cheapest and one of the fastest ways to find all occurences of a field for example.####
+#### Because it's the cheapest and one of the fastest ways to find all occurences of a field for example.
 
 + Split your DDR
 
@@ -19,7 +19,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 ![Found](./images/search2.png?raw=true)
 
 
-####Because it makes versions of a database compaparable
+#### Because it makes versions of a database compaparable
 
 + Create a DDR and split it.
 
@@ -38,10 +38,10 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 ### Prerequisites
 
-####For the Python script
+#### For the Python script
 [Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries needed are included with Python.
 
-####For building the OSX app the following additional libraries are needed:
+#### For building the OSX app the following additional libraries are needed:
 
 [PyObjC](https://pythonhosted.org/pyobjc/install.html)
 
@@ -86,7 +86,7 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 + ValueLists - The name pattern is **"ID NAME.xml"**
 
-####New 2017-07-12
+#### New 2017-07-12
 
 + AuthFiles - The name pattern is **"ID NAME.xml"**
 
