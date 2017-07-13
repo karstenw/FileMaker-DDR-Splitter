@@ -6,9 +6,9 @@ The script has been used on OSX with V10, V11 & V15 DDRs. Windows and DDRs V12-1
 
 It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB single file DDR was split in 19s.
 
-###Why would I like to do that?
+###Why would I like to do that?###
 
-####Because it's the cheapest and one of the fastest ways to find all occurences of a field for example. 
+####Because it's the cheapest and one of the fastest ways to find all occurences of a field for example.####
 
 + Split your DDR
 
