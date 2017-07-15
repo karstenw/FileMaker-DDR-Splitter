@@ -12,7 +12,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 + Split your DDR
 
-+ Use a text editor that can search directories (TextWrangler annd BBEdit on OSX come to mind) and search for a fieldname. 
++ Use a text editor that can search directories (TextWrangler and BBEdit on OSX come to mind) and search for a fieldname. 
 ![Search](./images/search1.png?raw=true)
 
 + The granularity of the found set is now down to scripts, layouts etc. instead of one big DDR file.
@@ -23,7 +23,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 + Create a DDR and split it.
 
-+ check the export ionto a git repository
++ check the export into a git repository
 
 + make changes in the database
 
@@ -122,5 +122,5 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 + Drop filename IDs - Omit IDs from filenames. This is useful when comparing two exports with git.
 
-+ OPML - disabled becaus ethey don't exist yet and remind me of writing them one day. The idea is to have an OPML export of scripts, basetables and layouts.
++ OPML - disabled because they don't exist yet and remind me of writing them one day. The idea is to have a OPML file for scripts, basetables and layouts which can be opened with any outliner.
 
