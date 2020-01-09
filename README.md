@@ -53,7 +53,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 python ddrsplit.py /PATH/TO/Summary.xml
 ```
 
-...or run the OSX app.
+...or run the [OSX app](http://goo.gl/YwGc7K).
 
 
 This will create a folder named "Exports" at the ```Summary.xml``` level.
@@ -62,9 +62,9 @@ Inside Exports for each database file this will create a folder with the databas
 
 Inside the database folder (drumroll) there will be up to 13 subfolders, namely **Accounts, Assets, Basetables, CustomFunctions, CustomMenus, CustomMenuSets, Privileges, ExtendedPrivileges, Filereferences, Layouts, Relationships, Scripts and ValueLists.**
 
-+ Accounts - The name pattern is **"ID NAME.xml"**
++ Accounts - The name pattern for each account is **"ID NAME.xml"**
 
-+ Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type (JPEG -> .jpg) for known types or **".TYPE"** for unknown types.
++ Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type (JPEG -> .jpg) for known types or **".TYPE"** for unknown types. Using the SHA1 hecdigest as the filename has the advantage that identical files are stored only once.
 
 + Basetables - The name pattern is **"ID NAME.xml"**
 
