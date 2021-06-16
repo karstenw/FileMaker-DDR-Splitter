@@ -33,7 +33,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 ### Download an OSX app for OSX 10.9 and above.
 
-[Releases](./releases)
+[Releases](../../releases)
 
 
 ### Prerequisites
