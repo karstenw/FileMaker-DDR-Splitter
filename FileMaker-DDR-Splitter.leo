@@ -17,7 +17,7 @@
 <v t="karstenw.20170712103612.4"><vh>pp</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103629.1" a="E"><vh>@clean ddrsplit.py</vh>
+<v t="karstenw.20170712103629.1"><vh>@clean ddrsplit.py</vh>
 <v t="karstenw.20170712103639.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712183501.1"><vh>Globals</vh></v>
 <v t="karstenw.20170712183521.1"><vh>## TOOLS ##</vh>
@@ -76,11 +76,11 @@
 <v t="karstenw.20170712103729.8"><vh>addFilemakerAttribute</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103747.1" a="E"><vh>@clean setup.py</vh>
+<v t="karstenw.20170712103747.1"><vh>@clean setup.py</vh>
 <v t="karstenw.20170712103756.1"><vh>Declarations</vh></v>
 </v>
-<v t="karstenw.20170712103824.1" a="E"><vh>@clean README.md</vh>
-<v t="karstenw.20170712103836.1" a="E"><vh>FileMaker-DDR-Splitter</vh>
+<v t="karstenw.20170712103824.1"><vh>@clean README.md</vh>
+<v t="karstenw.20170712103836.1"><vh>FileMaker-DDR-Splitter</vh>
 <v t="karstenw.20170713122921.1"><vh>Why would I like to do that?</vh></v>
 <v t="karstenw.20170712103836.2"><vh>Download an OSX app for OSX 10.6 and above.</vh></v>
 <v t="karstenw.20170712103836.3" a="E"><vh>Prerequisites</vh>
@@ -1951,11 +1951,11 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 </t>
 <t tx="karstenw.20170712103836.3">### Prerequisites
 
-####For the Python script
+#### For the Python script
 </t>
 <t tx="karstenw.20170712103836.4">[Python 2.7](https://www.python.org/) - Version 2.5 and 2.6 should work. Version 3.x probably not. All libraries needed are included with Python.
 
-####For building the OSX app the following additional libraries are needed:
+#### For building the OSX app the following additional libraries are needed:
 </t>
 <t tx="karstenw.20170712103836.5">
 [PyObjC](https://pythonhosted.org/pyobjc/install.html)
@@ -1969,7 +1969,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 python ddrsplit.py /PATH/TO/Summary.xml
 ```
 
-...or run the OSX app.
+...or run the [OSX app](http://goo.gl/YwGc7K).
 
 
 This will create a folder named "Exports" at the ```Summary.xml``` level.
@@ -1978,9 +1978,9 @@ Inside Exports for each database file this will create a folder with the databas
 
 Inside the database folder (drumroll) there will be up to 13 subfolders, namely **Accounts, Assets, Basetables, CustomFunctions, CustomMenus, CustomMenuSets, Privileges, ExtendedPrivileges, Filereferences, Layouts, Relationships, Scripts and ValueLists.**
 
-+ Accounts - The name pattern is **"ID NAME.xml"**
++ Accounts - The name pattern for each account is **"ID NAME.xml"**
 
-+ Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type (JPEG -&gt; .jpg) for known types or **".TYPE"** for unknown types.
++ Assets - contains images and other stuff found in layouts. The filename will be it's [SHA-1](http://en.wikipedia.org/wiki/SHA-1) hexdigest. The file extension is either derived from it's type (JPEG -&gt; .jpg) for known types or **".TYPE"** for unknown types. Using the SHA1 hecdigest as the filename has the advantage that identical files are stored only once.
 
 + Basetables - The name pattern is **"ID NAME.xml"**
 
@@ -2002,7 +2002,7 @@ Inside the database folder (drumroll) there will be up to 13 subfolders, namely 
 
 + ValueLists - The name pattern is **"ID NAME.xml"**
 
-####New 2017-07-12
+#### New 2017-07-12
 
 + AuthFiles - The name pattern is **"ID NAME.xml"**
 
@@ -2189,27 +2189,27 @@ gREF = ReferenceCollector.ReferenceCollector()
 
 + Drop filename IDs - Omit IDs from filenames. This is useful when comparing two exports with git.
 
-+ OPML - disabled becaus ethey don't exist yet and remind me of writing them one day. The idea is to have an OPML export of scripts, basetables and layouts.
++ OPML - disabled because they don't exist yet and remind me of writing them one day. The idea is to have a OPML file for scripts, basetables and layouts which can be opened with any outliner.
 
 </t>
-<t tx="karstenw.20170713122921.1">###Why would I like to do that?
+<t tx="karstenw.20170713122921.1">### Why would I like to do that?
 
-####Because it's the cheapest and one of the fastest ways to find all occurences of a field for example. 
+#### Because it's the cheapest and one of the fastest ways to find all occurences of a field for example.
 
 + Split your DDR
 
-+ Use a text editor that can search directories (TextWrangler annd BBEdit on OSX come to mind) and search for a fieldname. 
++ Use a text editor that can search directories (TextWrangler and BBEdit on OSX come to mind) and search for a fieldname. 
 ![Search](./images/search1.png?raw=true)
 
 + The granularity of the found set is now down to scripts, layouts etc. instead of one big DDR file.
 ![Found](./images/search2.png?raw=true)
 
 
-####Because it makes versions of a database compaparable
+#### Because it makes versions of a database compaparable
 
 + Create a DDR and split it.
 
-+ check the export ionto a git repository
++ check the export into a git repository
 
 + make changes in the database
 
