@@ -31,9 +31,9 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 
 + ```git status``` and ```git diff ``` are very telling what changed in the database.
 
-### Download an OSX app for OSX 10.6 and above.
+### Download an OSX app for OSX 10.9 and above.
 
-[dropbox](http://goo.gl/YwGc7K)
+[Releases](../releases)
 
 
 ### Prerequisites
@@ -53,7 +53,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 python ddrsplit.py /PATH/TO/Summary.xml
 ```
 
-...or run the [OSX app](http://goo.gl/YwGc7K).
+...or run the [OSX app](../releases).
 
 
 This will create a folder named "Exports" at the ```Summary.xml``` level.
