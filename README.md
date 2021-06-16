@@ -53,7 +53,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 python ddrsplit.py /PATH/TO/Summary.xml
 ```
 
-...or run the [OSX app](../releases).
+...or run the [OSX app](../../releases).
 
 
 This will create a folder named "Exports" at the ```Summary.xml``` level.
