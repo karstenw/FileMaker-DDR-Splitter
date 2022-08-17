@@ -36,7 +36,7 @@ setup(
             'NSAppleScriptEnabled': False,
             'NSHumanReadableCopyright': copyright}}],
 
-    data_files=["English.lproj/MainMenu.xib",
+    data_files=["English.lproj/MainMenu.nib",
                 "Icon.icns"],
     options={
         'py2app':{
