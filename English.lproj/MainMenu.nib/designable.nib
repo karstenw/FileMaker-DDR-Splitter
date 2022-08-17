@@ -651,367 +651,404 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="-8" y="340"/>
         </menu>
-        <window title="FileMaker DDR Splitter" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" animationBehavior="default" id="367">
+        <customObject id="875" userLabel="FMPDDRSWindowController" customClass="FMPDDRSWindowController">
+            <connections>
+                <outlet property="btCancel" destination="Ooi-4v-Chh" id="Gcb-XV-aeY"/>
+                <outlet property="btExport" destination="FlX-Lt-eHJ" id="yra-6b-Ztq"/>
+                <outlet property="btOpenExport" destination="HbB-lH-oYn" id="Ghe-YX-e0Q"/>
+                <outlet property="btOpenSummary" destination="0IZ-9a-xqM" id="hAX-as-aeV"/>
+                <outlet property="cbAccounts" destination="TJZ-D6-wLP" id="t8n-CG-X6M"/>
+                <outlet property="cbAssets" destination="bE4-Ys-DJD" id="cjn-b8-GJ0"/>
+                <outlet property="cbAuthFiles" destination="87p-Nh-oh4" id="IMy-4m-IrU"/>
+                <outlet property="cbBaseDirectories" destination="WpK-82-Wgl" id="6CB-4z-6QV"/>
+                <outlet property="cbBaseTables" destination="hT7-in-fVQ" id="H9Q-Ze-Edk"/>
+                <outlet property="cbCustomFunctions" destination="ZWM-IO-OaE" id="DW2-3h-TJA"/>
+                <outlet property="cbCustomMenuSets" destination="stf-d1-KIv" id="pv0-1m-UlB"/>
+                <outlet property="cbCustomMenus" destination="3fj-mQ-XWO" id="vOs-k7-DB4"/>
+                <outlet property="cbExtendedPrivileges" destination="bCb-yv-E0K" id="CwR-74-0kk"/>
+                <outlet property="cbExternalDatasources" destination="Ftb-kd-Krs" id="aLr-9Z-nmL"/>
+                <outlet property="cbFileReferences" destination="kPA-Lf-dpt" id="9SJ-r6-7eZ"/>
+                <outlet property="cbIgnoreFilenameIDs" destination="3vQ-dX-srC" id="k3O-xs-6ZC"/>
+                <outlet property="cbLayoutFolders" destination="T2m-Bv-pKw" id="bV8-Ls-hko"/>
+                <outlet property="cbLayoutOrder" destination="FG1-ri-sGK" id="Xgp-3H-dTx"/>
+                <outlet property="cbLayouts" destination="I1C-eD-6zP" id="55s-wn-mSR"/>
+                <outlet property="cbPrivileges" destination="PlT-KY-4zm" id="Cyb-Ic-GJt"/>
+                <outlet property="cbReferenceCollection" destination="9V4-JY-aCU" id="vjd-eS-7fZ"/>
+                <outlet property="cbRelationships" destination="Uty-GJ-6nB" id="Lo6-4T-WCv"/>
+                <outlet property="cbScriptFolders" destination="aka-tH-KUR" id="RII-88-4Qg"/>
+                <outlet property="cbScriptOrder" destination="HP9-SK-eh8" id="MHw-96-8R5"/>
+                <outlet property="cbScripts" destination="LXS-lm-92r" id="p4M-pP-xkA"/>
+                <outlet property="cbThemeCatalog" destination="eX6-az-IlH" id="hAP-3X-JIU"/>
+                <outlet property="cbValueLists" destination="xaH-01-rgt" id="INZ-g5-cTb"/>
+                <outlet property="rbAssets" destination="bE4-Ys-DJD" id="sl8-5n-2hW"/>
+                <outlet property="tbExportFolder" destination="WEW-3r-y9V" id="qzp-X3-Q5z"/>
+                <outlet property="tbSummaryFile" destination="vqS-KQ-sKr" id="znk-V3-bPW"/>
+                <outlet property="tfStatusText" destination="Vlg-HD-mD0" id="Z08-EW-2LN"/>
+                <outlet property="window" destination="jZQ-Nd-oPx" id="KZe-AG-xCG"/>
+            </connections>
+        </customObject>
+        <customObject id="892" userLabel="FMPDDRSAppDelegate" customClass="FMPDDRSAppDelegate"/>
+        <window title="FileMaker DDR Splitter" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" animationBehavior="default" id="jZQ-Nd-oPx">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="131" y="328" width="717" height="680"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
             <value key="minSize" type="size" width="700" height="400"/>
-            <view key="contentView" id="368">
+            <view key="contentView" id="tu0-p7-TRd">
                 <rect key="frame" x="0.0" y="0.0" width="717" height="680"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="821">
+                    <textField verticalHuggingPriority="750" id="vqS-KQ-sKr">
                         <rect key="frame" x="162" y="638" width="452" height="22"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="822">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="Bcy-Zd-SbG">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="823">
+                    <textField verticalHuggingPriority="750" id="Udg-Ca-imB">
                         <rect key="frame" x="17" y="639" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Summary.xml:" id="824">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Summary.xml:" id="v1a-pA-jnL">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button imageHugsTitle="YES" id="827">
+                    <button id="hT7-in-fVQ">
                         <rect key="frame" x="160" y="583" width="130" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Base Tables" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="828">
+                        <buttonCell key="cell" type="check" title="Base Tables" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="Vhy-oN-bAT">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="831">
+                    <button verticalHuggingPriority="750" id="0IZ-9a-xqM">
                         <rect key="frame" x="641" y="634" width="57" height="27"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="Open" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="832">
+                        <buttonCell key="cell" type="squareTextured" title="Open" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uiY-An-fXU">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="openSummary:" target="875" id="890"/>
+                            <action selector="openSummary:" target="875" id="weM-CK-ybP"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="833">
+                    <textField verticalHuggingPriority="750" id="WEW-3r-y9V">
                         <rect key="frame" x="162" y="609" width="452" height="22"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="838">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="bQG-c2-6lG">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="834">
+                    <textField verticalHuggingPriority="750" id="Q8D-Qq-8Gf">
                         <rect key="frame" x="17" y="610" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Export Folder:" id="837">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Export Folder:" id="xYS-iB-tRg">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="835">
+                    <button verticalHuggingPriority="750" id="HbB-lH-oYn">
                         <rect key="frame" x="641" y="605" width="57" height="27"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="Open" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="836">
+                        <buttonCell key="cell" type="squareTextured" title="Open" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lBg-qs-Ut7">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="openSaveFolder:" target="875" id="891"/>
+                            <action selector="openSaveFolder:" target="875" id="VQy-fB-62c"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="896">
-                        <rect key="frame" x="610" y="401" width="88" height="27"/>
+                    <button verticalHuggingPriority="750" id="FlX-Lt-eHJ">
+                        <rect key="frame" x="610" y="268" width="88" height="27"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="Export" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="897">
+                        <buttonCell key="cell" type="squareTextured" title="Export" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Qof-bF-gTC">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="doExport:" target="875" id="899"/>
+                            <action selector="doExport:" target="875" id="jkz-Bf-fB7"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="845">
+                    <button id="TJZ-D6-wLP">
                         <rect key="frame" x="160" y="559" width="130" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Accounts" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="846">
+                        <buttonCell key="cell" type="check" title="Accounts" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="whq-Jb-iBK">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="847">
+                    <button id="ZWM-IO-OaE">
                         <rect key="frame" x="160" y="535" width="136" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Custom Functions" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="848">
+                        <buttonCell key="cell" type="check" title="Custom Functions" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="GJa-tf-9qG">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="849">
+                    <button id="3fj-mQ-XWO">
                         <rect key="frame" x="160" y="511" width="136" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Custom Menus" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="850">
+                        <buttonCell key="cell" type="check" title="Custom Menus" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="FKn-Z5-Ist">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="851">
+                    <button id="stf-d1-KIv">
                         <rect key="frame" x="160" y="487" width="140" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Custom Menu Sets" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="852">
+                        <buttonCell key="cell" type="check" title="Custom Menu Sets" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="YKJ-C9-NnV">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="853">
+                    <button id="bCb-yv-E0K">
                         <rect key="frame" x="341" y="559" width="145" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Extended Privileges" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="854">
+                        <buttonCell key="cell" type="check" title="Extended Privileges" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="qIW-XO-CA8">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="855">
+                    <button id="kPA-Lf-dpt">
                         <rect key="frame" x="341" y="535" width="145" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="File References" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="856">
+                        <buttonCell key="cell" type="check" title="File References" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="xyl-Ng-0WG">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="857">
-                        <rect key="frame" x="160" y="422" width="98" height="22"/>
+                    <button id="I1C-eD-6zP">
+                        <rect key="frame" x="160" y="364" width="98" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Layouts" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="858">
+                        <buttonCell key="cell" type="check" title="Layouts" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="2Il-Aq-VSX">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="859">
+                    <button id="Uty-GJ-6nB">
                         <rect key="frame" x="341" y="511" width="145" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Relationships" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="860">
+                        <buttonCell key="cell" type="check" title="Relationships" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="EUB-u0-sWR">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="861">
-                        <rect key="frame" x="160" y="398" width="98" height="22"/>
+                    <button id="LXS-lm-92r">
+                        <rect key="frame" x="160" y="340" width="98" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Scripts" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="862">
+                        <buttonCell key="cell" type="check" title="Scripts" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="Qza-WI-cmS">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="934">
-                        <rect key="frame" x="160" y="374" width="261" height="22"/>
+                    <button id="9V4-JY-aCU">
+                        <rect key="frame" x="160" y="316" width="261" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Cross References" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="935">
+                        <buttonCell key="cell" type="check" title="Cross References" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" state="on" inset="2" id="gwc-aw-9Sl">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="937">
-                        <rect key="frame" x="160" y="350" width="261" height="22"/>
+                    <button id="3vQ-dX-srC">
+                        <rect key="frame" x="160" y="292" width="261" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Drop Filename IDs" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="938">
+                        <buttonCell key="cell" type="check" title="Drop Filename IDs" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="cIn-V6-alW">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="863">
+                    <button id="xaH-01-rgt">
                         <rect key="frame" x="341" y="487" width="145" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Value Lists" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="864">
+                        <buttonCell key="cell" type="check" title="Value Lists" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="Yni-IP-UR4">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="865">
-                        <rect key="frame" x="262" y="422" width="159" height="22"/>
+                    <button id="87p-Nh-oh4">
+                        <rect key="frame" x="160" y="463" width="140" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Create Layout Folders" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="866">
+                        <buttonCell key="cell" type="check" title="Auth Files" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="k4o-k3-ykf">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="867">
-                        <rect key="frame" x="262" y="398" width="159" height="22"/>
+                    <button id="Ftb-kd-Krs">
+                        <rect key="frame" x="341" y="463" width="154" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Create Script Folders" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="868">
+                        <buttonCell key="cell" type="check" title="External Datasources" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="jBb-5m-4hu">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="869">
-                        <rect key="frame" x="440" y="422" width="159" height="22"/>
+                    <button id="eX6-az-IlH">
+                        <rect key="frame" x="160" y="439" width="140" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Keep Layout Order" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="870">
+                        <buttonCell key="cell" type="check" title="Themes" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="19S-sc-XMq">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="871">
-                        <rect key="frame" x="440" y="398" width="159" height="22"/>
+                    <button id="WpK-82-Wgl">
+                        <rect key="frame" x="341" y="439" width="145" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Keep Script Order" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="872">
+                        <buttonCell key="cell" type="check" title="Base Directories" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="h2J-Tv-dlI">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="902">
-                        <rect key="frame" x="160" y="446" width="98" height="22"/>
+                    <button id="T2m-Bv-pKw">
+                        <rect key="frame" x="262" y="364" width="159" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Assets" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="907">
+                        <buttonCell key="cell" type="check" title="Create Layout Folders" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="Zcc-93-XRL">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="908">
-                        <rect key="frame" x="264" y="447" width="308" height="20"/>
+                    <button id="aka-tH-KUR">
+                        <rect key="frame" x="262" y="340" width="159" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Create Script Folders" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="3Cm-i5-9IU">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button id="FG1-ri-sGK">
+                        <rect key="frame" x="440" y="364" width="159" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Keep Layout Order" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="3XL-4Q-Pp0">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button id="HP9-SK-eh8">
+                        <rect key="frame" x="440" y="340" width="159" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Keep Script Order" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="OIO-DZ-YiH">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button id="bE4-Ys-DJD">
+                        <rect key="frame" x="160" y="388" width="98" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Assets" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="ebA-9w-qWm">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="s6U-r5-3YX">
+                        <rect key="frame" x="264" y="389" width="308" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="100" height="20"/>
                         <size key="intercellSpacing" width="4" height="1"/>
-                        <buttonCell key="prototype" type="bevel" title="Radio" imagePosition="leading" alignment="left" enabled="NO" borderStyle="border" inset="2" id="911">
+                        <buttonCell key="prototype" type="bevel" title="Radio" imagePosition="left" alignment="left" enabled="NO" borderStyle="border" inset="2" id="c5H-xB-5QS">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <cells>
                             <column>
-                                <buttonCell type="radio" title="per Solution" imagePosition="leading" alignment="left" enabled="NO" state="on" tag="1" inset="2" id="909">
+                                <buttonCell type="radio" title="per Solution" imagePosition="left" alignment="left" enabled="NO" state="on" tag="1" inset="2" id="kjA-vH-EYl">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </column>
                             <column>
-                                <buttonCell type="radio" title="per File" imagePosition="leading" alignment="left" enabled="NO" inset="2" id="912">
+                                <buttonCell type="radio" title="per File" imagePosition="left" alignment="left" enabled="NO" inset="2" id="axF-5D-OS7">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </column>
                             <column>
-                                <buttonCell type="radio" title="per Layout" imagePosition="leading" alignment="left" enabled="NO" inset="2" id="913">
+                                <buttonCell type="radio" title="per Layout" imagePosition="left" alignment="left" enabled="NO" inset="2" id="2PK-nR-R1J">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </column>
                         </cells>
                     </matrix>
-                    <button imageHugsTitle="YES" id="917">
+                    <button id="PlT-KY-4zm">
                         <rect key="frame" x="341" y="583" width="145" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Privileges" bezelStyle="regularSquare" imagePosition="leading" alignment="left" state="on" inset="2" id="918">
+                        <buttonCell key="cell" type="check" title="Privileges" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="jsj-kQ-E5h">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="920">
-                        <rect key="frame" x="20" y="20" width="677" height="300"/>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="J9i-yI-oPz">
+                        <rect key="frame" x="20" y="20" width="677" height="235"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" id="LnH-oq-biH">
-                            <rect key="frame" x="1" y="1" width="660" height="298"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                        <clipView key="contentView" id="FwH-Qg-mWH">
+                            <rect key="frame" x="1" y="1" width="660" height="233"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="923">
-                                    <rect key="frame" x="0.0" y="26" width="660" height="298"/>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="Vlg-HD-mD0">
+                                    <rect key="frame" x="0.0" y="0.0" width="660" height="233"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="660" height="298"/>
-                                    <size key="maxSize" width="663" height="10000000"/>
-                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="660" height="233"/>
+                                    <size key="maxSize" width="677" height="10000000"/>
+                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="922">
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="xjZ-6b-3jT">
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="921">
-                            <rect key="frame" x="661" y="1" width="15" height="298"/>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="2OR-zf-wes">
+                            <rect key="frame" x="661" y="1" width="15" height="233"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <button verticalHuggingPriority="750" imageHugsTitle="YES" id="928">
-                        <rect key="frame" x="610" y="443" width="88" height="27"/>
+                    <button verticalHuggingPriority="750" id="Ooi-4v-Chh">
+                        <rect key="frame" x="610" y="310" width="88" height="27"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="squareTextured" title="Cancel" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="929">
+                        <buttonCell key="cell" type="squareTextured" title="Cancel" bezelStyle="texturedSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0xu-SI-MOT">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="doCancel:" target="875" id="933"/>
+                            <action selector="doCancel:" target="875" id="2g2-iT-370"/>
                         </connections>
                     </button>
-                    <button imageHugsTitle="YES" id="943">
-                        <rect key="frame" x="160" y="326" width="130" height="22"/>
+                    <button id="85G-R9-Vu9">
+                        <rect key="frame" x="160" y="268" width="130" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="OPML Export" bezelStyle="regularSquare" imagePosition="leading" alignment="left" enabled="NO" state="on" inset="2" id="944">
+                        <buttonCell key="cell" type="check" title="OPML Export" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" state="on" inset="2" id="x77-MV-TPt">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="945">
-                        <rect key="frame" x="307" y="326" width="130" height="22"/>
+                    <button id="bXo-Cv-nzF">
+                        <rect key="frame" x="307" y="268" width="130" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="OPML Split Files" bezelStyle="regularSquare" imagePosition="leading" alignment="left" enabled="NO" state="on" inset="2" id="946">
+                        <buttonCell key="cell" type="check" title="OPML Split Files" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" state="on" inset="2" id="r9t-m2-7dY">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button imageHugsTitle="YES" id="947">
-                        <rect key="frame" x="454" y="326" width="130" height="22"/>
+                    <button id="2Of-Hn-gSf">
+                        <rect key="frame" x="454" y="268" width="130" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="OPML Details" bezelStyle="regularSquare" imagePosition="leading" alignment="left" enabled="NO" state="on" inset="2" id="948">
+                        <buttonCell key="cell" type="check" title="OPML Details" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" state="on" inset="2" id="AgS-fs-OfZ">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="55" y="-95"/>
         </window>
-        <customObject id="875" userLabel="FMPDDRSWindowController" customClass="FMPDDRSWindowController">
-            <connections>
-                <outlet property="btCancel" destination="928" id="931"/>
-                <outlet property="btExport" destination="896" id="932"/>
-                <outlet property="btOpenExport" destination="835" id="926"/>
-                <outlet property="btOpenSummary" destination="831" id="927"/>
-                <outlet property="cbAccounts" destination="845" id="876"/>
-                <outlet property="cbAssets" destination="902" id="914"/>
-                <outlet property="cbBaseTables" destination="827" id="877"/>
-                <outlet property="cbCustomFunctions" destination="847" id="878"/>
-                <outlet property="cbCustomMenuSets" destination="851" id="880"/>
-                <outlet property="cbCustomMenus" destination="849" id="879"/>
-                <outlet property="cbExtendedPrivileges" destination="853" id="881"/>
-                <outlet property="cbFileReferences" destination="855" id="882"/>
-                <outlet property="cbIgnoreFilenameIDs" destination="937" id="942"/>
-                <outlet property="cbLayoutFolders" destination="865" id="883"/>
-                <outlet property="cbLayoutOrder" destination="869" id="884"/>
-                <outlet property="cbLayouts" destination="857" id="885"/>
-                <outlet property="cbPrivileges" destination="917" id="919"/>
-                <outlet property="cbReferenceCollection" destination="934" id="936"/>
-                <outlet property="cbRelationships" destination="859" id="886"/>
-                <outlet property="cbScriptFolders" destination="867" id="887"/>
-                <outlet property="cbScriptOrder" destination="871" id="888"/>
-                <outlet property="cbScripts" destination="861" id="916"/>
-                <outlet property="cbValueLists" destination="863" id="889"/>
-                <outlet property="rbAssets" destination="908" id="915"/>
-                <outlet property="tbExportFolder" destination="833" id="894"/>
-                <outlet property="tbSummaryFile" destination="821" id="895"/>
-                <outlet property="tfStatusText" destination="923" id="925"/>
-                <outlet property="window" destination="367" id="900"/>
-            </connections>
-        </customObject>
-        <customObject id="892" userLabel="FMPDDRSAppDelegate" customClass="FMPDDRSAppDelegate"/>
     </objects>
 </document>
