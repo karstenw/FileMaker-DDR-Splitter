@@ -17,8 +17,9 @@
 <v t="karstenw.20170712103612.4"><vh>pp</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103629.1"><vh>@clean ddrsplit.py</vh>
+<v t="karstenw.20170712103629.1" a="E"><vh>@clean ddrsplit.py</vh>
 <v t="karstenw.20170712103639.1"><vh>Declarations</vh></v>
+<v t="karstenw.20220817131600.1"><vh>py3 stuff</vh></v>
 <v t="karstenw.20170712183501.1"><vh>Globals</vh></v>
 <v t="karstenw.20170712183521.1"><vh>## TOOLS ##</vh>
 <v t="karstenw.20170712103639.2"><vh>makeunicode</vh></v>
@@ -39,7 +40,9 @@
 <v t="karstenw.20170712103639.11"><vh>get_scripts_and_groups</vh></v>
 <v t="karstenw.20170712103639.12"><vh>get_relationshipgraph_catalog</vh></v>
 </v>
-<v t="karstenw.20170712103639.13"><vh>main</vh></v>
+<v t="karstenw.20170712103639.13" a="E"><vh>main</vh>
+<v t="karstenw.20220817133855.1"><vh>newHeadline</vh></v>
+</v>
 </v>
 <v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
 <v t="karstenw.20170712103714.1"><vh>Declarations</vh></v>
@@ -76,10 +79,10 @@
 <v t="karstenw.20170712103729.8"><vh>addFilemakerAttribute</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103747.1"><vh>@clean setup.py</vh>
+<v t="karstenw.20170712103747.1" a="E"><vh>@clean setup.py</vh>
 <v t="karstenw.20170712103756.1"><vh>Declarations</vh></v>
 </v>
-<v t="karstenw.20170712103824.1"><vh>@clean README.md</vh>
+<v t="karstenw.20170712103824.1" a="E"><vh>@clean README.md</vh>
 <v t="karstenw.20170712103836.1"><vh>FileMaker-DDR-Splitter</vh>
 <v t="karstenw.20170713122921.1"><vh>Why would I like to do that?</vh></v>
 <v t="karstenw.20170712103836.2"><vh>Download an OSX app for OSX 10.6 and above.</vh></v>
@@ -259,33 +262,6 @@ import xml.parsers.expat
 import Config
 
 import ReferenceCollector
-
-
-
-
-# py3 stuff
-
-py3 = False
-try:
-    unicode('')
-    punicode = unicode
-    pstr = str
-    punichr = unichr
-except NameError:
-    punicode = str
-    pstr = bytes
-    py3 = True
-    punichr = chr
-
-
-def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
-    if type(s) not in (punicode, pstr):
-        s = str( s )
-    if type(s) != punicode:
-        s = punicode(s, srcencoding)
-    s = unicodedata.normalize(normalizer, s)
-    return s
-
 
 </t>
 <t tx="karstenw.20170712103639.10">def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
@@ -1136,7 +1112,15 @@ def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
     print
 
 </t>
-<t tx="karstenw.20170712103639.2">
+<t tx="karstenw.20170712103639.2">def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
+    if type(s) not in (punicode, pstr):
+        s = str( s )
+    if type(s) != punicode:
+        s = punicode(s, srcencoding)
+    s = unicodedata.normalize(normalizer, s)
+    return s
+
+
 </t>
 <t tx="karstenw.20170712103639.3">def stringhash( s ):
     m = hashlib.sha1()
@@ -1993,11 +1977,9 @@ appname = "FileMaker DDR Splitter"
 appnameshort = "FMPSplit"
 version = "V0.4.1"
 
-copyright = u"Copyright 2015 Karsten Wolf"
+copyright = u"Copyright 2015-2022 Karsten Wolf"
 
 infostr = appname + u' ' + version + u' ' + copyright
-
-
 
 setup(
     app=[{
@@ -2314,5 +2296,21 @@ gREF = ReferenceCollector.ReferenceCollector()
 + ```git status``` and ```git diff ``` are very telling what changed in the database.
 
 </t>
+<t tx="karstenw.20220817131600.1"># py3 stuff
+
+py3 = False
+try:
+    unicode('')
+    punicode = unicode
+    pstr = str
+    punichr = unichr
+except NameError:
+    punicode = str
+    pstr = bytes
+    py3 = True
+    punichr = chr
+
+</t>
+<t tx="karstenw.20220817133855.1"></t>
 </tnodes>
 </leo_file>

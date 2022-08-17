@@ -17,11 +17,9 @@ appname = "FileMaker DDR Splitter"
 appnameshort = "FMPSplit"
 version = "V0.4.1"
 
-copyright = u"Copyright 2015 Karsten Wolf"
+copyright = u"Copyright 2015-2022 Karsten Wolf"
 
 infostr = appname + u' ' + version + u' ' + copyright
-
-
 
 setup(
     app=[{

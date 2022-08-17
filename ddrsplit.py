@@ -27,9 +27,6 @@ import Config
 
 import ReferenceCollector
 
-
-
-
 # py3 stuff
 
 py3 = False
@@ -44,16 +41,6 @@ except NameError:
     py3 = True
     punichr = chr
 
-
-def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
-    if type(s) not in (punicode, pstr):
-        s = str( s )
-    if type(s) != punicode:
-        s = punicode(s, srcencoding)
-    s = unicodedata.normalize(normalizer, s)
-    return s
-
-
 #
 # globals
 #
@@ -64,6 +51,14 @@ gREF = ReferenceCollector.ReferenceCollector()
 #
 # tools
 #
+def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
+    if type(s) not in (punicode, pstr):
+        s = str( s )
+    if type(s) != punicode:
+        s = punicode(s, srcencoding)
+    s = unicodedata.normalize(normalizer, s)
+    return s
+
 
 def stringhash( s ):
     m = hashlib.sha1()
