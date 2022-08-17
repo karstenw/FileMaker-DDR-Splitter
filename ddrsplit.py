@@ -18,8 +18,8 @@ pp = pprint.pprint
 
 import pdb
 
-import xml.etree.cElementTree
-ElementTree = xml.etree.cElementTree
+import xml.etree.ElementTree
+ElementTree = xml.etree.ElementTree
 
 import xml.parsers.expat
 
@@ -67,7 +67,7 @@ def stringhash( s ):
 
 def logfunction(s):
     s = s + u"\n"
-    sys.stdout.write( s.encode("utf-8") )
+    sys.stdout.write( s )
 
 #
 # parsers
@@ -342,7 +342,7 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
             if not cfg.assets:
                 continue
 
-            for l in layout.getchildren():
+            for l in list(layout):
                 t = l.tag
                 if t == u'Object':
                     get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
@@ -580,7 +580,7 @@ def get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
                     relid = re_attr.get("id", "0")
                     rel_cat['id'] = re_attr.get("id", "0")
 
-                    for rel_component in rel.getchildren():
+                    for rel_component in list(rel):
                         if rel_component.tag == "LeftTable":
                             rel_cat['lefttable'] = rel_component.attrib.get("name",
                                                                 "NO-LEFTTABLENAME")
@@ -618,8 +618,11 @@ def handleSummaryFile( xmlfile, log ):
 
     isSummary = isXMLExport = 0
 
-    for fmpreport in summary.getiterator("FMPReport"):
-        for xmlfile in fmpreport.getiterator("File"):
+    # pdb.set_trace()
+
+    for fmpreport in summary.iter("FMPReport"):
+        for xmlfile in fmpreport.iter("File"):
+            # print( xmlfile )
             isSummary += 1
             xml_fmpfilename = xmlfile.get("name", "NO FILE NAME")
             xml_xmllink = xmlfile.get("link", "")
@@ -678,8 +681,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     # todo check if refs && cfg.filereferences
 
     log( u'File References "%s"' % cur_fmpxml )
-    for fr_cat in basenode.getiterator ( "FileReferenceCatalog" ):
-        for fileref in fr_cat.getchildren():
+    for fr_cat in basenode.iter ( "FileReferenceCatalog" ):
+        for fileref in list(fr_cat):
             fileref_attrib = fileref.attrib
             prefix = ""
             if fileref.tag == "OdbcDataSource":
@@ -731,7 +734,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.relationships:
         log( u'Relationship Graph "%s"' % cur_fmpxml )
-        for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
+        for rg_cat in basenode.iter ( "RelationshipGraph" ):
             get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db,
                                           cur_fmpbasename, rg_cat, exportfolder)
         # collect references from FRF to FRF
@@ -743,8 +746,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.basetables:
         log( u'Base Tables "%s"' % cur_fmpxml )
-        for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
-            for base_table in base_table_catalog.getiterator( u'BaseTable' ):
+        for base_table_catalog in basenode.iter( u'BaseTableCatalog' ):
+            for base_table in base_table_catalog.iter( u'BaseTable' ):
                 bt_name = base_table.get("name", "NONAME")
                 bt_id = base_table.get("id", "0")
                 s = ElementTree.tostring(base_table,
@@ -777,8 +780,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
                 # FIELDS
                 #
                 # cur_db, cur_btRef, bt_name, bt_id, bt_objID
-                for field_catalog in base_table.getiterator( u'FieldCatalog' ):
-                    for field in field_catalog.getiterator( u'Field' ):
+                for field_catalog in base_table.iter( u'FieldCatalog' ):
+                    for field in field_catalog.iter( u'Field' ):
                         # dataType="Date"
                         # fieldType="Normal"
                         # id="9"
@@ -811,7 +814,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.layouts:
         log( u'Layout Catalog "%s"' % cur_fmpxml )
-        for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
+        for layout_catalog in basenode.iter ( "LayoutCatalog" ):
             groups = []
             get_layouts_and_groups(cfg,
                                    cur_fmpxml,
@@ -829,8 +832,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.accounts:
         log( u'Accounts for "%s"' % cur_fmpxml )
-        for acc_cat in basenode.getiterator ( "AccountCatalog" ):
-            for acc in acc_cat.getchildren():
+        for acc_cat in basenode.iter ( "AccountCatalog" ):
+            for acc in list(acc_cat):
                 acc_attrib = acc.attrib
                 s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
 
@@ -853,7 +856,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.scripts:
         log( u'Scripts for "%s"' % cur_fmpxml )
-        for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
+        for scpt_cat in basenode.iter ( "ScriptCatalog" ):
             groups = []
             namecache = [{},{}]
             get_scripts_and_groups(cfg,
@@ -875,9 +878,9 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.customfunctions:
         log( u'Custom Functions for "%s"' % cur_fmpxml )
-        for cf_cat in basenode.getiterator ( "CustomFunctionCatalog" ):
+        for cf_cat in basenode.iter ( "CustomFunctionCatalog" ):
             groups = []
-            for cf in cf_cat.getchildren():
+            for cf in list(cf_cat):
                 cf_attrib = cf.attrib
                 s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
 
@@ -900,8 +903,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.privileges:
         log( u'Privileges for "%s"' % cur_fmpxml )
-        for pv_cat in basenode.getiterator( "PrivilegesCatalog" ):
-            for pv in pv_cat.getchildren():
+        for pv_cat in basenode.iter( "PrivilegesCatalog" ):
+            for pv in list(pv_cat):
                 pv_attrib = pv.attrib
                 s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
 
@@ -924,8 +927,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.extendedprivileges:
         log( u'Extended Privileges for "%s"' % cur_fmpxml )
-        for epv_cat in basenode.getiterator( "ExtendedPrivilegeCatalog" ):
-            for epv in epv_cat.getchildren():
+        for epv_cat in basenode.iter( "ExtendedPrivilegeCatalog" ):
+            for epv in list(epv_cat):
                 epv_attrib = epv.attrib
                 s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
 
@@ -948,7 +951,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.authfile:
         log( u'AuthFile Catalog "%s"' % cur_fmpxml )
-        for authfile_catalog in basenode.getiterator ( "AuthFileCatalog" ):
+        for authfile_catalog in basenode.iter ( "AuthFileCatalog" ):
             groups = []
             get_authfilecatalog(cfg,
                                    cur_fmpxml,
@@ -965,7 +968,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.externaldatasources:
         log( u'ExternalDataSources Catalog "%s"' % cur_fmpxml )
-        for externaldatasource in basenode.getiterator ( "ExternalDataSourcesCatalog" ):
+        for externaldatasource in basenode.iter ( "ExternalDataSourcesCatalog" ):
             groups = []
             get_externaldatasources(cfg,
                                    cur_fmpxml,
@@ -982,7 +985,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.themecatalog:
         log( u'Theme Catalog "%s"' % cur_fmpxml )
-        for theme in basenode.getiterator ( "ThemeCatalog" ):
+        for theme in basenode.iter ( "ThemeCatalog" ):
             groups = []
             get_themecatalog(cfg,
                                cur_fmpxml,
@@ -999,7 +1002,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.basedirectory:
         log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
-        for basedir in basenode.getiterator ( "BaseDirectoryList" ):
+        for basedir in basenode.iter ( "BaseDirectoryList" ):
             groups = []
             get_basedirectories(cfg,
                                cur_fmpxml,
@@ -1015,8 +1018,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.custommenus:
         log( u'Custom Menus for "%s"' % cur_fmpxml )
-        for cm_cat in basenode.getiterator( "CustomMenuCatalog" ):
-            for cm in cm_cat.getchildren():
+        for cm_cat in basenode.iter( "CustomMenuCatalog" ):
+            for cm in list(cm_cat):
                 cm_attrib = cm.attrib
                 s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
 
@@ -1039,8 +1042,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.custommenusets:
         log( u'Custom Menu Sets for "%s"' % cur_fmpxml )
-        for cms_cat in basenode.getiterator( "CustomMenuSetCatalog" ):
-            for cms in cms_cat.getchildren():
+        for cms_cat in basenode.iter( "CustomMenuSetCatalog" ):
+            for cms in list(cms_cat):
                 cms_attrib = cms.attrib
                 s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
 
@@ -1063,8 +1066,8 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     #
     if cfg.valueLists:
         log('Value Lists for "%s"' % cur_fmpxml )
-        for vl_cat in basenode.getiterator( "ValueListCatalog" ):
-            for vl in vl_cat.getchildren():
+        for vl_cat in basenode.iter( "ValueListCatalog" ):
+            for vl in list(vl_cat):
                 vl_attrib = vl.attrib
                 s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
 
@@ -1215,16 +1218,17 @@ def main(cfg):
         # handleXMLFile( cfg, next_xml_file_path, filelist )
         handleXMLFile( cfg, next_xml_file_path, filelist, log )
 
-    time.sleep(0.3)
+    # time.sleep(0.3)
     stoptime = time.time()
     
     t = "\nRuntime %.4f\n\n####  FINISHED.  ####\n\n"
     log(t % ( round(stoptime - starttime, 4), ))
 
-    # pdb.set_trace()
-    print( "FileReferences" )
-    pp( gREF.fileReferences )
-    print()
+    if 0:
+        print( "FileReferences" )
+        pp( gREF.fileReferences )
+        print()
+
 
 
 if __name__ == '__main__':
@@ -1247,14 +1251,14 @@ if __name__ == '__main__':
         cfg.extendedprivileges = True
         cfg.filereferences = True
         cfg.layouts = True
-        cfg.layoutGroups = False
-        cfg.layoutOrder = False
+        cfg.layoutGroups = True
+        cfg.layoutOrder = True
         cfg.relationships = True
         cfg.scripts = True
         cfg.valueLists = True
 
-        cfg.scriptGroups = False
-        cfg.scriptOrder = False
+        cfg.scriptGroups = True
+        cfg.scriptOrder = True
 
         cfg.ignoreFilenameIDs = False
 
@@ -1262,6 +1266,5 @@ if __name__ == '__main__':
         cfg.summaryfile = f
         cfg.exportfolder = os.path.join( folder, "Exports")
         cfg.logfunction = logfunction
-        
-        
+
         main( cfg )

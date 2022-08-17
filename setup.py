@@ -15,7 +15,7 @@ import py2app
 
 appname = "FileMaker DDR Splitter"
 appnameshort = "FMPSplit"
-version = "V0.4.1"
+version = "V0.5.0"
 
 copyright = u"Copyright 2015-2022 Karsten Wolf"
 
@@ -41,7 +41,7 @@ setup(
     options={
         'py2app':{
             'iconfile': "Icon.icns",
-            'excludes':[ 'Tkinter',
+            'excludes':[ 'Tkinter', 'tk', 'tkinter',
                          'scipy', 'matplotlib', 'pandas', 'cv2', 'dlib',
                          'skimage', 'sklearn', 'mpl_toolkits' ],
         },
