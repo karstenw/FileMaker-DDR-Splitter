@@ -6,7 +6,11 @@ Usage:
 """
 import os
 
-from distutils.core import setup
+from setuptools import setup
+#from setuptools.extension import Extension
+
+#from distutils.core import setup
+
 import py2app
 
 appname = "FileMaker DDR Splitter"
@@ -39,7 +43,9 @@ setup(
     options={
         'py2app':{
             'iconfile': "Icon.icns",
-            'excludes':['Tkinter',],
+            'excludes':[ 'Tkinter',
+                         'scipy', 'matplotlib', 'pandas', 'cv2', 'dlib',
+                         'skimage', 'sklearn', 'mpl_toolkits' ],
         },
     },
 )
