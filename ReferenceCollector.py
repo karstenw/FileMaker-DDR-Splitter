@@ -58,16 +58,17 @@ class ReferenceCollector(object):
 
         
         self.variables = {}
-
+        
         
     def pp(self):
         pass
-
+        
+        
     def addObject(self, obj):
         """retrieve ID for object. Add obj to collection if necessary."""
 
-        if 0: #obj == "":
-            pdb.set_trace()
+        #if obj == "":
+        #    pdb.set_trace()
         
         # xmlref, typ, name, *rest = obj
 

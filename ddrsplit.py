@@ -1129,7 +1129,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
         except Exception as err:
             print()
             print( err )
-            pdb.set_trace()
+            # pdb.set_trace()
             print()
             
     f.close()
@@ -1154,7 +1154,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
             except Exception as err:
                 print()
                 print( err )
-                pdb.set_trace()
+                # pdb.set_trace()
                 print()
 
     f.close()
@@ -1183,7 +1183,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
                 print()
                 print( err )
                 print()
-                pdb.set_trace()
+                # pdb.set_trace()
 
     f.close()
 
