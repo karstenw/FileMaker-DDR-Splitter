@@ -1,12 +1,16 @@
 
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import sys
 import os
 
 import traceback
+import unicodedata
 
-import thread
+# import thread
+import threading
 
 import time
 import re
@@ -16,8 +20,6 @@ kwdbg = False
 
 import pprint
 pp = pprint.pprint
-
-import thread
 
 import objc
 
@@ -39,8 +41,35 @@ import PyObjCTools.AppHelper
 import Config
 import ddrsplit
 
+
+
 gIsRunning = False
 gLastUpdate = 0.0
+
+
+# py3 stuff
+
+py3 = False
+try:
+    unicode('')
+    punicode = unicode
+    pstr = str
+    punichr = unichr
+except NameError:
+    punicode = str
+    pstr = bytes
+    py3 = True
+    punichr = chr
+
+
+def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
+    if type(s) not in (punicode, pstr):
+        s = str( s )
+    if type(s) != punicode:
+        s = punicode(s, srcencoding)
+    s = unicodedata.normalize(normalizer, s)
+    return s
+
 
 
 class FMPDDRSWindowController (NSWindowController):
@@ -137,14 +166,15 @@ class FMPDDRSWindowController (NSWindowController):
     def openSummary_(self, sender):
         summary = getSummaryFileDialog()
         if summary and os.path.exists( summary ):
-            self.summaryFile = unicode(summary)
+            self.summaryFile = makeunicode(summary)
             self.tbSummaryFile.setStringValue_( self.summaryFile )
 
     @objc.IBAction
     def openSaveFolder_(self, sender):
+        # pdb.set_trace()
         folder = getFolderDialog()
         if folder and os.path.exists( folder ):
-            self.saveFolder = unicode(folder)
+            self.saveFolder = makeunicode(folder)
             self.tbExportFolder.setStringValue_( self.saveFolder )
 
     @objc.IBAction
@@ -238,7 +268,11 @@ class FMPDDRSWindowController (NSWindowController):
         cfg.logfunction = callFromWorkerMsg_
 
         if 1:
-            thread.start_new_thread(threadwrapper, (cfg, ) )
+            # thread.start_new_thread(threadwrapper, (cfg, ) )
+            threading.Thread(target=threadwrapper,
+                             args=(cfg, ),
+                             # kwargs={'dict': 'of', 'keyword': 'args'},
+                            ).start()
         else:
             threadwrapper(cfg)
 
@@ -349,9 +383,8 @@ class FMPDDRSAppDelegate(NSObject):
     def setstatus_show_(self, appendage, showit=False):
         global gLastUpdate
         s = appendage + u"\n"
-        if type(s) != unicode:
-            s = unicode(appendage, "utf-8")
-        sys.stdout.write(s.encode("utf-8"))
+        s = makeunicode( s )
+        sys.stdout.write( s )
         # view
         app = NSApplication.sharedApplication()
         wins = app.windows()
@@ -374,10 +407,10 @@ class FMPDDRSAppDelegate(NSObject):
         try:
             t = NSAttributedString.alloc().initWithString_(s)
             storage.appendAttributedString_(t)
-        except Exception, v:
-            print
-            print "ERROR status inserting:", v
-            print
+        except Exception as v:
+            print()
+            print( "ERROR status inserting:", v )
+            print()
         
         tm = time.time()
         if showit and tm >= gLastUpdate + 0.3:
@@ -385,10 +418,10 @@ class FMPDDRSAppDelegate(NSObject):
             try:
                 myView.scrollRangeToVisible_(endRange)
                 myView.setNeedsDisplay_(True)
-            except Exception, v:
-                print
-                print "ERROR status scrolling:", v
-                print
+            except Exception as v:
+                print()
+                print( "ERROR status scrolling:", v )
+                print()
 
 
 def threadwrapper(cfg):
@@ -410,10 +443,10 @@ def threadwrapper(cfg):
     try:
         ddrsplit.main(cfg)
 
-    except (Exception,), v:
+    except (Exception,) as v:
         tb = traceback.format_exc()
-        tb = unicode( tb )
-        v = unicode( repr(v) )
+        tb = makeunicode( tb )
+        v = makeunicode( v )
         tb = tb + u"\n\n" + v
         sys.stdout.write( tb )
 
@@ -431,7 +464,7 @@ def getFolderDialog():
     panel.setAllowsMultipleSelection_(False)
     rval = panel.runModalForTypes_([])
     if rval != 0:
-        f = [unicode(t) for t in panel.filenames()]
+        f = [makeunicode(t) for t in panel.filenames()]
         return f[0]
     else:
         return False
@@ -443,7 +476,7 @@ def getSummaryFileDialog():
     panel.setAllowsMultipleSelection_(False)
     rval = panel.runModalForTypes_( ['xml'] )
     if rval != 0:
-        f = [unicode(t) for t in panel.filenames()]
+        f = [makeunicode(t) for t in panel.filenames()]
         return f[0]
     else:
         return False
@@ -457,10 +490,10 @@ def statwrap_(message):
     delg = appl.delegate()
     try:
         delg.setstatus_show_(message, 1)
-    except Exception, v:
-        print
-        print "STATUS WRAPPER ERROR:", v
-        print
+    except Exception as v:
+        print()
+        print( "STATUS WRAPPER ERROR:", v )
+        print()
 
 
 if __name__ == "__main__":

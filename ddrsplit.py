@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import sys
 import os
 
+import io
 import unicodedata
 import time
 import binascii
@@ -24,6 +27,33 @@ import Config
 
 import ReferenceCollector
 
+
+
+
+# py3 stuff
+
+py3 = False
+try:
+    unicode('')
+    punicode = unicode
+    pstr = str
+    punichr = unichr
+except NameError:
+    punicode = str
+    pstr = bytes
+    py3 = True
+    punichr = chr
+
+
+def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
+    if type(s) not in (punicode, pstr):
+        s = str( s )
+    if type(s) != punicode:
+        s = punicode(s, srcencoding)
+    s = unicodedata.normalize(normalizer, s)
+    return s
+
+
 #
 # globals
 #
@@ -34,11 +64,6 @@ gREF = ReferenceCollector.ReferenceCollector()
 #
 # tools
 #
-def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
-    if type(s) != unicode:
-        s = unicode(s, srcencoding)
-    s = unicodedata.normalize(normalizer, s)
-    return s
 
 def stringhash( s ):
     m = hashlib.sha1()
@@ -47,7 +72,7 @@ def stringhash( s ):
 
 def logfunction(s):
     s = s + u"\n"
-    sys.stdout.write(s.encode("utf-8"))
+    sys.stdout.write( s.encode("utf-8") )
 
 #
 # parsers
@@ -70,7 +95,7 @@ def xmlexportfolder(basefolder, dbname, category, obname, obid="", ext=".xml"):
 
     fullpath = os.path.join( catfolder, filename)
     fullpath = makeunicode( fullpath, normalizer="NFD" )
-    return fullpath.encode("utf-8")
+    return fullpath
 
 
 def get_text_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, cur_node, cur_object):
@@ -387,12 +412,12 @@ def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                             if streamtag == "HexData":
                                 try:
                                     data = binascii.unhexlify ( streamtext )
-                                except TypeError, err:
+                                except TypeError as err:
                                     pass
                             elif streamtag == "Data":
                                 try:
                                     data = base64.b64decode( streamtext )
-                                except TypeError, err:
+                                except TypeError as err:
                                     pass
                             if not data:
                                 continue
@@ -633,12 +658,12 @@ def main(cfg):
         # some UI glitz
         line = '-' * 100
         log( u"\n\n%s\n\nXMLFILE: %s" % (line, cur_xml_file_name) )
-        print "filelist[ xml_xmllink ]:", repr(filelist[ cur_xml_file_name ])
+        print( "filelist[ xml_xmllink ]:", repr(filelist[ cur_xml_file_name ]) )
 
         # parse xml file
         try:
             basenode = ElementTree.parse( next_xml_file_path )
-        except  (xml.parsers.expat.ExpatError, SyntaxError), v:
+        except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
             xml.parsers.expat.error()
             log( u"EXCEPTION: '%s'" % v )
             log( u"Failed parsing '%s'\n" % next_xml_file_path )
@@ -1065,8 +1090,8 @@ def main(cfg):
             log("\n\n####  CANCELLED.  ####")
             return
         else:
-            print
-            print
+            print()
+            print()
 
     #
     # References
@@ -1079,10 +1104,13 @@ def main(cfg):
                            "References",
                            "id_object",
                            ext=".tab")
-    f = open(path, "wb")
+    f = io.open(path, "wb")
     s = u"%i\t%s\n"
     s = u"%i\t%s\t%s\t%s\t%s\t%s\n"
-    keys = gREF.objectsReverse.keys()
+    keys = list( gREF.objectsReverse.keys() )
+    
+    # pdb.set_trace()
+    
     keys.sort()
     for key in keys:
         v = gREF.objectsReverse[ key ]
@@ -1095,34 +1123,50 @@ def main(cfg):
             s5 = v[4]
             
         t = s % (key, s1, s2, s3, s4, s5)
-        f.write( t.encode("utf-8") )
+        try:
+            f.write( t.encode("utf-8") )
+        except Exception as err:
+            print()
+            print( err )
+            pdb.set_trace()
+            print()
+            
     f.close()
-
-
+    
+    # pdb.set_trace()
+    
     # filemakerAttributes
     path = xmlexportfolder(exportfolder,
                            "",
                            "References",
                            "objid_name_fmpattribute",
                            ext=".tab")
-    f = open(path, "wb")
+    f = io.open(path, "wb")
     s = u"%s\t%s\t%s\n"
     for objid in gREF.filemakerAttributes:
         obj = gREF.filemakerAttributes[objid]
         for name in obj:
             v = obj[name]
             t = s % (objid, name, v)
-            f.write( t.encode("utf-8") )
+            try:
+                f.write( t.encode("utf-8") )
+            except Exception as err:
+                print()
+                print( err )
+                pdb.set_trace()
+                print()
+
     f.close()
-
-
+    
+    # pdb.set_trace()
+    
     # references
     path = xmlexportfolder(exportfolder,
                            "",
                            "References",
                            "objid_objid_reference",
                            ext=".tab")
-    f = open(path, "wb")
+    f = io.open(path, "wb")
     s = u"%i\t%i\n"
     keys = gREF.references.keys()
     #keys.sort()
@@ -1131,9 +1175,19 @@ def main(cfg):
         #referrers.sort()
         for r2 in referrers:
             t = s % (r1, r2)
-            f.write( t.encode("utf-8") )
+            try:
+                f.write( t.encode("utf-8") )
+            except Exception as err:
+                print()
+                print( err )
+                print()
+                pdb.set_trace()
+
     f.close()
 
+    
+    # pdb.set_trace()
+    
     time.sleep(0.3)
     stoptime = time.time()
     
@@ -1141,7 +1195,7 @@ def main(cfg):
     log(t % ( round(stoptime - starttime, 4), ))
 
     # pdb.set_trace()
-    print "FileReferences"
+    print( "FileReferences" )
     pp( gREF.fileReferences )
     print
 

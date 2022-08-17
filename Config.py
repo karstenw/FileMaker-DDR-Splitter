@@ -1,9 +1,10 @@
 
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 import sys
 import os
-
 
 
 class Config(object):
@@ -50,33 +51,33 @@ class Config(object):
         self.OPMLDetails = False
 
     def pp(self):
-        print "accounts", repr(self.accounts)
-        print "assets", repr(self.assets)
-        print "basetables", repr(self.basetables)
-        print "customfunctions", repr(self.customfunctions)
-        print "custommenus", repr(self.custommenus)
-        print "custommenusets", repr(self.custommenusets)
-        print "privileges", repr(self.privileges)
-        print "extendedprivileges", repr(self.extendedprivileges)
-        print "filereferences", repr(self.filereferences)
-        print "layouts", repr(self.layouts)
-        print "layoutGroups", repr(self.layoutGroups)
-        print "layoutOrder", repr(self.layoutOrder)
+        print( "accounts", repr(self.accounts) )
+        print( "assets", repr(self.assets) )
+        print( "basetables", repr(self.basetables) )
+        print( "customfunctions", repr(self.customfunctions) )
+        print( "custommenus", repr(self.custommenus) )
+        print( "custommenusets", repr(self.custommenusets) )
+        print( "privileges", repr(self.privileges) )
+        print( "extendedprivileges", repr(self.extendedprivileges) )
+        print( "filereferences", repr(self.filereferences) )
+        print( "layouts", repr(self.layouts) )
+        print( "layoutGroups", repr(self.layoutGroups) )
+        print( "layoutOrder", repr(self.layoutOrder) )
 
-        print "relationships", repr(self.relationships)
+        print( "relationships", repr(self.relationships) )
 
-        print "scripts", repr(self.scripts)
-        print "scriptGroups", repr(self.scriptGroups)
-        print "scriptOrder", repr(self.scriptOrder)
+        print( "scripts", repr(self.scripts) )
+        print( "scriptGroups", repr(self.scriptGroups) )
+        print( "scriptOrder", repr(self.scriptOrder) )
 
-        print "valueLists", repr(self.valueLists)
+        print( "valueLists", repr(self.valueLists) )
 
-        print "authfile", repr(self.authfile)
-        print "externaldatasources", repr(self.externaldatasources)
-        print "themecatalog", repr(self.themecatalog)
-        print "basedirectory", repr(self.basedirectory)
+        print( "authfile", repr(self.authfile) )
+        print( "externaldatasources", repr(self.externaldatasources) )
+        print( "themecatalog", repr(self.themecatalog) )
+        print( "basedirectory", repr(self.basedirectory) )
 
-        print "summaryfile", repr(self.summaryfile)
-        print "exportfolder", repr(self.exportfolder)
-        print "ignoreFilenameIDs", repr(self.ignoreFilenameIDs)
-        print "logfunction", repr(self.logfunction)
+        print( "summaryfile", repr(self.summaryfile) )
+        print( "exportfolder", repr(self.exportfolder) )
+        print( "ignoreFilenameIDs", repr(self.ignoreFilenameIDs) )
+        print( "logfunction", repr(self.logfunction) )

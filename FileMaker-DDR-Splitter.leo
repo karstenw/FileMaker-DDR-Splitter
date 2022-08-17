@@ -101,11 +101,12 @@
 
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 @others
 </t>
 <t tx="karstenw.20170712103612.1">import sys
 import os
-
 
 
 </t>
@@ -156,41 +157,43 @@ import os
 
 </t>
 <t tx="karstenw.20170712103612.4">def pp(self):
-    print "accounts", repr(self.accounts)
-    print "assets", repr(self.assets)
-    print "basetables", repr(self.basetables)
-    print "customfunctions", repr(self.customfunctions)
-    print "custommenus", repr(self.custommenus)
-    print "custommenusets", repr(self.custommenusets)
-    print "privileges", repr(self.privileges)
-    print "extendedprivileges", repr(self.extendedprivileges)
-    print "filereferences", repr(self.filereferences)
-    print "layouts", repr(self.layouts)
-    print "layoutGroups", repr(self.layoutGroups)
-    print "layoutOrder", repr(self.layoutOrder)
+    print( "accounts", repr(self.accounts) )
+    print( "assets", repr(self.assets) )
+    print( "basetables", repr(self.basetables) )
+    print( "customfunctions", repr(self.customfunctions) )
+    print( "custommenus", repr(self.custommenus) )
+    print( "custommenusets", repr(self.custommenusets) )
+    print( "privileges", repr(self.privileges) )
+    print( "extendedprivileges", repr(self.extendedprivileges) )
+    print( "filereferences", repr(self.filereferences) )
+    print( "layouts", repr(self.layouts) )
+    print( "layoutGroups", repr(self.layoutGroups) )
+    print( "layoutOrder", repr(self.layoutOrder) )
 
-    print "relationships", repr(self.relationships)
+    print( "relationships", repr(self.relationships) )
 
-    print "scripts", repr(self.scripts)
-    print "scriptGroups", repr(self.scriptGroups)
-    print "scriptOrder", repr(self.scriptOrder)
+    print( "scripts", repr(self.scripts) )
+    print( "scriptGroups", repr(self.scriptGroups) )
+    print( "scriptOrder", repr(self.scriptOrder) )
 
-    print "valueLists", repr(self.valueLists)
+    print( "valueLists", repr(self.valueLists) )
 
-    print "authfile", repr(self.authfile)
-    print "externaldatasources", repr(self.externaldatasources)
-    print "themecatalog", repr(self.themecatalog)
-    print "basedirectory", repr(self.basedirectory)
+    print( "authfile", repr(self.authfile) )
+    print( "externaldatasources", repr(self.externaldatasources) )
+    print( "themecatalog", repr(self.themecatalog) )
+    print( "basedirectory", repr(self.basedirectory) )
 
-    print "summaryfile", repr(self.summaryfile)
-    print "exportfolder", repr(self.exportfolder)
-    print "ignoreFilenameIDs", repr(self.ignoreFilenameIDs)
-    print "logfunction", repr(self.logfunction)
+    print( "summaryfile", repr(self.summaryfile) )
+    print( "exportfolder", repr(self.exportfolder) )
+    print( "ignoreFilenameIDs", repr(self.ignoreFilenameIDs) )
+    print( "logfunction", repr(self.logfunction) )
 </t>
 <t tx="karstenw.20170712103629.1">@language python
 @tabwidth -4
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+from __future__ import print_function
 
 @others
 
@@ -236,6 +239,7 @@ if __name__ == '__main__':
 <t tx="karstenw.20170712103639.1">import sys
 import os
 
+import io
 import unicodedata
 import time
 import binascii
@@ -255,6 +259,33 @@ import xml.parsers.expat
 import Config
 
 import ReferenceCollector
+
+
+
+
+# py3 stuff
+
+py3 = False
+try:
+    unicode('')
+    punicode = unicode
+    pstr = str
+    punichr = unichr
+except NameError:
+    punicode = str
+    pstr = bytes
+    py3 = True
+    punichr = chr
+
+
+def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
+    if type(s) not in (punicode, pstr):
+        s = str( s )
+    if type(s) != punicode:
+        s = punicode(s, srcencoding)
+    s = unicodedata.normalize(normalizer, s)
+    return s
+
 
 </t>
 <t tx="karstenw.20170712103639.10">def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
@@ -314,12 +345,12 @@ import ReferenceCollector
                             if streamtag == "HexData":
                                 try:
                                     data = binascii.unhexlify ( streamtext )
-                                except TypeError, err:
+                                except TypeError as err:
                                     pass
                             elif streamtag == "Data":
                                 try:
                                     data = base64.b64decode( streamtext )
-                                except TypeError, err:
+                                except TypeError as err:
                                     pass
                             if not data:
                                 continue
@@ -563,12 +594,12 @@ import ReferenceCollector
         # some UI glitz
         line = '-' * 100
         log( u"\n\n%s\n\nXMLFILE: %s" % (line, cur_xml_file_name) )
-        print "filelist[ xml_xmllink ]:", repr(filelist[ cur_xml_file_name ])
+        print( "filelist[ xml_xmllink ]:", repr(filelist[ cur_xml_file_name ]) )
 
         # parse xml file
         try:
             basenode = ElementTree.parse( next_xml_file_path )
-        except  (xml.parsers.expat.ExpatError, SyntaxError), v:
+        except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
             xml.parsers.expat.error()
             log( u"EXCEPTION: '%s'" % v )
             log( u"Failed parsing '%s'\n" % next_xml_file_path )
@@ -995,8 +1026,8 @@ import ReferenceCollector
             log("\n\n####  CANCELLED.  ####")
             return
         else:
-            print
-            print
+            print()
+            print()
 
     #
     # References
@@ -1009,10 +1040,13 @@ import ReferenceCollector
                            "References",
                            "id_object",
                            ext=".tab")
-    f = open(path, "wb")
+    f = io.open(path, "wb")
     s = u"%i\t%s\n"
     s = u"%i\t%s\t%s\t%s\t%s\t%s\n"
-    keys = gREF.objectsReverse.keys()
+    keys = list( gREF.objectsReverse.keys() )
+    
+    # pdb.set_trace()
+    
     keys.sort()
     for key in keys:
         v = gREF.objectsReverse[ key ]
@@ -1025,34 +1059,50 @@ import ReferenceCollector
             s5 = v[4]
             
         t = s % (key, s1, s2, s3, s4, s5)
-        f.write( t.encode("utf-8") )
+        try:
+            f.write( t.encode("utf-8") )
+        except Exception as err:
+            print()
+            print( err )
+            pdb.set_trace()
+            print()
+            
     f.close()
-
-
+    
+    # pdb.set_trace()
+    
     # filemakerAttributes
     path = xmlexportfolder(exportfolder,
                            "",
                            "References",
                            "objid_name_fmpattribute",
                            ext=".tab")
-    f = open(path, "wb")
+    f = io.open(path, "wb")
     s = u"%s\t%s\t%s\n"
     for objid in gREF.filemakerAttributes:
         obj = gREF.filemakerAttributes[objid]
         for name in obj:
             v = obj[name]
             t = s % (objid, name, v)
-            f.write( t.encode("utf-8") )
+            try:
+                f.write( t.encode("utf-8") )
+            except Exception as err:
+                print()
+                print( err )
+                pdb.set_trace()
+                print()
+
     f.close()
-
-
+    
+    # pdb.set_trace()
+    
     # references
     path = xmlexportfolder(exportfolder,
                            "",
                            "References",
                            "objid_objid_reference",
                            ext=".tab")
-    f = open(path, "wb")
+    f = io.open(path, "wb")
     s = u"%i\t%i\n"
     keys = gREF.references.keys()
     #keys.sort()
@@ -1061,9 +1111,19 @@ import ReferenceCollector
         #referrers.sort()
         for r2 in referrers:
             t = s % (r1, r2)
-            f.write( t.encode("utf-8") )
+            try:
+                f.write( t.encode("utf-8") )
+            except Exception as err:
+                print()
+                print( err )
+                print()
+                pdb.set_trace()
+
     f.close()
 
+    
+    # pdb.set_trace()
+    
     time.sleep(0.3)
     stoptime = time.time()
     
@@ -1071,17 +1131,12 @@ import ReferenceCollector
     log(t % ( round(stoptime - starttime, 4), ))
 
     # pdb.set_trace()
-    print "FileReferences"
+    print( "FileReferences" )
     pp( gREF.fileReferences )
     print
 
 </t>
-<t tx="karstenw.20170712103639.2">def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
-    if type(s) != unicode:
-        s = unicode(s, srcencoding)
-    s = unicodedata.normalize(normalizer, s)
-    return s
-
+<t tx="karstenw.20170712103639.2">
 </t>
 <t tx="karstenw.20170712103639.3">def stringhash( s ):
     m = hashlib.sha1()
@@ -1091,7 +1146,7 @@ import ReferenceCollector
 </t>
 <t tx="karstenw.20170712103639.4">def logfunction(s):
     s = s + u"\n"
-    sys.stdout.write(s.encode("utf-8"))
+    sys.stdout.write( s.encode("utf-8") )
 
 #
 # parsers
@@ -1115,7 +1170,7 @@ import ReferenceCollector
 
     fullpath = os.path.join( catfolder, filename)
     fullpath = makeunicode( fullpath, normalizer="NFD" )
-    return fullpath.encode("utf-8")
+    return fullpath
 
 
 </t>
@@ -1251,6 +1306,8 @@ import ReferenceCollector
 <t tx="karstenw.20170712103700.1">
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 @others
 if __name__ == "__main__":
     PyObjCTools.AppHelper.runEventLoop()
@@ -1261,8 +1318,10 @@ if __name__ == "__main__":
 import os
 
 import traceback
+import unicodedata
 
-import thread
+# import thread
+import threading
 
 import time
 import re
@@ -1272,8 +1331,6 @@ kwdbg = False
 
 import pprint
 pp = pprint.pprint
-
-import thread
 
 import objc
 
@@ -1295,8 +1352,35 @@ import PyObjCTools.AppHelper
 import Config
 import ddrsplit
 
+
+
 gIsRunning = False
 gLastUpdate = 0.0
+
+
+# py3 stuff
+
+py3 = False
+try:
+    unicode('')
+    punicode = unicode
+    pstr = str
+    punichr = unichr
+except NameError:
+    punicode = str
+    pstr = bytes
+    py3 = True
+    punichr = chr
+
+
+def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
+    if type(s) not in (punicode, pstr):
+        s = str( s )
+    if type(s) != punicode:
+        s = punicode(s, srcencoding)
+    s = unicodedata.normalize(normalizer, s)
+    return s
+
 
 
 </t>
@@ -1397,9 +1481,8 @@ def orderFrontStandardAboutPanel_(self, sender):
 <t tx="karstenw.20170712103714.15">def setstatus_show_(self, appendage, showit=False):
     global gLastUpdate
     s = appendage + u"\n"
-    if type(s) != unicode:
-        s = unicode(appendage, "utf-8")
-    sys.stdout.write(s.encode("utf-8"))
+    s = makeunicode( s )
+    sys.stdout.write( s )
     # view
     app = NSApplication.sharedApplication()
     wins = app.windows()
@@ -1422,10 +1505,10 @@ def orderFrontStandardAboutPanel_(self, sender):
     try:
         t = NSAttributedString.alloc().initWithString_(s)
         storage.appendAttributedString_(t)
-    except Exception, v:
-        print
-        print "ERROR status inserting:", v
-        print
+    except Exception as v:
+        print()
+        print( "ERROR status inserting:", v )
+        print()
     
     tm = time.time()
     if showit and tm &gt;= gLastUpdate + 0.3:
@@ -1433,10 +1516,10 @@ def orderFrontStandardAboutPanel_(self, sender):
         try:
             myView.scrollRangeToVisible_(endRange)
             myView.setNeedsDisplay_(True)
-        except Exception, v:
-            print
-            print "ERROR status scrolling:", v
-            print
+        except Exception as v:
+            print()
+            print( "ERROR status scrolling:", v )
+            print()
 
 
 </t>
@@ -1459,10 +1542,10 @@ def orderFrontStandardAboutPanel_(self, sender):
     try:
         ddrsplit.main(cfg)
 
-    except (Exception,), v:
+    except (Exception,) as v:
         tb = traceback.format_exc()
-        tb = unicode( tb )
-        v = unicode( repr(v) )
+        tb = makeunicode( tb )
+        v = makeunicode( v )
         tb = tb + u"\n\n" + v
         sys.stdout.write( tb )
 
@@ -1481,7 +1564,7 @@ def orderFrontStandardAboutPanel_(self, sender):
     panel.setAllowsMultipleSelection_(False)
     rval = panel.runModalForTypes_([])
     if rval != 0:
-        f = [unicode(t) for t in panel.filenames()]
+        f = [makeunicode(t) for t in panel.filenames()]
         return f[0]
     else:
         return False
@@ -1494,7 +1577,7 @@ def orderFrontStandardAboutPanel_(self, sender):
     panel.setAllowsMultipleSelection_(False)
     rval = panel.runModalForTypes_( ['xml'] )
     if rval != 0:
-        f = [unicode(t) for t in panel.filenames()]
+        f = [makeunicode(t) for t in panel.filenames()]
         return f[0]
     else:
         return False
@@ -1558,10 +1641,10 @@ def orderFrontStandardAboutPanel_(self, sender):
     delg = appl.delegate()
     try:
         delg.setstatus_show_(message, 1)
-    except Exception, v:
-        print
-        print "STATUS WRAPPER ERROR:", v
-        print
+    except Exception as v:
+        print()
+        print( "STATUS WRAPPER ERROR:", v )
+        print()
 
 
 </t>
@@ -1614,15 +1697,16 @@ def orderFrontStandardAboutPanel_(self, sender):
 def openSummary_(self, sender):
     summary = getSummaryFileDialog()
     if summary and os.path.exists( summary ):
-        self.summaryFile = unicode(summary)
+        self.summaryFile = makeunicode(summary)
         self.tbSummaryFile.setStringValue_( self.summaryFile )
 
 </t>
 <t tx="karstenw.20170712103714.5">@objc.IBAction
 def openSaveFolder_(self, sender):
+    # pdb.set_trace()
     folder = getFolderDialog()
     if folder and os.path.exists( folder ):
-        self.saveFolder = unicode(folder)
+        self.saveFolder = makeunicode(folder)
         self.tbExportFolder.setStringValue_( self.saveFolder )
 
 </t>
@@ -1718,7 +1802,11 @@ def doExport_(self, sender):
     cfg.logfunction = callFromWorkerMsg_
 
     if 1:
-        thread.start_new_thread(threadwrapper, (cfg, ) )
+        # thread.start_new_thread(threadwrapper, (cfg, ) )
+        threading.Thread(target=threadwrapper,
+                         args=(cfg, ),
+                         # kwargs={'dict': 'of', 'keyword': 'args'},
+                        ).start()
     else:
         threadwrapper(cfg)
 
@@ -1743,6 +1831,8 @@ def doExport_(self, sender):
 </t>
 <t tx="karstenw.20170712103721.1">
 # -*- coding: utf-8 -*-
+
+from __future__ import print_function
 
 @others
 @language python
@@ -1892,7 +1982,11 @@ Usage:
 """
 import os
 
-from distutils.core import setup
+from setuptools import setup
+#from setuptools.extension import Extension
+
+#from distutils.core import setup
+
 import py2app
 
 appname = "FileMaker DDR Splitter"
@@ -1925,7 +2019,9 @@ setup(
     options={
         'py2app':{
             'iconfile': "Icon.icns",
-            'excludes':['Tkinter',],
+            'excludes':[ 'Tkinter',
+                         'scipy', 'matplotlib', 'pandas', 'cv2', 'dlib',
+                         'skimage', 'sklearn', 'mpl_toolkits' ],
         },
     },
 )
@@ -1943,9 +2039,9 @@ The script has been used on OSX with V10, V11 &amp; V15 DDRs. Windows and DDRs V
 It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file DDR, creating more than 12000 files. A 275MB single file DDR was split in 19s.
 
 </t>
-<t tx="karstenw.20170712103836.2">### Download an OSX app for OSX 10.6 and above.
+<t tx="karstenw.20170712103836.2">### Download an OSX app for OSX 10.9 and above.
 
-[dropbox](http://goo.gl/YwGc7K)
+[Releases](../../releases)
 
 
 </t>
@@ -1969,7 +2065,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 python ddrsplit.py /PATH/TO/Summary.xml
 ```
 
-...or run the [OSX app](http://goo.gl/YwGc7K).
+...or run the [OSX app](../../releases).
 
 
 This will create a folder named "Exports" at the ```Summary.xml``` level.
