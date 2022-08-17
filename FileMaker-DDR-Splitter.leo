@@ -40,9 +40,31 @@
 <v t="karstenw.20170712103639.11"><vh>get_scripts_and_groups</vh></v>
 <v t="karstenw.20170712103639.12"><vh>get_relationshipgraph_catalog</vh></v>
 </v>
-<v t="karstenw.20170712103639.13" a="E"><vh>main</vh>
-<v t="karstenw.20220817133855.1"><vh>newHeadline</vh></v>
+<v t="karstenw.20220817135840.1"><vh>handleSummaryFile</vh></v>
+<v t="karstenw.20220817135906.1"><vh>handleXMLFile</vh>
+<v t="karstenw.20220817151055.1"><vh>&lt;&lt; FileReferenceCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151245.1"><vh>&lt;&lt; relationship graph &gt;&gt;</vh></v>
+<v t="karstenw.20220817151323.1"><vh>&lt;&lt; base table catalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151402.1"><vh>&lt;&lt; LayoutCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151432.1"><vh>&lt;&lt; account catalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151502.1"><vh>&lt;&lt; script catalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151536.1"><vh>&lt;&lt; custom function catalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151608.1"><vh>&lt;&lt; PrivilegesCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152027.1"><vh>&lt;&lt; ExtendedPrivilegeCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152057.1"><vh>&lt;&lt; AuthFileCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152120.1"><vh>&lt;&lt; ExternalDataSourcesCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152155.1"><vh>&lt;&lt; ThemeCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152220.1"><vh>&lt;&lt; BaseDirectoryCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152249.1"><vh>&lt;&lt; CustomMenuCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152326.1"><vh>&lt;&lt; CustomMenuSetCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152409.1"><vh>&lt;&lt; ValueListCatalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817152710.1" a="E"><vh>&lt;&lt; References &gt;&gt;</vh>
+<v t="karstenw.20220817152810.1"><vh>&lt;&lt; write objects &gt;&gt;</vh></v>
+<v t="karstenw.20220817152905.1"><vh>&lt;&lt; write attributes &gt;&gt;</vh></v>
+<v t="karstenw.20220817153306.1"><vh>&lt;&lt; write references &gt;&gt;</vh></v>
 </v>
+</v>
+<v t="karstenw.20170712103639.13"><vh>main</vh></v>
 </v>
 <v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
 <v t="karstenw.20170712103714.1"><vh>Declarations</vh></v>
@@ -527,40 +549,13 @@ import ReferenceCollector
     xmlfile = cfg.summaryfile
     xml_folder, xmlfilename = os.path.split( xmlfile )
 
-    ddr = ElementTree.parse( xmlfile )
-
-    summary = ddr.getroot()
-
-    files = summary.findall( "File" )
-    nooffiles = len( files )
-
-    filelist = {}
-
     starttime = time.time()
 
     log = logfunction
     if cfg.logfunction:
         log = cfg.logfunction
 
-    for fmpreport in summary.getiterator("FMPReport"):
-        for xmlfile in fmpreport.getiterator("File"):
-            xml_fmpfilename = xmlfile.get("name", "NO FILE NAME")
-            xml_xmllink = xmlfile.get("link", "")
-            xml_fmppath = xmlfile.get("path", "")
-
-            if not xml_xmllink:
-                s = u"\nERROR: Could not find XML file '%s'\nContinue.\n"
-                log( s %  xml_xmllink)
-                continue
-
-            # xml_xmllink
-            # cleanup filename
-            while xml_xmllink.startswith( './/' ): xml_xmllink = xml_xmllink[ 3: ]
-            while xml_xmllink.startswith( './' ):  xml_xmllink = xml_xmllink[ 2: ]
-
-            xmlbasename, ext  = os.path.splitext( xml_xmllink )
-
-            filelist[ xml_xmllink ] = (xml_fmpfilename, xml_fmppath, xmlbasename)
+    filelist = handleSummaryFile( xmlfile, log )
 
     for cur_xml_file_name in filelist.keys():
 
@@ -572,534 +567,9 @@ import ReferenceCollector
         log( u"\n\n%s\n\nXMLFILE: %s" % (line, cur_xml_file_name) )
         print( "filelist[ xml_xmllink ]:", repr(filelist[ cur_xml_file_name ]) )
 
-        # parse xml file
-        try:
-            basenode = ElementTree.parse( next_xml_file_path )
-        except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
-            xml.parsers.expat.error()
-            log( u"EXCEPTION: '%s'" % v )
-            log( u"Failed parsing '%s'\n" % next_xml_file_path )
-            continue
+        # handleXMLFile( cfg, next_xml_file_path, filelist )
+        handleXMLFile( cfg, next_xml_file_path, filelist, log )
 
-        # more often the xml filename is required for identification
-        cur_db = filelist[ cur_xml_file_name ][0]
-        cur_fmpbasename = filelist[ cur_xml_file_name ][2]
-        cur_fmpxml = cur_xml_file_name
-        
-        
-        cur_fileRef = (cur_fmpxml, "DatabaseFile", cur_db)
-
-        exportfolder = cfg.exportfolder
-
-        # relationships need to be analyzed first for the baseTable -&gt; TO graph
-        # for that to happen, filereferences must go before that
-
-        print
-        print
-        
-        #
-        # FileReferenceCatalog
-        #
-        # todo check if refs &amp;&amp; cfg.filereferences
-        if 1: #cfg.filereferences:
-            log( u'File References "%s"' % cur_fmpxml )
-            for fr_cat in basenode.getiterator ( "FileReferenceCatalog" ):
-                for fileref in fr_cat.getchildren():
-                    fileref_attrib = fileref.attrib
-                    prefix = ""
-                    if fileref.tag == "OdbcDataSource":
-                        prefix = "ODBC-"
-                    elif fileref.tag == "FileReference":
-                        prefix = "FREF-"
-                        #
-                        # &lt;FileReference id="2" link="Menu_fp7.xml" name="Menu"
-                        #                pathList="file:Menu.fp7" /&gt;
-                        #
-                        frf_id = fileref.attrib.get("id", -1)
-                        frf_link = fileref.attrib.get("link", "NO DDR.XML FILE")
-                        frf_name = fileref.attrib.get("name", "NO FILEREF NAME")
-                        frf_pathList = fileref.attrib.get("pathList",
-                                                                "NO FILEREF PATHLIST")
-                        gREF.addFileReference(cur_xml_file_name, frf_link, frf_name,
-                                                                frf_id, frf_pathList)
-                        
-                        frf_object = (cur_xml_file_name, 'FileReference', frf_name)
-                        gREF.addObject(frf_object)
-                        gREF.addReference(cur_fileRef, frf_object)
-
-                    else:
-                        prefix = "UNKN-"
-                    name = prefix + fileref_attrib.get("name", "NONAME")
-                
-                    s = ElementTree.tostring(fileref,
-                                             encoding="utf-8",
-                                             method="xml")
-
-                    objectID = fileref_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "Filereferences",
-                                           name,
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists,
-            # merge fields, scripts, TOs, FileReferences
-
-
-        #
-        # relationship graph
-        #
-        if cfg.relationships:
-            log( u'Relationship Graph "%s"' % cur_fmpxml )
-            for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
-                get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db,
-                                              cur_fmpbasename, rg_cat, exportfolder)
-            # collect references from FRF to FRF
-
-
-        #
-        # base table catalog
-        #
-        if cfg.basetables:
-            log( u'Base Tables "%s"' % cur_fmpxml )
-            for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
-                for base_table in base_table_catalog.getiterator( u'BaseTable' ):
-                    bt_name = base_table.get("name", "NONAME")
-                    bt_id = base_table.get("id", "0")
-                    s = ElementTree.tostring(base_table,
-                                             encoding="utf-8",
-                                             method="xml")
-
-
-                    objectID = bt_id
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "Basetables",
-                                           bt_name,
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-
-                    cur_btRef = (cur_fmpxml, "BaseTable", bt_name)
-                    bt_objID = gREF.addObject( cur_btRef )
-
-                    # make the basetable id known without using it for references
-                    gREF.addFilemakerAttribute(bt_objID, "id", bt_id)
-
-                    gREF.addReference( cur_fileRef, cur_btRef)
-
-                    # TODO
-                    #
-                    # FIELDS
-                    #
-                    # cur_db, cur_btRef, bt_name, bt_id, bt_objID
-                    for field_catalog in base_table.getiterator( u'FieldCatalog' ):
-                        for field in field_catalog.getiterator( u'Field' ):
-                            # dataType="Date"
-                            # fieldType="Normal"
-                            # id="9"
-                            # name="dat_BAR_created"
-                            fld_name = field.get("name", "NONAME")
-                            fld_id = field.get("id", "0")
-                            fld_type = field.get("fieldType", "NO FIELD TYPE")
-                            fld_dataType = field.get("dataType", "NO DATA TYPE")
-
-                            cur_fldRef = (cur_fmpxml, "Field", fld_name, bt_name)
-                            fld_objID = gREF.addObject( cur_fldRef )
-                            
-
-                            gREF.addFilemakerAttribute(fld_objID, "id", fld_id)
-                            gREF.addFilemakerAttribute(fld_objID, "dataType",
-                                                                  fld_dataType)
-                            gREF.addFilemakerAttribute(fld_objID, "fieldType",
-                                                                  fld_id)
-
-                            gREF.addReference( cur_btRef, cur_fldRef)
-                            # TODO
-                            #
-                            # add ref to TO (needs Calculations)
-
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        
-        #
-        # LayoutCatalog
-        #
-        if cfg.layouts:
-            log( u'Layout Catalog "%s"' % cur_fmpxml )
-            for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
-                groups = []
-                get_layouts_and_groups(cfg,
-                                       cur_fmpxml,
-                                       cur_db,
-                                       cur_fmpbasename,
-                                       layout_catalog,
-                                       groups,
-                                       exportfolder,
-                                       1)
-            # collect references to fields, CFs, value lists, merge fields,
-            # scripts, TOs, FileReferences
-
-
-        #
-        # account catalog
-        #
-        if cfg.accounts:
-            log( u'Accounts for "%s"' % cur_fmpxml )
-            for acc_cat in basenode.getiterator ( "AccountCatalog" ):
-                for acc in acc_cat.getchildren():
-                    acc_attrib = acc.attrib
-                    s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
-
-                    objectID = acc_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "Accounts",
-                                           acc_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        #
-        # script catalog
-        #
-        if cfg.scripts:
-            log( u'Scripts for "%s"' % cur_fmpxml )
-            for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
-                groups = []
-                namecache = [{},{}]
-                get_scripts_and_groups(cfg,
-                                       cur_fmpxml,
-                                       cur_db,
-                                       cur_fmpbasename,
-                                       scpt_cat,
-                                       exportfolder,
-                                       groups,
-                                       namecache,
-                                       1)
-            # collect references to fields, CFs, value lists, scripts,
-            # TOs, FileReferences
-
-        #
-        # custom function catalog
-        #
-        #
-        if cfg.customfunctions:
-            log( u'Custom Functions for "%s"' % cur_fmpxml )
-            for cf_cat in basenode.getiterator ( "CustomFunctionCatalog" ):
-                groups = []
-                for cf in cf_cat.getchildren():
-                    cf_attrib = cf.attrib
-                    s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
-
-                    objectID = cf_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "CustomFunctions",
-                                           cf_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists,TOs, FileReferences
-        
-        #
-        # PrivilegesCatalog
-        #
-        if cfg.privileges:
-            log( u'Privileges for "%s"' % cur_fmpxml )
-            for pv_cat in basenode.getiterator( "PrivilegesCatalog" ):
-                for pv in pv_cat.getchildren():
-                    pv_attrib = pv.attrib
-                    s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
-
-                    objectID = pv_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "Privileges",
-                                           pv_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        #
-        # ExtendedPrivilegeCatalog
-        #
-        if cfg.extendedprivileges:
-            log( u'Extended Privileges for "%s"' % cur_fmpxml )
-            for epv_cat in basenode.getiterator( "ExtendedPrivilegeCatalog" ):
-                for epv in epv_cat.getchildren():
-                    epv_attrib = epv.attrib
-                    s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
-
-                    objectID = epv_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "ExtendedPrivileges",
-                                           epv_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        #
-        # AuthFileCatalog
-        #
-        if cfg.authfile:
-            log( u'AuthFile Catalog "%s"' % cur_fmpxml )
-            for authfile_catalog in basenode.getiterator ( "AuthFileCatalog" ):
-                groups = []
-                get_authfilecatalog(cfg,
-                                       cur_fmpxml,
-                                       cur_db,
-                                       cur_fmpbasename,
-                                       authfile_catalog,
-                                       groups,
-                                       exportfolder,
-                                       1)
-
-
-        #
-        # ExternalDataSourcesCatalog
-        #
-        if cfg.externaldatasources:
-            log( u'ExternalDataSources Catalog "%s"' % cur_fmpxml )
-            for externaldatasource in basenode.getiterator ( "ExternalDataSourcesCatalog" ):
-                groups = []
-                get_externaldatasources(cfg,
-                                       cur_fmpxml,
-                                       cur_db,
-                                       cur_fmpbasename,
-                                       externaldatasource,
-                                       groups,
-                                       exportfolder,
-                                       1)
-
-        #
-        # ThemeCatalog
-        #
-        if cfg.themecatalog:
-            log( u'Theme Catalog "%s"' % cur_fmpxml )
-            for theme in basenode.getiterator ( "ThemeCatalog" ):
-                groups = []
-                get_themecatalog(cfg,
-                                   cur_fmpxml,
-                                   cur_db,
-                                   cur_fmpbasename,
-                                   theme,
-                                   groups,
-                                   exportfolder,
-                                   1)
-
-        #
-        # BaseDirectoryCatalog
-        #
-        if cfg.basedirectory:
-            log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
-            for basedir in basenode.getiterator ( "BaseDirectoryList" ):
-                groups = []
-                get_basedirectories(cfg,
-                                   cur_fmpxml,
-                                   cur_db,
-                                   cur_fmpbasename,
-                                   basedir,
-                                   groups,
-                                   exportfolder,
-                                   1)
-
-        
-        #
-        # CustomMenuCatalog
-        #
-        if cfg.custommenus:
-            log( u'Custom Menus for "%s"' % cur_fmpxml )
-            for cm_cat in basenode.getiterator( "CustomMenuCatalog" ):
-                for cm in cm_cat.getchildren():
-                    cm_attrib = cm.attrib
-                    s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
-
-                    objectID = cm_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "CustomMenus",
-                                           cm_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        #
-        # CustomMenuSetCatalog
-        #
-        if cfg.custommenusets:
-            log( u'Custom Menu Sets for "%s"' % cur_fmpxml )
-            for cms_cat in basenode.getiterator( "CustomMenuSetCatalog" ):
-                for cms in cms_cat.getchildren():
-                    cms_attrib = cms.attrib
-                    s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
-
-                    objectID = cms_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "CustomMenuSets",
-                                           cms_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        #
-        # ValueListCatalog
-        #
-        if cfg.valueLists:
-            log('Value Lists for "%s"' % cur_fmpxml )
-            for vl_cat in basenode.getiterator( "ValueListCatalog" ):
-                for vl in vl_cat.getchildren():
-                    vl_attrib = vl.attrib
-                    s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
-
-                    objectID = vl_attrib.get("id", "0")
-                    if cfg.ignoreFilenameIDs:
-                        objectID = ""
-                    path = xmlexportfolder(exportfolder,
-                                           cur_fmpbasename,
-                                           "ValueLists",
-                                           vl_attrib.get("name", "NONAME"),
-                                           objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
-            # collect references to fields, CFs, value lists, TOs, FileReferences
-
-        if gCancel:
-            time.sleep(0.3)
-            log("\n\n####  CANCELLED.  ####")
-            return
-        else:
-            print()
-            print()
-
-    #
-    # References
-    # 
-    
-    # objects
-
-    path = xmlexportfolder(exportfolder,
-                           "",
-                           "References",
-                           "id_object",
-                           ext=".tab")
-    f = io.open(path, "wb")
-    s = u"%i\t%s\n"
-    s = u"%i\t%s\t%s\t%s\t%s\t%s\n"
-    keys = list( gREF.objectsReverse.keys() )
-    
-    # pdb.set_trace()
-    
-    keys.sort()
-    for key in keys:
-        v = gREF.objectsReverse[ key ]
-        s4 = s5 = u""
-        s1, s2, s3 = v[:3]
-        if len(v) == 4:
-            s4 = v[3]
-        elif len(v) == 5:
-            s4 = v[3]
-            s5 = v[4]
-            
-        t = s % (key, s1, s2, s3, s4, s5)
-        try:
-            f.write( t.encode("utf-8") )
-        except Exception as err:
-            print()
-            print( err )
-            pdb.set_trace()
-            print()
-            
-    f.close()
-    
-    # pdb.set_trace()
-    
-    # filemakerAttributes
-    path = xmlexportfolder(exportfolder,
-                           "",
-                           "References",
-                           "objid_name_fmpattribute",
-                           ext=".tab")
-    f = io.open(path, "wb")
-    s = u"%s\t%s\t%s\n"
-    for objid in gREF.filemakerAttributes:
-        obj = gREF.filemakerAttributes[objid]
-        for name in obj:
-            v = obj[name]
-            t = s % (objid, name, v)
-            try:
-                f.write( t.encode("utf-8") )
-            except Exception as err:
-                print()
-                print( err )
-                pdb.set_trace()
-                print()
-
-    f.close()
-    
-    # pdb.set_trace()
-    
-    # references
-    path = xmlexportfolder(exportfolder,
-                           "",
-                           "References",
-                           "objid_objid_reference",
-                           ext=".tab")
-    f = io.open(path, "wb")
-    s = u"%i\t%i\n"
-    keys = gREF.references.keys()
-    #keys.sort()
-    for r1 in keys:
-        referrers = gREF.references[r1]
-        #referrers.sort()
-        for r2 in referrers:
-            t = s % (r1, r2)
-            try:
-                f.write( t.encode("utf-8") )
-            except Exception as err:
-                print()
-                print( err )
-                print()
-                pdb.set_trace()
-
-    f.close()
-
-    
-    # pdb.set_trace()
-    
     time.sleep(0.3)
     stoptime = time.time()
     
@@ -1109,7 +579,7 @@ import ReferenceCollector
     # pdb.set_trace()
     print( "FileReferences" )
     pp( gREF.fileReferences )
-    print
+    print()
 
 </t>
 <t tx="karstenw.20170712103639.2">def makeunicode(s, srcencoding="utf-8", normalizer="NFC"):
@@ -2311,6 +1781,631 @@ except NameError:
     punichr = chr
 
 </t>
-<t tx="karstenw.20220817133855.1"></t>
+<t tx="karstenw.20220817135840.1">def handleSummaryFile( xmlfile, log ):
+
+    ddr = ElementTree.parse( xmlfile )
+
+    summary = ddr.getroot()
+
+    files = summary.findall( "File" )
+    nooffiles = len( files )
+
+    filelist = {}
+
+    isSummary = isXMLExport = 0
+
+    for fmpreport in summary.getiterator("FMPReport"):
+        for xmlfile in fmpreport.getiterator("File"):
+            isSummary += 1
+            xml_fmpfilename = xmlfile.get("name", "NO FILE NAME")
+            xml_xmllink = xmlfile.get("link", "")
+            xml_fmppath = xmlfile.get("path", "")
+
+            if not xml_xmllink:
+                s = u"\nERROR: Could not find XML file '%s'\nContinue.\n"
+                log( s %  xml_xmllink)
+                continue
+
+            # xml_xmllink
+            # cleanup filename
+            while xml_xmllink.startswith( './/' ): xml_xmllink = xml_xmllink[ 3: ]
+            while xml_xmllink.startswith( './' ):  xml_xmllink = xml_xmllink[ 2: ]
+
+            xmlbasename, ext  = os.path.splitext( xml_xmllink )
+
+            filelist[ xml_xmllink ] = (xml_fmpfilename, xml_fmppath, xmlbasename)
+
+    return filelist
+
+
+
+</t>
+<t tx="karstenw.20220817135906.1">def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
+    # parse xml file
+
+    # pdb.set_trace()
+
+    _, cur_xml_file_name = os.path.split( xmlfile )
+
+    try:
+        basenode = ElementTree.parse( xmlfile )
+    except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
+        xml.parsers.expat.error()
+        log( u"EXCEPTION: '%s'" % v )
+        log( u"Failed parsing '%s'\n" % path )
+        return
+    
+    # more often the xml filename is required for identification
+    cur_db = allxmlfiles[ cur_xml_file_name ][0]
+    cur_fmpbasename = allxmlfiles[ cur_xml_file_name ][2]
+    cur_fmpxml = cur_xml_file_name
+
+    cur_fileRef = (cur_fmpxml, "DatabaseFile", cur_db)
+    
+    exportfolder = cfg.exportfolder
+
+    # relationships need to be analyzed first for the baseTable -&gt; TO graph
+    # for that to happen, filereferences must go before that
+    print()
+    print()
+
+    &lt;&lt; FileReferenceCatalog &gt;&gt;
+    
+    &lt;&lt; relationship graph &gt;&gt;
+    
+    &lt;&lt; base table catalog &gt;&gt;
+    
+    &lt;&lt; LayoutCatalog &gt;&gt;
+    
+    &lt;&lt; account catalog &gt;&gt;
+    
+    &lt;&lt; script catalog &gt;&gt;
+    
+    &lt;&lt; custom function catalog &gt;&gt;
+    
+    &lt;&lt; PrivilegesCatalog &gt;&gt;
+    
+    &lt;&lt; ExtendedPrivilegeCatalog &gt;&gt;
+    
+    &lt;&lt; AuthFileCatalog &gt;&gt;
+    
+    &lt;&lt; ExternalDataSourcesCatalog &gt;&gt;
+    
+    &lt;&lt; ThemeCatalog &gt;&gt;
+    
+    &lt;&lt; BaseDirectoryCatalog &gt;&gt;
+    
+    &lt;&lt; CustomMenuCatalog &gt;&gt;
+    
+    &lt;&lt; CustomMenuSetCatalog &gt;&gt;
+    
+    &lt;&lt; ValueListCatalog &gt;&gt;
+
+    if gCancel:
+        time.sleep(0.3)
+        log("\n\n####  CANCELLED.  ####")
+        return
+    else:
+        print()
+        print()
+
+    &lt;&lt; References &gt;&gt;
+
+
+</t>
+<t tx="karstenw.20220817151055.1">#
+# FileReferenceCatalog
+#
+# todo check if refs &amp;&amp; cfg.filereferences
+
+log( u'File References "%s"' % cur_fmpxml )
+for fr_cat in basenode.getiterator ( "FileReferenceCatalog" ):
+    for fileref in fr_cat.getchildren():
+        fileref_attrib = fileref.attrib
+        prefix = ""
+        if fileref.tag == "OdbcDataSource":
+            prefix = "ODBC-"
+        elif fileref.tag == "FileReference":
+            prefix = "FREF-"
+            #
+            # &lt;FileReference id="2" link="Menu_fp7.xml" name="Menu"
+            #                pathList="file:Menu.fp7" /&gt;
+            #
+            frf_id = fileref.attrib.get("id", -1)
+            frf_link = fileref.attrib.get("link", "NO DDR.XML FILE")
+            frf_name = fileref.attrib.get("name", "NO FILEREF NAME")
+            frf_pathList = fileref.attrib.get("pathList",
+                                                    "NO FILEREF PATHLIST")
+            gREF.addFileReference(cur_xml_file_name, frf_link, frf_name,
+                                                    frf_id, frf_pathList)
+            
+            frf_object = (cur_xml_file_name, 'FileReference', frf_name)
+            gREF.addObject(frf_object)
+            gREF.addReference(cur_fileRef, frf_object)
+
+        else:
+            prefix = "UNKN-"
+        name = prefix + fileref_attrib.get("name", "NONAME")
+    
+        s = ElementTree.tostring(fileref,
+                                 encoding="utf-8",
+                                 method="xml")
+
+        objectID = fileref_attrib.get("id", "0")
+        if cfg.ignoreFilenameIDs:
+            objectID = ""
+        path = xmlexportfolder(exportfolder,
+                               cur_fmpbasename,
+                               "Filereferences",
+                               name,
+                               objectID)
+        f = open(path, "wb")
+        f.write( s )
+        f.close()
+# collect references to fields, CFs, value lists,
+# merge fields, scripts, TOs, FileReferences
+
+
+</t>
+<t tx="karstenw.20220817151245.1">#
+# relationship graph
+#
+if cfg.relationships:
+    log( u'Relationship Graph "%s"' % cur_fmpxml )
+    for rg_cat in basenode.getiterator ( "RelationshipGraph" ):
+        get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db,
+                                      cur_fmpbasename, rg_cat, exportfolder)
+    # collect references from FRF to FRF
+
+
+</t>
+<t tx="karstenw.20220817151323.1">#
+# base table catalog
+#
+if cfg.basetables:
+    log( u'Base Tables "%s"' % cur_fmpxml )
+    for base_table_catalog in basenode.getiterator( u'BaseTableCatalog' ):
+        for base_table in base_table_catalog.getiterator( u'BaseTable' ):
+            bt_name = base_table.get("name", "NONAME")
+            bt_id = base_table.get("id", "0")
+            s = ElementTree.tostring(base_table,
+                                     encoding="utf-8",
+                                     method="xml")
+
+
+            objectID = bt_id
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "Basetables",
+                                   bt_name,
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+
+            cur_btRef = (cur_fmpxml, "BaseTable", bt_name)
+            bt_objID = gREF.addObject( cur_btRef )
+
+            # make the basetable id known without using it for references
+            gREF.addFilemakerAttribute(bt_objID, "id", bt_id)
+
+            gREF.addReference( cur_fileRef, cur_btRef)
+
+            # TODO
+            #
+            # FIELDS
+            #
+            # cur_db, cur_btRef, bt_name, bt_id, bt_objID
+            for field_catalog in base_table.getiterator( u'FieldCatalog' ):
+                for field in field_catalog.getiterator( u'Field' ):
+                    # dataType="Date"
+                    # fieldType="Normal"
+                    # id="9"
+                    # name="dat_BAR_created"
+                    fld_name = field.get("name", "NONAME")
+                    fld_id = field.get("id", "0")
+                    fld_type = field.get("fieldType", "NO FIELD TYPE")
+                    fld_dataType = field.get("dataType", "NO DATA TYPE")
+
+                    cur_fldRef = (cur_fmpxml, "Field", fld_name, bt_name)
+                    fld_objID = gREF.addObject( cur_fldRef )
+                    
+
+                    gREF.addFilemakerAttribute(fld_objID, "id", fld_id)
+                    gREF.addFilemakerAttribute(fld_objID, "dataType",
+                                                          fld_dataType)
+                    gREF.addFilemakerAttribute(fld_objID, "fieldType",
+                                                          fld_id)
+
+                    gREF.addReference( cur_btRef, cur_fldRef)
+                    # TODO
+                    #
+                    # add ref to TO (needs Calculations)
+
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817151402.1">#
+# LayoutCatalog
+#
+if cfg.layouts:
+    log( u'Layout Catalog "%s"' % cur_fmpxml )
+    for layout_catalog in basenode.getiterator ( "LayoutCatalog" ):
+        groups = []
+        get_layouts_and_groups(cfg,
+                               cur_fmpxml,
+                               cur_db,
+                               cur_fmpbasename,
+                               layout_catalog,
+                               groups,
+                               exportfolder,
+                               1)
+    # collect references to fields, CFs, value lists, merge fields,
+    # scripts, TOs, FileReferences
+</t>
+<t tx="karstenw.20220817151432.1">#
+# account catalog
+#
+if cfg.accounts:
+    log( u'Accounts for "%s"' % cur_fmpxml )
+    for acc_cat in basenode.getiterator ( "AccountCatalog" ):
+        for acc in acc_cat.getchildren():
+            acc_attrib = acc.attrib
+            s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
+
+            objectID = acc_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "Accounts",
+                                   acc_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817151502.1">#
+# script catalog
+#
+if cfg.scripts:
+    log( u'Scripts for "%s"' % cur_fmpxml )
+    for scpt_cat in basenode.getiterator ( "ScriptCatalog" ):
+        groups = []
+        namecache = [{},{}]
+        get_scripts_and_groups(cfg,
+                               cur_fmpxml,
+                               cur_db,
+                               cur_fmpbasename,
+                               scpt_cat,
+                               exportfolder,
+                               groups,
+                               namecache,
+                               1)
+    # collect references to fields, CFs, value lists, scripts,
+    # TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817151536.1">#
+# custom function catalog
+#
+#
+if cfg.customfunctions:
+    log( u'Custom Functions for "%s"' % cur_fmpxml )
+    for cf_cat in basenode.getiterator ( "CustomFunctionCatalog" ):
+        groups = []
+        for cf in cf_cat.getchildren():
+            cf_attrib = cf.attrib
+            s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
+
+            objectID = cf_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "CustomFunctions",
+                                   cf_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists,TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817151608.1">#
+# PrivilegesCatalog
+#
+if cfg.privileges:
+    log( u'Privileges for "%s"' % cur_fmpxml )
+    for pv_cat in basenode.getiterator( "PrivilegesCatalog" ):
+        for pv in pv_cat.getchildren():
+            pv_attrib = pv.attrib
+            s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
+
+            objectID = pv_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "Privileges",
+                                   pv_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817152027.1">#
+# ExtendedPrivilegeCatalog
+#
+if cfg.extendedprivileges:
+    log( u'Extended Privileges for "%s"' % cur_fmpxml )
+    for epv_cat in basenode.getiterator( "ExtendedPrivilegeCatalog" ):
+        for epv in epv_cat.getchildren():
+            epv_attrib = epv.attrib
+            s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
+
+            objectID = epv_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "ExtendedPrivileges",
+                                   epv_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817152057.1">#
+# AuthFileCatalog
+#
+if cfg.authfile:
+    log( u'AuthFile Catalog "%s"' % cur_fmpxml )
+    for authfile_catalog in basenode.getiterator ( "AuthFileCatalog" ):
+        groups = []
+        get_authfilecatalog(cfg,
+                               cur_fmpxml,
+                               cur_db,
+                               cur_fmpbasename,
+                               authfile_catalog,
+                               groups,
+                               exportfolder,
+                               1)
+
+</t>
+<t tx="karstenw.20220817152120.1">#
+# ExternalDataSourcesCatalog
+#
+if cfg.externaldatasources:
+    log( u'ExternalDataSources Catalog "%s"' % cur_fmpxml )
+    for externaldatasource in basenode.getiterator ( "ExternalDataSourcesCatalog" ):
+        groups = []
+        get_externaldatasources(cfg,
+                               cur_fmpxml,
+                               cur_db,
+                               cur_fmpbasename,
+                               externaldatasource,
+                               groups,
+                               exportfolder,
+                               1)
+
+</t>
+<t tx="karstenw.20220817152155.1">#
+# ThemeCatalog
+#
+if cfg.themecatalog:
+    log( u'Theme Catalog "%s"' % cur_fmpxml )
+    for theme in basenode.getiterator ( "ThemeCatalog" ):
+        groups = []
+        get_themecatalog(cfg,
+                           cur_fmpxml,
+                           cur_db,
+                           cur_fmpbasename,
+                           theme,
+                           groups,
+                           exportfolder,
+                           1)
+
+</t>
+<t tx="karstenw.20220817152220.1">#
+# BaseDirectoryCatalog
+#
+if cfg.basedirectory:
+    log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
+    for basedir in basenode.getiterator ( "BaseDirectoryList" ):
+        groups = []
+        get_basedirectories(cfg,
+                           cur_fmpxml,
+                           cur_db,
+                           cur_fmpbasename,
+                           basedir,
+                           groups,
+                           exportfolder,
+                           1)
+</t>
+<t tx="karstenw.20220817152249.1">#
+# CustomMenuCatalog
+#
+if cfg.custommenus:
+    log( u'Custom Menus for "%s"' % cur_fmpxml )
+    for cm_cat in basenode.getiterator( "CustomMenuCatalog" ):
+        for cm in cm_cat.getchildren():
+            cm_attrib = cm.attrib
+            s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
+
+            objectID = cm_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "CustomMenus",
+                                   cm_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817152326.1">#
+# CustomMenuSetCatalog
+#
+if cfg.custommenusets:
+    log( u'Custom Menu Sets for "%s"' % cur_fmpxml )
+    for cms_cat in basenode.getiterator( "CustomMenuSetCatalog" ):
+        for cms in cms_cat.getchildren():
+            cms_attrib = cms.attrib
+            s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
+
+            objectID = cms_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "CustomMenuSets",
+                                   cms_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+
+</t>
+<t tx="karstenw.20220817152409.1">#
+# ValueListCatalog
+#
+if cfg.valueLists:
+    log('Value Lists for "%s"' % cur_fmpxml )
+    for vl_cat in basenode.getiterator( "ValueListCatalog" ):
+        for vl in vl_cat.getchildren():
+            vl_attrib = vl.attrib
+            s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
+
+            objectID = vl_attrib.get("id", "0")
+            if cfg.ignoreFilenameIDs:
+                objectID = ""
+            path = xmlexportfolder(exportfolder,
+                                   cur_fmpbasename,
+                                   "ValueLists",
+                                   vl_attrib.get("name", "NONAME"),
+                                   objectID)
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+    # collect references to fields, CFs, value lists, TOs, FileReferences
+</t>
+<t tx="karstenw.20220817152710.1">#
+# References
+# 
+
+# objects
+
+path = xmlexportfolder(exportfolder,
+                       "",
+                       "References",
+                       "id_object",
+                       ext=".tab")
+
+&lt;&lt; write objects &gt;&gt;
+
+# pdb.set_trace()
+
+&lt;&lt; write attributes &gt;&gt;
+
+# pdb.set_trace()
+
+&lt;&lt; write references &gt;&gt;
+
+# pdb.set_trace()
+
+</t>
+<t tx="karstenw.20220817152810.1"># write objects
+f = io.open(path, "wb")
+s = u"%i\t%s\n"
+s = u"%i\t%s\t%s\t%s\t%s\t%s\n"
+keys = list( gREF.objectsReverse.keys() )
+
+# pdb.set_trace()
+
+keys.sort()
+for key in keys:
+    v = gREF.objectsReverse[ key ]
+    s4 = s5 = u""
+    s1, s2, s3 = v[:3]
+    if len(v) == 4:
+        s4 = v[3]
+    elif len(v) == 5:
+        s4 = v[3]
+        s5 = v[4]
+        
+    t = s % (key, s1, s2, s3, s4, s5)
+    try:
+        f.write( t.encode("utf-8") )
+    except Exception as err:
+        print()
+        print( err )
+        pdb.set_trace()
+        print()
+        
+f.close()
+</t>
+<t tx="karstenw.20220817152905.1"># filemakerAttributes
+path = xmlexportfolder(exportfolder,
+                       "",
+                       "References",
+                       "objid_name_fmpattribute",
+                       ext=".tab")
+f = io.open(path, "wb")
+s = u"%s\t%s\t%s\n"
+for objid in gREF.filemakerAttributes:
+    obj = gREF.filemakerAttributes[objid]
+    for name in obj:
+        v = obj[name]
+        t = s % (objid, name, v)
+        try:
+            f.write( t.encode("utf-8") )
+        except Exception as err:
+            print()
+            print( err )
+            pdb.set_trace()
+            print()
+
+f.close()
+
+</t>
+<t tx="karstenw.20220817153306.1"># write references
+path = xmlexportfolder(exportfolder,
+                       "",
+                       "References",
+                       "objid_objid_reference",
+                       ext=".tab")
+f = io.open(path, "wb")
+s = u"%i\t%i\n"
+keys = gREF.references.keys()
+#keys.sort()
+for r1 in keys:
+    referrers = gREF.references[r1]
+    #referrers.sort()
+    for r2 in referrers:
+        t = s % (r1, r2)
+        try:
+            f.write( t.encode("utf-8") )
+        except Exception as err:
+            print()
+            print( err )
+            print()
+            pdb.set_trace()
+
+f.close()
+
+</t>
 </tnodes>
 </leo_file>
