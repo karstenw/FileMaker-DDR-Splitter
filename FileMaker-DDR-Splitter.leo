@@ -21,7 +21,7 @@
 <v t="karstenw.20170712103639.1"><vh>Declarations</vh></v>
 <v t="karstenw.20220817131600.1"><vh>py3 stuff</vh></v>
 <v t="karstenw.20170712183501.1"><vh>Globals</vh></v>
-<v t="karstenw.20170712183521.1"><vh>## TOOLS ##</vh>
+<v t="karstenw.20170712183521.1" a="E"><vh>## TOOLS ##</vh>
 <v t="karstenw.20170712103639.2"><vh>makeunicode</vh></v>
 <v t="karstenw.20170712103639.3"><vh>stringhash</vh></v>
 <v t="karstenw.20170712103639.4"><vh>logfunction</vh></v>
@@ -42,7 +42,7 @@
 </v>
 <v t="karstenw.20220819211819.1"><vh>XMLFile</vh></v>
 <v t="karstenw.20220817135840.1"><vh>handleSummaryFile</vh></v>
-<v t="karstenw.20220817135906.1" a="E"><vh>handleXMLFile</vh>
+<v t="karstenw.20220817135906.1"><vh>handleXMLFile</vh>
 <v t="karstenw.20220817151055.1"><vh>&lt;&lt; FileReferenceCatalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817151245.1"><vh>&lt;&lt; relationship graph &gt;&gt;</vh></v>
 <v t="karstenw.20220817151323.1"><vh>&lt;&lt; base table catalog &gt;&gt;</vh></v>
@@ -68,7 +68,7 @@
 <v t="karstenw.20220819210404.1"><vh>summaryOrXMLFile</vh></v>
 <v t="karstenw.20170712103639.13"><vh>main</vh></v>
 </v>
-<v t="karstenw.20170712103700.1" a="E"><vh>@clean FMPDDRSplitter.py</vh>
+<v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
 <v t="karstenw.20170712103714.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712103714.2"><vh>class FMPDDRSWindowController</vh>
 <v t="karstenw.20170712103714.3"><vh>awakeFromNib</vh></v>
@@ -103,10 +103,10 @@
 <v t="karstenw.20170712103729.8"><vh>addFilemakerAttribute</vh></v>
 </v>
 </v>
-<v t="karstenw.20170712103747.1" a="E"><vh>@clean setup.py</vh>
+<v t="karstenw.20170712103747.1"><vh>@clean setup.py</vh>
 <v t="karstenw.20170712103756.1"><vh>Declarations</vh></v>
 </v>
-<v t="karstenw.20170712103824.1" a="E"><vh>@clean README.md</vh>
+<v t="karstenw.20170712103824.1"><vh>@clean README.md</vh>
 <v t="karstenw.20170712103836.1"><vh>FileMaker-DDR-Splitter</vh>
 <v t="karstenw.20170713122921.1"><vh>Why would I like to do that?</vh></v>
 <v t="karstenw.20170712103836.2"><vh>Download an OSX app for OSX 10.6 and above.</vh></v>
@@ -1835,21 +1835,22 @@ except NameError:
     """Parse and filet the XML file.
     
     cfg - Config struct
-    xmlffolder - folder of xmlfile
+    xmlffolder - folder of xmlfilepath
     xmlfile - XMLDDR instance
     log - logging function
     filetype - "ddr", "saveas" or "???"
     """
 
-    # _, cur_xml_file_name = os.path.split( xmlfile )
     cur_xmlfilename = xmlfile.xmlfilename
 
+    xmlfilepath = os.path.join( xmlfolder, cur_xmlfilename )
+
     try:
-        basenode = ElementTree.parse( xmlfile )
+        basenode = ElementTree.parse( xmlfilepath )
     except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
         xml.parsers.expat.error()
         log( u"EXCEPTION: '%s'" % v )
-        log( u"Failed parsing '%s'\n" % xmlfile )
+        log( u"Failed parsing '%s'\n" % cur_xmlfilename )
         return
     
     # more often the xml filename is required for identification

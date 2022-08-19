@@ -662,21 +662,22 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
     """Parse and filet the XML file.
     
     cfg - Config struct
-    xmlffolder - folder of xmlfile
+    xmlffolder - folder of xmlfilepath
     xmlfile - XMLDDR instance
     log - logging function
     filetype - "ddr", "saveas" or "???"
     """
 
-    # _, cur_xml_file_name = os.path.split( xmlfile )
     cur_xmlfilename = xmlfile.xmlfilename
 
+    xmlfilepath = os.path.join( xmlfolder, cur_xmlfilename )
+
     try:
-        basenode = ElementTree.parse( xmlfile )
+        basenode = ElementTree.parse( xmlfilepath )
     except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
         xml.parsers.expat.error()
         log( u"EXCEPTION: '%s'" % v )
-        log( u"Failed parsing '%s'\n" % xmlfile )
+        log( u"Failed parsing '%s'\n" % cur_xmlfilename )
         return
     
     # more often the xml filename is required for identification
