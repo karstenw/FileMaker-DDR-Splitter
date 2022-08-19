@@ -1817,13 +1817,16 @@ except NameError:
 
             xmlbasename, ext  = os.path.splitext( xml_xmllink )
 
+            # old
             filelist[ xml_xmllink ] = (xml_fmpfilename, xml_fmppath, xmlbasename)
+            
+            # new
             xml = XMLDDRFile( xml_xmllink, xml_fmpfilename, xml_fmppath, xmlbasename )
             result.append( xml )
 
     #pp(result)
     #pp( filelist )
-    return filelist
+    return result
 
 
 
