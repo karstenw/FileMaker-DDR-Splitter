@@ -658,7 +658,7 @@ def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
     except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
         xml.parsers.expat.error()
         log( u"EXCEPTION: '%s'" % v )
-        log( u"Failed parsing '%s'\n" % path )
+        log( u"Failed parsing '%s'\n" % xmlfile )
         return
     
     # more often the xml filename is required for identification
