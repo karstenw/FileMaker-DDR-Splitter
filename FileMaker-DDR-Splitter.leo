@@ -40,8 +40,9 @@
 <v t="karstenw.20170712103639.11"><vh>get_scripts_and_groups</vh></v>
 <v t="karstenw.20170712103639.12"><vh>get_relationshipgraph_catalog</vh></v>
 </v>
+<v t="karstenw.20220819211819.1"><vh>XMLFile</vh></v>
 <v t="karstenw.20220817135840.1"><vh>handleSummaryFile</vh></v>
-<v t="karstenw.20220817135906.1"><vh>handleXMLFile</vh>
+<v t="karstenw.20220817135906.1" a="E"><vh>handleXMLFile</vh>
 <v t="karstenw.20220817151055.1"><vh>&lt;&lt; FileReferenceCatalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817151245.1"><vh>&lt;&lt; relationship graph &gt;&gt;</vh></v>
 <v t="karstenw.20220817151323.1"><vh>&lt;&lt; base table catalog &gt;&gt;</vh></v>
@@ -58,15 +59,16 @@
 <v t="karstenw.20220817152249.1"><vh>&lt;&lt; CustomMenuCatalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817152326.1"><vh>&lt;&lt; CustomMenuSetCatalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817152409.1"><vh>&lt;&lt; ValueListCatalog &gt;&gt;</vh></v>
-<v t="karstenw.20220817152710.1" a="E"><vh>&lt;&lt; References &gt;&gt;</vh>
+<v t="karstenw.20220817152710.1"><vh>&lt;&lt; References &gt;&gt;</vh>
 <v t="karstenw.20220817152810.1"><vh>&lt;&lt; write objects &gt;&gt;</vh></v>
 <v t="karstenw.20220817152905.1"><vh>&lt;&lt; write attributes &gt;&gt;</vh></v>
 <v t="karstenw.20220817153306.1"><vh>&lt;&lt; write references &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="karstenw.20220819210404.1"><vh>summaryOrXMLFile</vh></v>
 <v t="karstenw.20170712103639.13"><vh>main</vh></v>
 </v>
-<v t="karstenw.20170712103700.1"><vh>@clean FMPDDRSplitter.py</vh>
+<v t="karstenw.20170712103700.1" a="E"><vh>@clean FMPDDRSplitter.py</vh>
 <v t="karstenw.20170712103714.1"><vh>Declarations</vh></v>
 <v t="karstenw.20170712103714.2"><vh>class FMPDDRSWindowController</vh>
 <v t="karstenw.20170712103714.3"><vh>awakeFromNib</vh></v>
@@ -254,6 +256,8 @@ if __name__ == '__main__':
         cfg.logfunction = logfunction
 
         main( cfg )
+
+
 </t>
 <t tx="karstenw.20170712103639.1">#!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -554,20 +558,19 @@ import ReferenceCollector
     if cfg.logfunction:
         log = cfg.logfunction
 
-    filelist = handleSummaryFile( xmlfile, log )
+    xmlfiles = handleSummaryFile( xmlfile, log )
 
-    for cur_xml_file_name in filelist.keys():
+    for xmlfile in xmlfiles:
 
         # path to DDR-XML file
-        next_xml_file_path = os.path.join( xml_folder, cur_xml_file_name )
+        next_xml_file_path = os.path.join( xml_folder, xmlfile.xmlfilename )
 
         # some UI glitz
         line = '-' * 100
-        log( u"\n\n%s\n\nXMLFILE: %s" % (line, cur_xml_file_name) )
-        print( "filelist[ xml_xmllink ]:", repr(filelist[ cur_xml_file_name ]) )
+        log( u"\n\n%s\n\nXMLFILE: %s" % (line, xmlfile.xmlfilename) )
 
-        # handleXMLFile( cfg, next_xml_file_path, filelist )
-        handleXMLFile( cfg, next_xml_file_path, filelist, log )
+        # handleXMLFile( cfg, next_xml_file_path, xmlfiles )
+        handleXMLFile( cfg, xml_folder, xmlfile, log )
 
     # time.sleep(0.3)
     stoptime = time.time()
@@ -1785,17 +1788,14 @@ except NameError:
 <t tx="karstenw.20220817135840.1">def handleSummaryFile( xmlfile, log ):
 
     ddr = ElementTree.parse( xmlfile )
-
     summary = ddr.getroot()
 
     files = summary.findall( "File" )
     nooffiles = len( files )
 
     filelist = {}
-
     isSummary = isXMLExport = 0
-
-    # pdb.set_trace()
+    result = []
 
     for fmpreport in summary.iter("FMPReport"):
         for xmlfile in fmpreport.iter("File"):
@@ -1818,33 +1818,46 @@ except NameError:
             xmlbasename, ext  = os.path.splitext( xml_xmllink )
 
             filelist[ xml_xmllink ] = (xml_fmpfilename, xml_fmppath, xmlbasename)
+            xml = XMLDDRFile( xml_xmllink, xml_fmpfilename, xml_fmppath, xmlbasename )
+            result.append( xml )
 
+    #pp(result)
+    #pp( filelist )
     return filelist
 
 
 
 </t>
-<t tx="karstenw.20220817135906.1">def handleXMLFile( cfg, xmlfile, allxmlfiles, log ):
-    # parse xml file
+<t tx="karstenw.20220817135906.1">def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
+    """Parse and filet the XML file.
+    
+    cfg - Config struct
+    xmlffolder - folder of xmlfile
+    xmlfile - XMLDDR instance
+    log - logging function
+    filetype - "ddr", "saveas" or "???"
+    """
 
-    # pdb.set_trace()
-
-    _, cur_xml_file_name = os.path.split( xmlfile )
+    # _, cur_xml_file_name = os.path.split( xmlfile )
+    cur_xmlfilename = xmlfile.xmlfilename
 
     try:
         basenode = ElementTree.parse( xmlfile )
     except  (xml.parsers.expat.ExpatError, SyntaxError) as v:
         xml.parsers.expat.error()
         log( u"EXCEPTION: '%s'" % v )
-        log( u"Failed parsing '%s'\n" % path )
+        log( u"Failed parsing '%s'\n" % xmlfile )
         return
     
     # more often the xml filename is required for identification
-    cur_db = allxmlfiles[ cur_xml_file_name ][0]
-    cur_fmpbasename = allxmlfiles[ cur_xml_file_name ][2]
-    cur_fmpxml = cur_xml_file_name
 
-    cur_fileRef = (cur_fmpxml, "DatabaseFile", cur_db)
+    # cur_fmpfilename = allxmlfiles[ cur_xml_file_name ][0]
+    cur_fmpfilename = xmlfile.fmpfilename
+
+    # cur_xmlbasename = allxmlfiles[ cur_xml_file_name ][2]
+    cur_xmlbasename = xmlfile.xmlbasename
+
+    cur_fileRef = (cur_xmlfilename, "DatabaseFile", cur_fmpfilename)
     
     exportfolder = cfg.exportfolder
 
@@ -1902,7 +1915,7 @@ except NameError:
 #
 # todo check if refs &amp;&amp; cfg.filereferences
 
-log( u'File References "%s"' % cur_fmpxml )
+log( u'File References "%s"' % cur_xmlfilename )
 for fr_cat in basenode.iter ( "FileReferenceCatalog" ):
     for fileref in list(fr_cat):
         fileref_attrib = fileref.attrib
@@ -1920,10 +1933,10 @@ for fr_cat in basenode.iter ( "FileReferenceCatalog" ):
             frf_name = fileref.attrib.get("name", "NO FILEREF NAME")
             frf_pathList = fileref.attrib.get("pathList",
                                                     "NO FILEREF PATHLIST")
-            gREF.addFileReference(cur_xml_file_name, frf_link, frf_name,
-                                                    frf_id, frf_pathList)
+            gREF.addFileReference(cur_xmlfilename, frf_link, frf_name,
+                                              frf_id, frf_pathList)
             
-            frf_object = (cur_xml_file_name, 'FileReference', frf_name)
+            frf_object = (cur_xmlfilename, 'FileReference', frf_name)
             gREF.addObject(frf_object)
             gREF.addReference(cur_fileRef, frf_object)
 
@@ -1939,7 +1952,7 @@ for fr_cat in basenode.iter ( "FileReferenceCatalog" ):
         if cfg.ignoreFilenameIDs:
             objectID = ""
         path = xmlexportfolder(exportfolder,
-                               cur_fmpbasename,
+                               cur_xmlbasename,
                                "Filereferences",
                                name,
                                objectID)
@@ -1955,10 +1968,10 @@ for fr_cat in basenode.iter ( "FileReferenceCatalog" ):
 # relationship graph
 #
 if cfg.relationships:
-    log( u'Relationship Graph "%s"' % cur_fmpxml )
+    log( u'Relationship Graph "%s"' % cur_xmlfilename )
     for rg_cat in basenode.iter ( "RelationshipGraph" ):
-        get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db,
-                                      cur_fmpbasename, rg_cat, exportfolder)
+        get_relationshipgraph_catalog(cfg, cur_xmlfilename, cur_fmpfilename,
+                                      cur_xmlbasename, rg_cat, exportfolder)
     # collect references from FRF to FRF
 
 
@@ -1967,7 +1980,7 @@ if cfg.relationships:
 # base table catalog
 #
 if cfg.basetables:
-    log( u'Base Tables "%s"' % cur_fmpxml )
+    log( u'Base Tables "%s"' % cur_xmlfilename )
     for base_table_catalog in basenode.iter( u'BaseTableCatalog' ):
         for base_table in base_table_catalog.iter( u'BaseTable' ):
             bt_name = base_table.get("name", "NONAME")
@@ -1981,7 +1994,7 @@ if cfg.basetables:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "Basetables",
                                    bt_name,
                                    objectID)
@@ -1989,7 +2002,7 @@ if cfg.basetables:
             f.write( s )
             f.close()
 
-            cur_btRef = (cur_fmpxml, "BaseTable", bt_name)
+            cur_btRef = (cur_xmlfilename, "BaseTable", bt_name)
             bt_objID = gREF.addObject( cur_btRef )
 
             # make the basetable id known without using it for references
@@ -2001,7 +2014,7 @@ if cfg.basetables:
             #
             # FIELDS
             #
-            # cur_db, cur_btRef, bt_name, bt_id, bt_objID
+            # cur_fmpfilename, cur_btRef, bt_name, bt_id, bt_objID
             for field_catalog in base_table.iter( u'FieldCatalog' ):
                 for field in field_catalog.iter( u'Field' ):
                     # dataType="Date"
@@ -2013,7 +2026,7 @@ if cfg.basetables:
                     fld_type = field.get("fieldType", "NO FIELD TYPE")
                     fld_dataType = field.get("dataType", "NO DATA TYPE")
 
-                    cur_fldRef = (cur_fmpxml, "Field", fld_name, bt_name)
+                    cur_fldRef = (cur_xmlfilename, "Field", fld_name, bt_name)
                     fld_objID = gREF.addObject( cur_fldRef )
                     
 
@@ -2035,13 +2048,13 @@ if cfg.basetables:
 # LayoutCatalog
 #
 if cfg.layouts:
-    log( u'Layout Catalog "%s"' % cur_fmpxml )
+    log( u'Layout Catalog "%s"' % cur_xmlfilename )
     for layout_catalog in basenode.iter ( "LayoutCatalog" ):
         groups = []
         get_layouts_and_groups(cfg,
-                               cur_fmpxml,
-                               cur_db,
-                               cur_fmpbasename,
+                               cur_xmlfilename,
+                               cur_fmpfilename,
+                               cur_xmlbasename,
                                layout_catalog,
                                groups,
                                exportfolder,
@@ -2053,7 +2066,7 @@ if cfg.layouts:
 # account catalog
 #
 if cfg.accounts:
-    log( u'Accounts for "%s"' % cur_fmpxml )
+    log( u'Accounts for "%s"' % cur_xmlfilename )
     for acc_cat in basenode.iter ( "AccountCatalog" ):
         for acc in list(acc_cat):
             acc_attrib = acc.attrib
@@ -2063,7 +2076,7 @@ if cfg.accounts:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "Accounts",
                                    acc_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2077,14 +2090,14 @@ if cfg.accounts:
 # script catalog
 #
 if cfg.scripts:
-    log( u'Scripts for "%s"' % cur_fmpxml )
+    log( u'Scripts for "%s"' % cur_xmlfilename )
     for scpt_cat in basenode.iter ( "ScriptCatalog" ):
         groups = []
         namecache = [{},{}]
         get_scripts_and_groups(cfg,
-                               cur_fmpxml,
-                               cur_db,
-                               cur_fmpbasename,
+                               cur_xmlfilename,
+                               cur_fmpfilename,
+                               cur_xmlbasename,
                                scpt_cat,
                                exportfolder,
                                groups,
@@ -2099,7 +2112,7 @@ if cfg.scripts:
 #
 #
 if cfg.customfunctions:
-    log( u'Custom Functions for "%s"' % cur_fmpxml )
+    log( u'Custom Functions for "%s"' % cur_xmlfilename )
     for cf_cat in basenode.iter ( "CustomFunctionCatalog" ):
         groups = []
         for cf in list(cf_cat):
@@ -2110,7 +2123,7 @@ if cfg.customfunctions:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "CustomFunctions",
                                    cf_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2124,7 +2137,7 @@ if cfg.customfunctions:
 # PrivilegesCatalog
 #
 if cfg.privileges:
-    log( u'Privileges for "%s"' % cur_fmpxml )
+    log( u'Privileges for "%s"' % cur_xmlfilename )
     for pv_cat in basenode.iter( "PrivilegesCatalog" ):
         for pv in list(pv_cat):
             pv_attrib = pv.attrib
@@ -2134,7 +2147,7 @@ if cfg.privileges:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "Privileges",
                                    pv_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2148,7 +2161,7 @@ if cfg.privileges:
 # ExtendedPrivilegeCatalog
 #
 if cfg.extendedprivileges:
-    log( u'Extended Privileges for "%s"' % cur_fmpxml )
+    log( u'Extended Privileges for "%s"' % cur_xmlfilename )
     for epv_cat in basenode.iter( "ExtendedPrivilegeCatalog" ):
         for epv in list(epv_cat):
             epv_attrib = epv.attrib
@@ -2158,7 +2171,7 @@ if cfg.extendedprivileges:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "ExtendedPrivileges",
                                    epv_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2172,13 +2185,13 @@ if cfg.extendedprivileges:
 # AuthFileCatalog
 #
 if cfg.authfile:
-    log( u'AuthFile Catalog "%s"' % cur_fmpxml )
+    log( u'AuthFile Catalog "%s"' % cur_xmlfilename )
     for authfile_catalog in basenode.iter ( "AuthFileCatalog" ):
         groups = []
         get_authfilecatalog(cfg,
-                               cur_fmpxml,
-                               cur_db,
-                               cur_fmpbasename,
+                               cur_xmlfilename,
+                               cur_fmpfilename,
+                               cur_xmlbasename,
                                authfile_catalog,
                                groups,
                                exportfolder,
@@ -2189,13 +2202,13 @@ if cfg.authfile:
 # ExternalDataSourcesCatalog
 #
 if cfg.externaldatasources:
-    log( u'ExternalDataSources Catalog "%s"' % cur_fmpxml )
+    log( u'ExternalDataSources Catalog "%s"' % cur_xmlfilename )
     for externaldatasource in basenode.iter ( "ExternalDataSourcesCatalog" ):
         groups = []
         get_externaldatasources(cfg,
-                               cur_fmpxml,
-                               cur_db,
-                               cur_fmpbasename,
+                               cur_xmlfilename,
+                               cur_fmpfilename,
+                               cur_xmlbasename,
                                externaldatasource,
                                groups,
                                exportfolder,
@@ -2206,13 +2219,13 @@ if cfg.externaldatasources:
 # ThemeCatalog
 #
 if cfg.themecatalog:
-    log( u'Theme Catalog "%s"' % cur_fmpxml )
+    log( u'Theme Catalog "%s"' % cur_xmlfilename )
     for theme in basenode.iter ( "ThemeCatalog" ):
         groups = []
         get_themecatalog(cfg,
-                           cur_fmpxml,
-                           cur_db,
-                           cur_fmpbasename,
+                           cur_xmlfilename,
+                           cur_fmpfilename,
+                           cur_xmlbasename,
                            theme,
                            groups,
                            exportfolder,
@@ -2223,13 +2236,13 @@ if cfg.themecatalog:
 # BaseDirectoryCatalog
 #
 if cfg.basedirectory:
-    log( u'BaseDirectory Catalog "%s"' % cur_fmpxml )
+    log( u'BaseDirectory Catalog "%s"' % cur_xmlfilename )
     for basedir in basenode.iter ( "BaseDirectoryList" ):
         groups = []
         get_basedirectories(cfg,
-                           cur_fmpxml,
-                           cur_db,
-                           cur_fmpbasename,
+                           cur_xmlfilename,
+                           cur_fmpfilename,
+                           cur_xmlbasename,
                            basedir,
                            groups,
                            exportfolder,
@@ -2239,7 +2252,7 @@ if cfg.basedirectory:
 # CustomMenuCatalog
 #
 if cfg.custommenus:
-    log( u'Custom Menus for "%s"' % cur_fmpxml )
+    log( u'Custom Menus for "%s"' % cur_xmlfilename )
     for cm_cat in basenode.iter( "CustomMenuCatalog" ):
         for cm in list(cm_cat):
             cm_attrib = cm.attrib
@@ -2249,7 +2262,7 @@ if cfg.custommenus:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "CustomMenus",
                                    cm_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2263,7 +2276,7 @@ if cfg.custommenus:
 # CustomMenuSetCatalog
 #
 if cfg.custommenusets:
-    log( u'Custom Menu Sets for "%s"' % cur_fmpxml )
+    log( u'Custom Menu Sets for "%s"' % cur_xmlfilename )
     for cms_cat in basenode.iter( "CustomMenuSetCatalog" ):
         for cms in list(cms_cat):
             cms_attrib = cms.attrib
@@ -2273,7 +2286,7 @@ if cfg.custommenusets:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "CustomMenuSets",
                                    cms_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2287,7 +2300,7 @@ if cfg.custommenusets:
 # ValueListCatalog
 #
 if cfg.valueLists:
-    log('Value Lists for "%s"' % cur_fmpxml )
+    log('Value Lists for "%s"' % cur_xmlfilename )
     for vl_cat in basenode.iter( "ValueListCatalog" ):
         for vl in list(vl_cat):
             vl_attrib = vl.attrib
@@ -2297,7 +2310,7 @@ if cfg.valueLists:
             if cfg.ignoreFilenameIDs:
                 objectID = ""
             path = xmlexportfolder(exportfolder,
-                                   cur_fmpbasename,
+                                   cur_xmlbasename,
                                    "ValueLists",
                                    vl_attrib.get("name", "NONAME"),
                                    objectID)
@@ -2409,6 +2422,21 @@ for r1 in keys:
             # pdb.set_trace()
 
 f.close()
+
+</t>
+<t tx="karstenw.20220819210404.1">def summaryOrXMLFile( filepath ):
+    """Decide if filepath is a DDR-Summary or Save-As-XML File."""
+    pass
+
+
+</t>
+<t tx="karstenw.20220819211819.1">class XMLDDRFile:
+    def __init__( self, xmlfilename, fmpfilename, fmppathOrHost, xmlbasename ):
+        self.xmlfilename = xmlfilename
+        self.fmpfilename = fmpfilename
+        self.fmppathOrHost = fmppathOrHost
+        self.xmlbasename = xmlbasename
+
 
 </t>
 </tnodes>
