@@ -46,6 +46,8 @@ class Config(object):
         self.ignoreFilenameIDs = False
         self.logfunction = None
         
+        self.xmlindent = True
+        
         self.OPMLExport = False
         self.OPMLSplit = False
         self.OPMLDetails = False
