@@ -21,6 +21,10 @@ import pdb
 import xml.etree.ElementTree
 ElementTree = xml.etree.ElementTree
 
+import xml.dom
+import xml.dom.minidom
+minidom = xml.dom.minidom
+
 import xml.parsers.expat
 
 import Config
@@ -72,7 +76,7 @@ def logfunction(s):
 #
 # parsers
 #
-def xmlexportfolder(basefolder, dbname, category, obname, obid="", ext=".xml"):
+def fullexportfilepath(basefolder, dbname, category, obname, obid="", ext=".xml"):
     # create or get folder where to put layout, script or basetable xml
     path = os.path.abspath(basefolder)
 
@@ -157,22 +161,26 @@ def get_authfilecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, authfiles,
         cur_object = (cur_fmpxml, 'AuthFile', authfile_name)
 
         path = "AuthFiles"
-    
-        s = ElementTree.tostring(authfile, encoding="utf-8", method="xml")
-
+        
         sortid = authfile_attr.get("id", "0").rjust(7,"0")
 
         objectID = sortid
         if cfg.ignoreFilenameIDs:
             objectID = ""
-        path = xmlexportfolder(exportfolder,
+        path = fullexportfilepath(exportfolder,
                                cur_fmpbasename,
                                path,
                                authfile_name,
                                objectID)
-        f = open(path, "wb")
-        f.write( s )
-        f.close()
+
+        if 1:
+            xml2file( path, authfile, indent=cfg.xmlindent )
+        else:
+            s = ElementTree.tostring(authfile, encoding="utf-8", method="xml")
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+
         idx += 1
     return idx
 
@@ -189,25 +197,25 @@ def get_externaldatasources(cfg, cur_fmpxml, cur_db, cur_fmpbasename, externalda
 
         path = "ExternalDataSources"
     
-        s = ElementTree.tostring(externaldatasource, encoding="utf-8", method="xml")
-
         sortid = externaldatasource_attr.get("id", "0").rjust(7,"0")
 
         objectID = sortid
         if cfg.ignoreFilenameIDs:
             objectID = ""
-        path = xmlexportfolder(exportfolder,
+        path = fullexportfilepath(exportfolder,
                                cur_fmpbasename,
                                path,
                                externaldatasource_name,
                                objectID)
-        f = open(path, "wb")
-        f.write( s )
-        f.close()
+        if 1:
+            xml2file( path, externaldatasource, indent=cfg.xmlindent )
+        else:
+            s = ElementTree.tostring(externaldatasource, encoding="utf-8", method="xml")
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
         idx += 1
     return idx
-
-
 
 
 def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, themes,
@@ -221,26 +229,28 @@ def get_themecatalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename, themes,
         cur_object = (cur_fmpxml, 'ThemeCatalog', theme_name)
 
         path = "Themes"
-    
-        s = ElementTree.tostring(theme, encoding="utf-8", method="xml")
 
         sortid = theme_attr.get("id", "0").rjust(7,"0")
 
         objectID = sortid
         if cfg.ignoreFilenameIDs:
             objectID = ""
-        path = xmlexportfolder(exportfolder,
+        path = fullexportfilepath(exportfolder,
                                cur_fmpbasename,
                                path,
                                theme_name,
                                objectID)
-        f = open(path, "wb")
-        f.write( s )
-        f.close()
+
+        if 1:
+            xml2file( path, theme, indent=cfg.xmlindent )
+        else:
+            s = ElementTree.tostring(theme, encoding="utf-8", method="xml")
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
+
         idx += 1
     return idx
-
-
 
 
 def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, basedirectories,
@@ -254,28 +264,27 @@ def get_basedirectories(cfg, cur_fmpxml, cur_db, cur_fmpbasename, basedirectorie
         cur_object = (cur_fmpxml, 'BaseDirectoryCatalog', basedirectory_name)
 
         path = "BaseDirectoryCatalog"
-    
-        s = ElementTree.tostring(basedirectory, encoding="utf-8", method="xml")
 
         sortid = basedirectory_attr.get("id", "0").rjust(7,"0")
 
         objectID = sortid
         if cfg.ignoreFilenameIDs:
             objectID = ""
-        path = xmlexportfolder(exportfolder,
+        path = fullexportfilepath(exportfolder,
                                cur_fmpbasename,
                                path,
                                basedirectory_name,
                                objectID)
-        f = open(path, "wb")
-        f.write( s )
-        f.close()
+
+        if 1:
+            xml2file( path, basedirectory, indent=cfg.xmlindent )
+        else:
+            s = ElementTree.tostring(basedirectory, encoding="utf-8", method="xml")
+            f = open(path, "wb")
+            f.write( s )
+            f.close()
         idx += 1
     return idx
-
-
-
-
 
 
 def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
@@ -318,7 +327,6 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
         
             if groups and cfg.layoutGroups:
                 path = os.path.join("Layouts", *groups)
-            s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
 
             sortid = layout_attr.get("id", "0").rjust(7,"0")
             if cfg.layoutOrder:
@@ -329,14 +337,19 @@ def get_layouts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
             objectID = sortid
             if cfg.ignoreFilenameIDs:
                 objectID = ""
-            path = xmlexportfolder(exportfolder,
+            path = fullexportfilepath(exportfolder,
                                    cur_fmpbasename,
                                    path,
                                    layout_name,
                                    objectID)
-            f = open(path, "wb")
-            f.write( s )
-            f.close()
+
+            if 1:
+                xml2file( path, layout, indent=cfg.xmlindent )
+            else:
+                s = ElementTree.tostring(layout, encoding="utf-8", method="xml")
+                f = open(path, "wb")
+                f.write( s )
+                f.close()
             idx += 1
 
             if not cfg.assets:
@@ -418,7 +431,7 @@ def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                                 continue
 
                             fn = stringhash( data )
-                            path = xmlexportfolder(exportfolder,
+                            path = fullexportfilepath(exportfolder,
                                                    cur_fmpbasename,
                                                    "Assets",
                                                    fn,
@@ -426,9 +439,8 @@ def get_layout_object(cfg, cur_fmpxml, cur_db, cur_fmpbasename, laynode,
                                                    ext)
                             # write Asset file
                             if not os.path.exists( path ):
-                                f = open(path, "wb")
-                                f.write( data )
-                                f.close()
+                                with io.open(path, 'wb') as f:
+                                    f.write( data )
 
         # the following tags are for reference collection only
 
@@ -480,18 +492,23 @@ def get_scripts_and_groups(cfg, cur_fmpxml, cur_db, cur_fmpbasename, scriptnode,
                 sortid = (str(idx).rjust(5,"0")
                           + ' '
                           + scpt.get("id", "0").rjust(7,"0") )
-            s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
 
             objectID = sortid
             if cfg.ignoreFilenameIDs:
                 objectID = ""
-            path = xmlexportfolder(exportfolder, cur_fmpbasename, path,
+            path = fullexportfilepath(exportfolder, cur_fmpbasename, path,
                                    scpt.get("name", "NONAME"),
                                    objectID)
+
+            if 1:
+                xml2file( path, scpt, indent=cfg.xmlindent )
+            else:
+                s = ElementTree.tostring(scpt, encoding="utf-8", method="xml")
+                f = open(path, "wb")
+                f.write( s )
+                f.close()
+
             idx += 1
-            f = open(path, "wb")
-            f.write( s )
-            f.close()
 
         elif scpt.tag == "Group":
             grp_attrib = scpt.attrib
@@ -529,17 +546,17 @@ def get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
                     to_id = tab.attrib.get("id", -1)
                     to_btid = tab.attrib.get("baseTableId", -1)
                     to_bt = tab.attrib.get("baseTable", "NO BASETABLE FOR TABLE OCCURRENCE")
-                    
-                    s = ElementTree.tostring(tab, encoding="utf-8", method="xml")
 
                     objectID = to_id
                     if cfg.ignoreFilenameIDs:
                         objectID = ""
-                    path = xmlexportfolder(exportfolder,
+                    path = fullexportfilepath(exportfolder,
                                            cur_fmpbasename,
                                            "Relationships/TableList",
                                            to_name,
                                            objectID)
+
+                    s = ElementTree.tostring(tab, encoding="utf-8", method="xml")
                     f = open(path, "wb")
                     f.write( s )
                     f.close()
@@ -588,7 +605,6 @@ def get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
                             rel_cat['righttable'] = rel_component.attrib.get("name",
                                                                 "NO-LEFTTABLENAME")
                             
-                    s = ElementTree.tostring(rel, encoding="utf-8", method="xml")
                     filename = (rel_cat['lefttable']
                                 + "---"
                                 + rel_cat['righttable'])
@@ -596,14 +612,20 @@ def get_relationshipgraph_catalog(cfg, cur_fmpxml, cur_db, cur_fmpbasename,
                     objectID = rel_cat['id']
                     if cfg.ignoreFilenameIDs:
                         objectID = ""
-                    path = xmlexportfolder(exportfolder,
+
+                    path = fullexportfilepath(exportfolder,
                                            cur_fmpbasename,
                                            "Relationships/Relationship",
                                            filename,
                                            objectID)
-                    f = open(path, "wb")
-                    f.write( s )
-                    f.close()
+                    if 1:
+                        xml2file( path, rel, indent=cfg.xmlindent )
+                    else:
+                        s = ElementTree.tostring(rel, encoding="utf-8", method="xml")
+                        f = open(path, "wb")
+                        f.write( s )
+                        f.close()
+
 
 class XMLDDRFile:
     def __init__( self, xmlfilename, fmpfilename, fmppathOrHost, xmlbasename ):
@@ -656,6 +678,24 @@ def handleSummaryFile( xmlfile, log ):
     #pp( filelist )
     return result
 
+
+
+def xml2file( path, node, indent=False ):
+    """Write xmlfile to path. Indent or not.
+    
+    Currently indentation is too expensive ( time * 5 ) and too ugly. -> OFF
+    """
+    # s = ElementTree.tostring(node, method="xml")
+    if 0: #indent:
+        dom = minidom.parseString(s)
+        pretty_xml_as_string = dom.toprettyxml(newl='').replace("\n\n", "\n")
+        pretty_xml_as_string = pretty_xml_as_string .replace( "\t\t", "\t" )
+        s = pretty_xml_as_string.encode("utf-8")
+    else:
+        s = ElementTree.tostring(node, encoding="utf-8", method="xml")
+
+    with io.open( path, 'wb' ) as f:
+        f.write( s )
 
 
 def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
@@ -731,24 +771,26 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
                 prefix = "UNKN-"
             name = prefix + fileref_attrib.get("name", "NONAME")
         
-            s = ElementTree.tostring(fileref,
-                                     encoding="utf-8",
-                                     method="xml")
-
             objectID = fileref_attrib.get("id", "0")
             if cfg.ignoreFilenameIDs:
                 objectID = ""
-            path = xmlexportfolder(exportfolder,
+
+            path = fullexportfilepath(exportfolder,
                                    cur_xmlbasename,
                                    "Filereferences",
                                    name,
                                    objectID)
-            f = open(path, "wb")
-            f.write( s )
-            f.close()
-    # collect references to fields, CFs, value lists,
-    # merge fields, scripts, TOs, FileReferences
 
+            if 1:
+                xml2file( path, fileref, indent=cfg.xmlindent )
+            else:
+                s = ElementTree.tostring(fileref, encoding="utf-8", method="xml")
+                f = open(path, "wb")
+                f.write( s )
+                f.close()
+
+        # collect references to fields, CFs, value lists,
+        # merge fields, scripts, TOs, FileReferences
 
     
     #
@@ -772,22 +814,25 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
             for base_table in base_table_catalog.iter( u'BaseTable' ):
                 bt_name = base_table.get("name", "NONAME")
                 bt_id = base_table.get("id", "0")
-                s = ElementTree.tostring(base_table,
-                                         encoding="utf-8",
-                                         method="xml")
-
 
                 objectID = bt_id
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "Basetables",
                                        bt_name,
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+                if 1:
+                    xml2file( path, base_table, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(base_table,
+                                             encoding="utf-8",
+                                             method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
 
                 cur_btRef = (cur_xmlfilename, "BaseTable", bt_name)
                 bt_objID = gREF.addObject( cur_btRef )
@@ -857,19 +902,23 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
         for acc_cat in basenode.iter ( "AccountCatalog" ):
             for acc in list(acc_cat):
                 acc_attrib = acc.attrib
-                s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
 
                 objectID = acc_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "Accounts",
                                        acc_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+
+                if 1:
+                    xml2file( path, acc, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(acc, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists, TOs, FileReferences
 
     
@@ -904,19 +953,23 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
             groups = []
             for cf in list(cf_cat):
                 cf_attrib = cf.attrib
-                s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
 
                 objectID = cf_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "CustomFunctions",
                                        cf_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+
+                if 1:
+                    xml2file( path, cf, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(cf, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists,TOs, FileReferences
 
     
@@ -928,19 +981,22 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
         for pv_cat in basenode.iter( "PrivilegesCatalog" ):
             for pv in list(pv_cat):
                 pv_attrib = pv.attrib
-                s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
 
                 objectID = pv_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "Privileges",
                                        pv_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+                if 1:
+                    xml2file( path, pv, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(pv, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists, TOs, FileReferences
 
     
@@ -952,19 +1008,23 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
         for epv_cat in basenode.iter( "ExtendedPrivilegeCatalog" ):
             for epv in list(epv_cat):
                 epv_attrib = epv.attrib
-                s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
 
                 objectID = epv_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "ExtendedPrivileges",
                                        epv_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+
+                if 1:
+                    xml2file( path, epv, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(epv, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists, TOs, FileReferences
 
     
@@ -1043,19 +1103,22 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
         for cm_cat in basenode.iter( "CustomMenuCatalog" ):
             for cm in list(cm_cat):
                 cm_attrib = cm.attrib
-                s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
 
                 objectID = cm_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "CustomMenus",
                                        cm_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+                if 1:
+                    xml2file( path, cm, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(cm, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists, TOs, FileReferences
 
     
@@ -1067,19 +1130,22 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
         for cms_cat in basenode.iter( "CustomMenuSetCatalog" ):
             for cms in list(cms_cat):
                 cms_attrib = cms.attrib
-                s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
 
                 objectID = cms_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "CustomMenuSets",
                                        cms_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+                if 1:
+                    xml2file( path, cms, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(cms, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists, TOs, FileReferences
 
     
@@ -1091,19 +1157,22 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
         for vl_cat in basenode.iter( "ValueListCatalog" ):
             for vl in list(vl_cat):
                 vl_attrib = vl.attrib
-                s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
 
                 objectID = vl_attrib.get("id", "0")
                 if cfg.ignoreFilenameIDs:
                     objectID = ""
-                path = xmlexportfolder(exportfolder,
+                path = fullexportfilepath(exportfolder,
                                        cur_xmlbasename,
                                        "ValueLists",
                                        vl_attrib.get("name", "NONAME"),
                                        objectID)
-                f = open(path, "wb")
-                f.write( s )
-                f.close()
+                if 1:
+                    xml2file( path, vl, indent=cfg.xmlindent )
+                else:
+                    s = ElementTree.tostring(vl, encoding="utf-8", method="xml")
+                    f = open(path, "wb")
+                    f.write( s )
+                    f.close()
         # collect references to fields, CFs, value lists, TOs, FileReferences
 
     if gCancel:
@@ -1120,7 +1189,7 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
 
     # objects
 
-    path = xmlexportfolder(exportfolder,
+    path = fullexportfilepath(exportfolder,
                            "",
                            "References",
                            "id_object",
@@ -1156,10 +1225,8 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
             
     f.close()
 
-    # pdb.set_trace()
-
     # filemakerAttributes
-    path = xmlexportfolder(exportfolder,
+    path = fullexportfilepath(exportfolder,
                            "",
                            "References",
                            "objid_name_fmpattribute",
@@ -1182,10 +1249,8 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
     f.close()
 
 
-    # pdb.set_trace()
-
     # write references
-    path = xmlexportfolder(exportfolder,
+    path = fullexportfilepath(exportfolder,
                            "",
                            "References",
                            "objid_objid_reference",
@@ -1210,7 +1275,6 @@ def handleXMLFile( cfg, xmlfolder, xmlfile, log, filetype="ddr" ):
     f.close()
 
 
-    # pdb.set_trace()
 
 
 
