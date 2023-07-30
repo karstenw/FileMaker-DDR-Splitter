@@ -44,10 +44,10 @@
 <v t="karstenw.20220819211819.1"><vh>XMLDDRFile</vh></v>
 <v t="karstenw.20220817135840.1"><vh>handleSummaryFile</vh></v>
 <v t="karstenw.20220819221531.1"><vh>xml2file</vh></v>
-<v t="karstenw.20220817135906.1"><vh>handleXMLFile</vh>
+<v t="karstenw.20220817135906.1" a="E"><vh>handleXMLFile</vh>
 <v t="karstenw.20220817151055.1"><vh>&lt;&lt; FileReferenceCatalog &gt;&gt;</vh></v>
-<v t="karstenw.20220817151245.1"><vh>&lt;&lt; relationship graph &gt;&gt;</vh></v>
-<v t="karstenw.20220817151323.1"><vh>&lt;&lt; base table catalog &gt;&gt;</vh></v>
+<v t="karstenw.20220817151245.1"><vh>&lt;&lt; RelationshipGraph &gt;&gt;</vh></v>
+<v t="karstenw.20220817151323.1"><vh>&lt;&lt; BaseTableCatalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817151402.1"><vh>&lt;&lt; LayoutCatalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817151432.1"><vh>&lt;&lt; account catalog &gt;&gt;</vh></v>
 <v t="karstenw.20220817151502.1"><vh>&lt;&lt; script catalog &gt;&gt;</vh></v>
@@ -1899,9 +1899,9 @@ except NameError:
 
     &lt;&lt; FileReferenceCatalog &gt;&gt;
     
-    &lt;&lt; relationship graph &gt;&gt;
+    &lt;&lt; RelationshipGraph &gt;&gt;
     
-    &lt;&lt; base table catalog &gt;&gt;
+    &lt;&lt; BaseTableCatalog &gt;&gt;
     
     &lt;&lt; LayoutCatalog &gt;&gt;
     
