@@ -39,7 +39,7 @@ It's very fast. The longest run I have measured was 2 min. for a 420MB / 40 file
 ### Prerequisites
 
 #### For the Python script
-[Python 3.8](https://www.python.org/) - Higher version should work. Version 2.x probably not. All libraries needed are included with Python.
+[Python 3.11](https://www.python.org/) - Higher version should work. Version 2.x probably not. All libraries needed are included with Python.
 
 #### For building the OSX app the following additional libraries are needed:
 
